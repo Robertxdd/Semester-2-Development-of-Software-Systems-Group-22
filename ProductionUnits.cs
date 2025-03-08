@@ -42,7 +42,7 @@ public class GasBoiler : ProductionUnit
 
 public class OilBoiler : ProductionUnit
 {
-    public double OilConsupmtion { get; set; }
+    public double OilConsumption { get; set; }
 }
 
 
@@ -56,7 +56,7 @@ public class ProductionUnitViewModel
         {
             new GasBoiler { Name = "GB1", MaxHeatOutput = 4.0, ProductionCost = 520, CO2Emissions = 175, GasConsumption = 0.9 } ,
             new GasBoiler { Name = "GB2", MaxHeatOutput = 3.0, ProductionCost = 560, CO2Emissions = 130, GasConsumption = 0.7 } ,
-            new OilBoiler { Name = "OB1", MaxHeatOutput = 4.0, ProductionCost = 670, CO2Emissions = 330, OilConsupmtion = 1.5 }
+            new OilBoiler { Name = "OB1", MaxHeatOutput = 4.0, ProductionCost = 670, CO2Emissions = 330, OilConsumption = 1.5 }
         };
     }
 }
