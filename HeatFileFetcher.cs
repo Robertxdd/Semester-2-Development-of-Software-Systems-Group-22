@@ -11,18 +11,15 @@ public class HeatFetcher
     {
         string heatFilePath = @"..\..\..\Assets\2025 Heat Production Optimization - Danfoss Deliveries - Source Data Manager(SDM).csv";
 
-        Dictionary<string, string> dataDictionary = new Dictionary<string, string>();
-
         using (var reader = new StreamReader(heatFilePath))
         {
+
+            List<HeatData> heatDataList = new List<HeatData>();
+
             while (!reader.EndOfStream)
             {
                 var line = reader.ReadLine();
                 var values = line.Split(',');
-
-                List<HeatData> heatDataList = new List<HeatData>();
-
-
 
                 var heatData = new HeatData
                 {
@@ -41,5 +38,6 @@ public class HeatFetcher
 
             }
         }
+        
     }
 }
