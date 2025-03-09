@@ -1,7 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 
-namespace Semester2ProjectGroup22;
+namespace HeatProductionSystem;
 public class HeatData 
     {
         public string TimeFromW { get; set; }

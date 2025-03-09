@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Collections.Generic;
 
-namespace Semester2ProjectGroup22;
+namespace HeatProductionSystem;
 
 public class HeatFetcher
 {

@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace Semester2ProjectGroup22;
+namespace HeatProductionSystem.Views;
 
 public partial class MainWindow : Window
 {
