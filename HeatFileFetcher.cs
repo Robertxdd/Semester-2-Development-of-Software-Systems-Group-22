@@ -20,7 +20,7 @@ public class HeatFetcher
                 var line = reader.ReadLine();
                 var values = line.Split(',');
 
-             List<HeatData> heatDataList = new List<HeatData>();
+                List<HeatData> heatDataList = new List<HeatData>();
 
 
 
@@ -36,7 +36,7 @@ public class HeatFetcher
                     ElPriceS = values[7]
                 };
 
-               
+
                 heatDataList.Add(heatData);
 
             }
