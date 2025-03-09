@@ -2,7 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 
 namespace Semester2ProjectGroup22;
-public class HeatData
+public class HeatData 
     {
         public string TimeFromW { get; set; }
         public string TimeToW { get; set; }

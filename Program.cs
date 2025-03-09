@@ -1,4 +1,4 @@
-﻿/*using Avalonia;
+﻿using Avalonia;
 using System;
 using System.IO;
 using Semester2ProjectGroup22;
@@ -10,6 +10,8 @@ namespace Semester2ProjectGroup22
         [STAThread]
         public static void Main(string[] args)
         {
+
+            //ive modified this a bit for me its more readable
            
 
 
@@ -25,4 +27,3 @@ namespace Semester2ProjectGroup22
                 .LogToTrace();
     }
 }
-*/
