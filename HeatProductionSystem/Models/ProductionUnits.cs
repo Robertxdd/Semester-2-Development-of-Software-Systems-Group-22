@@ -3,7 +3,7 @@ using System;
 using System.Collections.ObjectModel;
 
 
-namespace HeatProductionSystem;
+namespace HeatProductionSystem.Models;
 
 public abstract class ProductionUnit
 {
