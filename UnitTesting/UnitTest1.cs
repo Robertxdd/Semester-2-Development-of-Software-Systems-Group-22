@@ -76,26 +76,23 @@ public class UnitTest_ProductionUnits
     [Fact]
     public void ObservableCollection_InstantiatesProductionUnitsCorrectly()
     {
-        // Arange - Instantiates two Gas- and one Oilboiler according to Scenario #1 specifications and adds them to an ObservableCollection
+        // Arange - Instantiates test units with the correct specifications provided for Scenario 1 and places them in an observable collection
         var unit = new GasBoiler { Name = "GB1", MaxHeatOutput = 4.0, ProductionCost = 520, CO2Emissions = 175, GasConsumption = 0.9 };  
         var unit2 = new GasBoiler { Name = "GB2", MaxHeatOutput = 3.0, ProductionCost = 560, CO2Emissions = 130, GasConsumption = 0.7 };
         var unit3 = new OilBoiler { Name = "OB1", MaxHeatOutput = 4.0, ProductionCost = 670, CO2Emissions = 330, OilConsumption = 1.5 };
 
-        var test = new ObservableCollection<ProductionUnit>() {unit, unit2, unit3 };  
+        var test = new ObservableCollection<ProductionUnit>() {unit, unit2, unit3 }; 
 
+        // Act - Instantiates our production units 
+        var ProductionUnits = ProductionUnitLoader.ProductionUnitLoadData();
 
-        // Act - Instantiates our Scenario #1 production units
-        var ProductionUnits = new ProductionUnitViewModel() {}; 
-        
+        // Assert - Compares our production units with the test units to check that their specifications are correct
+        Assert.Equal(test.Select(x => x.Name), ProductionUnits.Select(x => x.Name));                       
+        Assert.Equal(test.Select(x => x.MaxHeatOutput), ProductionUnits.Select(x => x.MaxHeatOutput));   
+        Assert.Equal(test.Select(x => x.ProductionCost), ProductionUnits.Select(x => x.ProductionCost));
+        Assert.Equal(test.Select(x => x.CO2Emissions), ProductionUnits.Select(x => x.CO2Emissions)); 
 
-        // Assert - Checks that each element for each object within the ObservableCollections have the same values
-        Assert.Equal(ProductionUnits.Units.Select(x => x.Name), test.Select(x => x.Name));                       
-        Assert.Equal(ProductionUnits.Units.Select(x => x.MaxHeatOutput), test.Select(x => x.MaxHeatOutput));   
-        Assert.Equal(ProductionUnits.Units.Select(x => x.ProductionCost), test.Select(x => x.ProductionCost));
-        Assert.Equal(ProductionUnits.Units.Select(x => x.CO2Emissions), test.Select(x => x.CO2Emissions)); 
-
-        Assert.Equal(ProductionUnits.Units.OfType<OilBoiler>().Select(x => x.OilConsumption), test.OfType<OilBoiler>().Select(x => x.OilConsumption));
-        Assert.Equal(ProductionUnits.Units.OfType<GasBoiler>().Select(x => x.GasConsumption), test.OfType<GasBoiler>().Select(x => x.GasConsumption));
+        Assert.Equal(test.OfType<OilBoiler>().Select(x => x.OilConsumption), ProductionUnits.OfType<OilBoiler>().Select(x => x.OilConsumption));
+        Assert.Equal(test.OfType<GasBoiler>().Select(x => x.GasConsumption), ProductionUnits.OfType<GasBoiler>().Select(x => x.GasConsumption));
     }
-
 }
