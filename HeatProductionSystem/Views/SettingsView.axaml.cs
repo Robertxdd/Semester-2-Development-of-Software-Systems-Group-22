@@ -2,7 +2,7 @@ using Avalonia.Controls;
 
 namespace HeatProductionSystem.Views;
 
-public partial class SettingsView : Window
+public partial class SettingsView : ContentControl
 {
     public SettingsView()
     {

@@ -4,4 +4,5 @@ namespace HeatProductionSystem.ViewModels;
 
 public class ViewModelBase : ObservableObject
 {
+    
 }

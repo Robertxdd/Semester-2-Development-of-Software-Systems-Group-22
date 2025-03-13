@@ -1,5 +1,5 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="HeatProductionSystem.Views.OptimizerView">
-    <TextBlock Text="Settings View" FontSize="24"/>
+    <TextBlock Text="Optimizer View" FontSize="24"/>
 </UserControl>

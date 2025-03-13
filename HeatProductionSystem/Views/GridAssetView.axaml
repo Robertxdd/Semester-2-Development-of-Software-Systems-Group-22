@@ -1,5 +1,5 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="HeatProductionSystem.Views.GridAssetView">
-    <TextBlock Text="Settings View" FontSize="24"/>
+    <TextBlock Text="Grid Asset View" FontSize="24"/>
 </UserControl>
