@@ -9,6 +9,10 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="HeatProductionSystem">
 
+    <Window.Styles>
+        <StyleInclude Source="/Views/Styles.axaml"/>
+    </Window.Styles>
+
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
@@ -24,11 +28,11 @@
 
         <!-- Sidebar -->
         <Border Background="LightGray" Grid.Column="0">
-            <StackPanel>
-                <Button Content="Data View" Command="{Binding ChangeViewCommand}" CommandParameter="0"/>
-                <Button Content="Grid Asset View" Command="{Binding ChangeViewCommand}" CommandParameter="1"/>
-                <Button Content="Optimizer View" Command="{Binding ChangeViewCommand}" CommandParameter="2"/>
-                <Button Content="Settings View" Command="{Binding ChangeViewCommand}" CommandParameter="3"/>
+            <StackPanel Spacing="10">
+                <Button Content="Data View" Command="{Binding ChangeViewCommand}" CommandParameter="0" Classes="Views"/>
+                <Button Content="Grid Asset View" Command="{Binding ChangeViewCommand}" CommandParameter="1" Classes="Views"/>
+                <Button Content="Optimizer View" Command="{Binding ChangeViewCommand}" CommandParameter="2" Classes="Views"/>
+                <Button Content="Settings View" Command="{Binding ChangeViewCommand}" CommandParameter="3" Classes="Views"/>
             </StackPanel>
         </Border>
 
