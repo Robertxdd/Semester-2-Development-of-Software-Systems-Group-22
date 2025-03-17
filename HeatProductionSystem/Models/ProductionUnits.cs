@@ -54,8 +54,10 @@ public class ProductionUnitLoader
 
     public static ObservableCollection<ProductionUnit> ProductionUnitLoadData()
     {                                                                                   
-        string unitsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HeatProductionSystem", "Assets", "ProductionUnitsSpecifications.csv"); // the path doesn't work for some reason and needs to be fixed
-        
+        //string unitsFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "ProductionUnitsSpecifications.csv"); // the path doesn't work for some reason and needs to be fixed
+        string unitsFilePath = Directory.GetParent(Directory.GetParent(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).FullName).FullName).FullName; // the path doesn't work for some reason and needs to be fixed
+        Console.WriteLine(unitsFilePath);
+
         var ProductionUnits = new ObservableCollection<ProductionUnit>();
 
         using (var reader = new StreamReader(unitsFilePath))

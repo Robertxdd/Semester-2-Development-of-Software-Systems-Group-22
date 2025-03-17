@@ -8,17 +8,17 @@ namespace HeatProductionSystem.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
 {
     [ObservableProperty]    // Creates the eaxct same object, that is then capitalized, and must then be referenced for UI updating
-    private ContentControl selectedView;
-    private ContentControl dataView;
-    private ContentControl gridAssetView;
-    private ContentControl optimizerView;
-    private ContentControl SettingsView;
+    private ViewModelBase selectedView;
+    private ViewModelBase dataView;
+    private ViewModelBase gridAssetView;
+    private ViewModelBase optimizerView;
+    private ViewModelBase SettingsView;
     public MainWindowViewModel()
     {
-        dataView = new Views.DataView();
-        gridAssetView = new Views.GridAssetView();
-        optimizerView = new Views.OptimizerView();
-        SettingsView = new Views.SettingsView();
+        dataView = new DataViewViewModel();
+        gridAssetView = new GridAssetViewViewModel();
+        optimizerView = new OptimizerViewViewModel();
+        SettingsView = new SettingsViewViewModel();
 
         selectedView = dataView; 
     }
