@@ -2,6 +2,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Diagnostics;
 
 
 
@@ -53,8 +54,12 @@ public class ProductionUnitLoader
     public ObservableCollection<ProductionUnit> Units { get; set; }
 
     public static ObservableCollection<ProductionUnit> ProductionUnitLoadData()
-    {                                                                                   
-        string unitsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HeatProductionSystem", "Assets", "ProductionUnitsSpecifications.csv"); // the path doesn't work for some reason and needs to be fixed
+    {                                            
+        Debug.WriteLine("Base Directory: " + AppDomain.CurrentDomain.BaseDirectory);
+        Debug.WriteLine("Base Directory: " + Directory.GetCurrentDirectory());
+    
+
+        string unitsFilePath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "HeatProductionSystem", "Assets", "ProductionUnitsSpecifications.csv"); // the path doesn't work for some reason and needs to be fixed
         
         var ProductionUnits = new ObservableCollection<ProductionUnit>();
 
