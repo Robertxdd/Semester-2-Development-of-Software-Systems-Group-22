@@ -3,14 +3,16 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Diagnostics;
+using Avalonia.Controls;
 
 
 
 namespace HeatProductionSystem.Models;
 
-public abstract class ProductionUnit
+public abstract class ProductionUnits
 {
     public string Name { get; set; } = "Unnamed Unit";
+    public string ImagePath { get; set; }
 
     public double MaxHeatOutput { get; set; }  // Also refered to as Max heat in provided documents (measured in MW)
     public double CurrentHeatOutput { get; set; } = 0; // Default to 0 since unit is OFF (measured in MWh)
@@ -38,26 +40,36 @@ public abstract class ProductionUnit
 }
 
 
-public class GasBoiler : ProductionUnit
+public class GasBoiler : ProductionUnits
 {
     public double GasConsumption { get; set; }
+
+    public GasBoiler()
+    {
+        ImagePath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "HeatProductionSystem", "Assets", "GasBoiler.png");
+    }
 }
 
-public class OilBoiler : ProductionUnit
+public class OilBoiler : ProductionUnits
 {
     public double OilConsumption { get; set; }
+
+    public OilBoiler()
+    {
+        ImagePath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "HeatProductionSystem", "Assets", "OilBoiler.png");
+    }
 }
 
 
-public class ProductionUnitLoader
+public class ProductionUnitsData
 {
-    public ObservableCollection<ProductionUnit> Units { get; set; }
+    public ObservableCollection<ProductionUnits> Units { get; set; }
 
-    public static ObservableCollection<ProductionUnit> ProductionUnitLoadData()
+    public static ObservableCollection<ProductionUnits> ProductionUnitsCollection()
     {                                            
         string unitsFilePath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "HeatProductionSystem", "Assets", "ProductionUnitsSpecifications.csv");
         
-        var ProductionUnits = new ObservableCollection<ProductionUnit>();
+        var ProductionUnits = new ObservableCollection<ProductionUnits>();
 
         using (var reader = new StreamReader(unitsFilePath))
         {
@@ -73,7 +85,7 @@ public class ProductionUnitLoader
                                     MaxHeatOutput = Convert.ToDouble(lineSplits[2]) , 
                                     ProductionCost = Convert.ToDouble(lineSplits[4]) , 
                                     CO2Emissions = Convert.ToDouble(lineSplits[5]) ,
-                                    GasConsumption = Convert.ToDouble(lineSplits[6]) };
+                                    GasConsumption = Convert.ToDouble(lineSplits[6])};
                                             
                         ProductionUnits.Add(gasBoiler);
                         break;
