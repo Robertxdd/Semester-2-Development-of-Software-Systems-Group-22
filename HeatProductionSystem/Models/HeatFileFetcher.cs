@@ -7,20 +7,25 @@ namespace HeatProductionSystem;
 
 public class HeatFetcher
 {
-    public static void FetchHeatData() // fetching from the file using dictionary and storing them in heatdata file
+    public static List<HeatData> FetchHeatData() // fetching from the file and storing them in heatdata file test
     {
-        string heatFilePath = @"..\..\..\Assets\2025 Heat Production Optimization - Danfoss Deliveries - Source Data Manager(SDM).csv";
+        string heatFilePath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "HeatProductionSystem", "Assets", "2025 Heat Production Optimization - Danfoss Deliveries - Source Data Manager(SDM).csv");
+
+        List<HeatData> heatDataList = new List<HeatData>();
 
         using (var reader = new StreamReader(heatFilePath))
         {
 
-            List<HeatData> heatDataList = new List<HeatData>();
+            reader.ReadLine(); // read one line to skip header
+            reader.ReadLine();
+            reader.ReadLine();
 
             while (!reader.EndOfStream)
             {
                 var line = reader.ReadLine();
                 var values = line.Split(',');
 
+            
                 var heatData = new HeatData
                 {
                     TimeFromW = values[0],
@@ -33,11 +38,14 @@ public class HeatFetcher
                     ElPriceS = values[7]
                 };
 
-
                 heatDataList.Add(heatData);
-
+               
             }
+           
         }
-        
+
+       
+        return heatDataList; 
     }
 }
+// fetching from the file and storing them in heatdata file test
