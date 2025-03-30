@@ -10,13 +10,13 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]    // Creates the eaxct same object, that is then capitalized, and must then be referenced for UI updating
     private ViewModelBase selectedView;
     private ViewModelBase dataView;
-    private ViewModelBase gridAssetView;
+    private ViewModelBase DashboardView;
     private ViewModelBase optimizerView;
     private ViewModelBase SettingsView;
     public MainWindowViewModel()
     {
         dataView = new DataViewViewModel();
-        gridAssetView = new GridAssetViewViewModel();
+        DashboardView = new GridAssetViewViewModel();
         optimizerView = new OptimizerViewViewModel();
         SettingsView = new SettingsViewViewModel();
 
@@ -36,13 +36,19 @@ public partial class MainWindowViewModel : ViewModelBase
                 SelectedView = dataView;
                 break;
             case 1:
-                SelectedView = gridAssetView;
+                SelectedView = DashboardView;
                 break;
             case 2:
                 SelectedView = optimizerView;
                 break;
             case 3:
                 SelectedView = SettingsView;
+                break;
+            case 4:
+                SelectedView = dataView;
+                break;
+            case 5:
+                SelectedView = DashboardView;
                 break;
             default:
                 break;
