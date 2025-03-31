@@ -1,5 +1,10 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="HeatProductionSystem.Views.SettingsView">
-    <TextBlock Text="Settings View" FontSize="24"/>
+    
+    <StackPanel>
+        <TextBlock Text="Settings View" FontSize="24"/>
+        <TextBlock Text="A view where can you set up everything"/>
+    </StackPanel>
+    
 </UserControl>

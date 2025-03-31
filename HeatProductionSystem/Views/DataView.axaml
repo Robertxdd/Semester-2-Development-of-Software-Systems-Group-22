@@ -4,8 +4,8 @@
 
     <StackPanel>
         <TextBlock Text="Data View" FontSize="24"/>
-        <TextBlock Text="The Heating Grid: "/>
-        <Image Width="600" Height="400" Source="/Assets/image.png"/>
+        <TextBlock Text="A view for displaying the data of the system." FontSize="16" Margin="0,0,0,10"/>
+        <TextBlock Text="Maybe split up the result data from the source data?" FontSize="16" Margin="0,0,0,10"/>
     </StackPanel>
 
 </UserControl>

@@ -19,6 +19,9 @@
         <DataTemplate DataType="{x:Type local:SettingsViewViewModel}">
             <views:SettingsView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type local:SimulationsViewViewModel}">
+            <views:SimulationsView/>
+        </DataTemplate>
     </Application.DataTemplates>
 
   
