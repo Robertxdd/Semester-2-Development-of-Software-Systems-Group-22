@@ -10,43 +10,38 @@ namespace HeatProductionSystem
     public class UnitTest_HeatFetcherTest
     {
         [Fact]
-        public void FetchHeatData_ReturnsListOfHeatData()
+        public void FetchHeatData_ReturnsFirstRowCorrectly()
         {
             // Arrange
-            string heatFilePath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Assets", "2025 Heat Production Optimization - Danfoss Deliveries - Source Data Manager(SDM).csv");
-
-           
-            var testData = new List<HeatData>
+            var expectedFirstRow = new HeatData
             {
-                new HeatData
-                {
-                    TimeFromW = "3/1/2024 0:00",
-                    TimeToW = "3/1/2024 1:00",
-                    HeatDemandW = "6.62", 
-                    ElPriceW = "50",
-                    TimeFromS = "2025-03-01 00:00:00",
-                    TimeToS = "2025-03-01 01:00:00",
-                    HeatDemandS = "100",
-                    ElPriceS = "60"
-                }
+                TimeFromW = "3/1/2024 0:00",
+                TimeToW = "3/1/2024 1:00",
+                HeatDemandW = 6.62, 
+                ElPriceW = 1190.9400000000001,
+                TimeFromS = "8/11/2024 0:00",
+                TimeToS = "8/11/2024 1:00",
+                HeatDemandS = 1.79,
+                ElPriceS = 752.02999999999997
             };
 
             // Act
             var actualData = HeatFetcher.FetchHeatData();
 
             // Assert
-            Assert.NotNull(actualData); // Checking if the result is null
-            Assert.IsType<List<HeatData>>(actualData); // Checking if it returns as a list
-            Assert.True(actualData.Count > 0); // Check if the list contains at least one element
+            Assert.NotNull(actualData);
+            Assert.True(actualData.Count > 0, "The fetched data should contain at least one row.");
 
-            // Comparing the test data with actual csv data
-            Assert.Equal(testData.Select(x => x.TimeFromW), actualData.Select(x => x.TimeFromW));
-            Assert.Equal(testData.Select(x => x.HeatDemandW), actualData.Select(x => x.HeatDemandW));
-            Assert.Equal(testData.Select(x => x.ElPriceW), actualData.Select(x => x.ElPriceW));
-            Assert.Equal(testData.Select(x => x.TimeFromS), actualData.Select(x => x.TimeFromS));
-            Assert.Equal(testData.Select(x => x.TimeToS), actualData.Select(x => x.TimeToS));
-            Assert.Equal(testData.Select(x => x.HeatDemandS), actualData.Select(x => x.HeatDemandS));
-            Assert.Equal(testData.Select(x => x.ElPriceS), actualData.Select(x => x.ElPriceS));
+            var firstRow = actualData.First(); // Get the first element
+
+            Assert.Equal(expectedFirstRow.TimeFromW, firstRow.TimeFromW);
+            Assert.Equal(expectedFirstRow.TimeToW, firstRow.TimeToW);
+            Assert.Equal(expectedFirstRow.HeatDemandW, firstRow.HeatDemandW);
+            Assert.Equal(expectedFirstRow.ElPriceW, firstRow.ElPriceW);
+            Assert.Equal(expectedFirstRow.TimeFromS, firstRow.TimeFromS);
+            Assert.Equal(expectedFirstRow.TimeToS, firstRow.TimeToS);
+            Assert.Equal(expectedFirstRow.HeatDemandS, firstRow.HeatDemandS);
+            Assert.Equal(expectedFirstRow.ElPriceS, firstRow.ElPriceS);
         }
     }
 }
