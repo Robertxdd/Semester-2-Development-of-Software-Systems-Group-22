@@ -15,7 +15,6 @@ public class Optimizer
         double totalCost = 0;
         double totalHeatProduced = 0;
 
-        // Loop through each time period (hour in the week)
         foreach (var heatDemand in heatData)
         {
             double heatNeeded = heatDemand.HeatDemandW;
@@ -56,15 +55,8 @@ public class Optimizer
                 selectedUnits.Add(ob1);
             }
 
-            Console.WriteLine($"At time {heatDemand.TimeFromW} - {heatDemand.TimeToW}, Heat demand: {heatDemand.HeatDemandW} MWh, " +
-                              $"Selected Units: {string.Join(", ", selectedUnits.Select(u => u.Name))}, " +
-                              $"Cost for this hour: {costForHour} DKK, Total heat produced: {heatProduced} MWh");
-
             totalCost += costForHour;
             totalHeatProduced += heatProduced;
         }
-
-        Console.WriteLine($"Total cost for the week: {totalCost} DKK");
-        Console.WriteLine($"Total heat produced for the week: {totalHeatProduced} MWh");
     }
 }
