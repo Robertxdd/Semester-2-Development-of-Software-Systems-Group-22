@@ -17,4 +17,8 @@
         <Setter Property="CornerRadius" Value="5"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>
+
+    <Style Selector="TextBlock.Font">
+       <Setter Property="FontSize" Value="12"/>
+    </Style>
 </Styles>
