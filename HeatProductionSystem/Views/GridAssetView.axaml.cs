@@ -1,11 +1,10 @@
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml.Styling;
 
 namespace HeatProductionSystem.Views;
 
-public partial class MainWindow : Window
+public partial class GridAssetView : ContentControl
 {
-    public MainWindow()
+    public GridAssetView()
     {
         InitializeComponent();
     }

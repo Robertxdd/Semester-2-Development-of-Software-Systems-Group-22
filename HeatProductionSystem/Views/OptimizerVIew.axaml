@@ -1,0 +1,10 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="HeatProductionSystem.Views.OptimizerView">
+
+    <StackPanel>
+        <TextBlock Text="Optimizer View" FontSize="24"/>
+        <TextBlock Text="This is the optimizer view, where you can see stuff about the optimizer." FontSize="16" Margin="0,0,0,20"/>
+    </StackPanel>
+
+</UserControl>

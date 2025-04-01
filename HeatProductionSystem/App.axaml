@@ -1,13 +1,29 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="HeatProductionSystem.App"
-             xmlns:local="using:HeatProductionSystem"
-             RequestedThemeVariant="Default">
+             xmlns:local="using:HeatProductionSystem.ViewModels"
+             xmlns:views="using:HeatProductionSystem.Views"
+             RequestedThemeVariant="Light">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
-        <local:ViewLocator/>
+        <DataTemplate DataType="{x:Type local:DataViewViewModel}">
+            <views:DataView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type local:GridAssetViewViewModel}">
+            <views:GridAssetView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type local:OptimizerViewViewModel}">
+            <views:OptimizerView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type local:SettingsViewViewModel}">
+            <views:SettingsView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type local:SimulationsViewViewModel}">
+            <views:SimulationsView/>
+        </DataTemplate>
     </Application.DataTemplates>
+
   
     <Application.Styles>
         <FluentTheme />
