@@ -2,10 +2,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="HeatProductionSystem.Views.DashboardView">
 
-    <StackPanel>
-        <TextBlock Text="Dashboard View" FontSize="24"/>
-        <TextBlock Text="A view for displaying the data of the system." FontSize="16" Margin="0,0,0,10"/>
-        <TextBlock Text="Maybe split up the result data from the source data?" FontSize="16" Margin="0,0,0,10"/>
-    </StackPanel>
+    <Grid HorizontalAlignment="Center">
+            
+        <Viewbox Stretch="Uniform" VerticalAlignment="Top">
+            <Border MinWidth="600">
+                <StackPanel>  
+                    <TextBlock Text="Heat Production Optimization System" FontSize="24" HorizontalAlignment="Center" Margin="0 10 0 0"/>
+                    
+                    
+
+                    
+                </StackPanel>
+            </Border>
+        </Viewbox>
+           
+    </Grid>
 
 </UserControl>

@@ -6,11 +6,42 @@ namespace HeatProductionSystem.ViewModels;
 
 public partial class ProductionUnitsViewModel : ViewModelBase
 {
+    public ObservableCollection<string> AvailableScenarios { get; } = new()
+    {
+        "Scenario 1",
+        "Scenario 2"
+    };
+    
     [ObservableProperty]
-    private ObservableCollection<ProductionUnits> productionUnits;
+    private string selectedScenario;
+    partial void OnSelectedScenarioChanged(string value) // Automatically runs every time SelectedScenario is changed
+    {
+        LoadScenario(value);
+        ButtonExpanded = false;
+    }
+
+    [ObservableProperty]
+    private bool buttonExpanded = false; // The Expander button in the UI
+
+    [ObservableProperty]
+    private ObservableCollection<ProductionUnits> productionUnitList;
 
     public ProductionUnitsViewModel()
     {
-        this.productionUnits = ProductionUnitsData.ProductionUnitsCollection();
+        SelectedScenario = "Scenario 1";  // Sets default Scenario in UI to Scenario 1
+    }
+    
+
+    private void LoadScenario(string? scenario)
+    {
+        if (scenario == "Scenario 1")
+        {
+            ProductionUnitList = ProductionUnitsData.ProductionUnitsCollection();
+            
+        }
+        else if (scenario == "Scenario 2")
+        {
+            ProductionUnitList = new ObservableCollection<ProductionUnits>(); // empty collection
+        }
     }
 }
