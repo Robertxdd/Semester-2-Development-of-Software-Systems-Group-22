@@ -29,8 +29,6 @@
   </ItemGroup>
 
 <ItemGroup>
-    <!-- ... -->
     <ProjectReference Include="../HeatProductionSystem/Semester-2-Development-of-Software-Systems-Group-22.csproj" />
-    <!-- ... -->
 </ItemGroup>
 </Project>

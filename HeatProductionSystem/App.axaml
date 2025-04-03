@@ -7,20 +7,14 @@
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
-        <DataTemplate DataType="{x:Type local:DataViewViewModel}">
-            <views:DataView/>
+        <DataTemplate DataType="{x:Type local:DashboardViewModel}">
+            <views:DashboardView/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type local:GridAssetViewViewModel}">
-            <views:GridAssetView/>
+        <DataTemplate DataType="{x:Type local:ProductionUnitsViewModel}">
+            <views:ProductionUnitsView/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type local:OptimizerViewViewModel}">
+        <DataTemplate DataType="{x:Type local:OptimizerViewModel}">
             <views:OptimizerView/>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type local:SettingsViewViewModel}">
-            <views:SettingsView/>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type local:SimulationsViewViewModel}">
-            <views:SimulationsView/>
         </DataTemplate>
     </Application.DataTemplates>
 
@@ -28,4 +22,5 @@
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>
+    
 </Application>

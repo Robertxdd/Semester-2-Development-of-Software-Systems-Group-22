@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace HeatProductionSystem.Views;
 
-public partial class GridAssetView : ContentControl
+public partial class ProductionUnitsView : ContentControl
 {
-    public GridAssetView()
+    public ProductionUnitsView()
     {
         InitializeComponent();
     }
