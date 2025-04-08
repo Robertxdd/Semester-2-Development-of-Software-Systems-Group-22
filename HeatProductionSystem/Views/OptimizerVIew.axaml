@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:HeatProductionSystem.ViewModels"
              xmlns:lv="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
+             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
              x:Class="HeatProductionSystem.Views.OptimizerView"
              x:DataType="vm:OptimizerViewModel">
 
@@ -23,7 +24,11 @@
                         </Expander>
 
                         <!-- Here is where you add the chart -->
-                        <lv:CartesianChart Series="{Binding Series}" Height="300" />
+                        <lv:CartesianChart  Series="{Binding Series}" Height="300" />
+
+                        <lvc:CartesianChart Series="{Binding ElectricitySeries}" 
+                                            XAxes="{Binding ElectricityPriceTimeXAxes}" 
+                                            Height="300"/>
                     </StackPanel>
                 </Border>
             </Viewbox>
