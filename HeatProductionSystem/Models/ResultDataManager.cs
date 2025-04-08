@@ -44,12 +44,13 @@ namespace HeatProductionSystem
         _ => throw new Exception($"Unknown unit name: {unitName}")
     };
    
-    var resultsForUnit = optimizationResults.Where(r => r.UnitName == unitName).ToList();
+    var resultsForUnit = optimizationResults.Where(r => r.UnitName == unitName).ToList();// to convert all results for a specific unit name that checks if all results have a unit name 
+    
 
     // Writing to CSV
     if (File.Exists(filePath)) 
     {
-        using (var writer = new StreamWriter(filePath, append: true)) 
+        using (var writer = new StreamWriter(filePath, append: true))  // append is adding instead of overwrite
         {
             
             foreach (var result in resultsForUnit)
