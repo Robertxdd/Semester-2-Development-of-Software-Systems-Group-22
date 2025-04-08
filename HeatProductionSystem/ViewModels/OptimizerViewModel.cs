@@ -11,6 +11,11 @@ namespace HeatProductionSystem.ViewModels;
 public partial class OptimizerViewModel : ViewModelBase
 {
     public ISeries[] Series { get; set; }
+
+    [ObservableProperty]
+    private ISeries[] electricitySeries;
+    [ObservableProperty]
+    private Axis[] electricityPriceTimeXAxes;
     public ObservableCollection<string> AvailableScenarios { get; } = new()
     {
         "Scenario 1",
@@ -52,6 +57,28 @@ public partial class OptimizerViewModel : ViewModelBase
                 {
                     Values = new double[] { 1, 3, 5, 7 },
                     Stroke = new SolidColorPaint(SKColors.Red, 2)
+                }
+            };
+
+            //electrictiy series & axis
+            //Example data for electricity series just for testing
+            //Maybe add a new class that properly handles & Updates the data for the view?
+
+            electricitySeries = new ISeries[]
+            {
+                new LineSeries<double>
+                {
+                    Values = new double[] { 2, 4, 6, 8 },
+                    Stroke = new SolidColorPaint(SKColors.Blue, 2)
+                }
+            };
+
+            electricityPriceTimeXAxes = new Axis[]
+            {
+                new Axis
+                {
+                    Name = "Months",
+                    Labels = new[] { "Jan", "Feb", "Mar", "Apr" },
                 }
             };
             
