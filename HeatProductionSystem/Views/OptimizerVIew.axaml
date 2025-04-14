@@ -48,7 +48,7 @@
             <Viewbox Stretch="Uniform" VerticalAlignment="Top">
                 <Border MinWidth="600" BorderBrush="Black" BorderThickness="2" Padding="10" CornerRadius="8">
                     <StackPanel>
-                        <!-- Title similar to the image -->
+                     
                         <TextBlock Text="Heat demand with a daily time resolution" 
                                    FontSize="24" 
                                    FontWeight="Bold" 
