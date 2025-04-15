@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace HeatProductionSystem.Views;
 
-public partial class SimulationsView : ContentControl
+public partial class DashboardView : ContentControl
 {
-    public SimulationsView()
+    public DashboardView()
     {
         InitializeComponent();
     }

@@ -1,10 +1,73 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="HeatProductionSystem.Views.OptimizerView">
+             xmlns:vm="using:HeatProductionSystem.ViewModels"
+             xmlns:lv="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
+             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+             x:Class="HeatProductionSystem.Views.OptimizerView"
+             x:DataType="vm:OptimizerViewModel">
 
-    <StackPanel>
-        <TextBlock Text="Optimizer View" FontSize="24"/>
-        <TextBlock Text="This is the optimizer view, where you can see stuff about the optimizer." FontSize="16" Margin="0,0,0,20"/>
-    </StackPanel>
+    <Grid HorizontalAlignment="Center">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0 10 0 0">
+            <Viewbox Stretch="Uniform" VerticalAlignment="Top">
+                <Border MinWidth="600">
+                    <StackPanel>  
+                        <TextBlock Text="Data Optimization Results" FontSize="24" HorizontalAlignment="Center"/>
+
+                        <Expander Header="{Binding SelectedScenario, FallbackValue='Choose a Scenario'}" 
+                                    IsExpanded="{Binding ButtonExpanded, Mode=TwoWay}" 
+                                    Margin="0 20 0 0"
+                                    CornerRadius="10"
+                                    MinHeight="0"
+                                    HorizontalAlignment="Center">
+                            <ListBox ItemsSource="{Binding AvailableScenarios}"  
+                                    SelectedItem="{Binding SelectedScenario, Mode=TwoWay}"/>
+                        </Expander>
+
+                        <!-- Here is where you add the chart -->
+                        <lv:CartesianChart  Series="{Binding Series}" Height="300" />
+
+                        <lvc:CartesianChart Series="{Binding ElectricitySeries}" 
+                                            XAxes="{Binding ElectricityPriceTimeXAxes}" 
+                                            Height="300"/>
+                    </StackPanel>
+                </Border>
+            </Viewbox>
+        </ScrollViewer>
+    </Grid>
 
 </UserControl>
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:HeatProductionSystem.ViewModels"
+             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+             x:Class="HeatProductionSystem.Views.HeatDemandView"
+             x:DataType="vm:HeatDemandViewModel">
+
+    <Grid HorizontalAlignment="Center">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0 10 0 0">
+            <Viewbox Stretch="Uniform" VerticalAlignment="Top">
+                <Border MinWidth="600" BorderBrush="Black" BorderThickness="2" Padding="10" CornerRadius="8">
+                    <StackPanel>
+                     
+                        <TextBlock Text="Heat demand with a daily time resolution" 
+                                   FontSize="24" 
+                                   FontWeight="Bold" 
+                                   FontFamily="Comic Sans MS"
+                                   HorizontalAlignment="Center" 
+                                   Margin="0,0,0,20"/>
+
+                        <lvc:CartesianChart Series="{Binding HeatDemandSeries}"
+                                            XAxes="{Binding TimeXAxis}"
+                                            YAxes="{Binding HeatYAxis}"
+                                            Height="300"
+                                            DrawMarginFrame="{x:Null}"
+                                            ZoomMode="X"
+                                            TooltipPosition="Top"
+                                            Margin="0,0,0,10"/>
+                    </StackPanel>
+                </Border>
+            </Viewbox>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
+

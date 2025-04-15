@@ -4,6 +4,10 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Diagnostics;
 using Avalonia.Controls;
+using Avalonia.Media.Imaging;
+using System;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 
 
 
@@ -12,11 +16,12 @@ namespace HeatProductionSystem.Models;
 public abstract class ProductionUnits
 {
     public string Name { get; set; } = "Unnamed Unit";
-    public string ImagePath { get; set; }
+    public Bitmap Image { get; set; }
 
     public double MaxHeatOutput { get; set; }  // Also refered to as Max heat in provided documents (measured in MW)
     public double CurrentHeatOutput { get; set; } = 0; // Default to 0 since unit is OFF (measured in MWh)
 
+    public double FuelConsumption { get; set; }
     public double ProductionCost { get; set; }  // DKK/MWh
     public double CO2Emissions { get; set; }  // kg/MWh
     public bool IsActive { get; set; } = false;  // Default is set to OFF
@@ -42,23 +47,27 @@ public abstract class ProductionUnits
 
 public class GasBoiler : ProductionUnits
 {
-    public double GasConsumption { get; set; }
-
     public GasBoiler()
     {
-        ImagePath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "HeatProductionSystem", "Assets", "GasBoiler.png");
+        if (!AppEnvironment.IsTestMode) // Needed because the Bitmap doesnt work in unit testing
+        {
+            Image = ImageHelper.LoadFromResource(new Uri("avares://Semester-2-Development-of-Software-Systems-Group-22/Assets/GasBoiler.png"));
+        }
     }
 }
 
 public class OilBoiler : ProductionUnits
 {
-    public double OilConsumption { get; set; }
-
     public OilBoiler()
     {
-        ImagePath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "HeatProductionSystem", "Assets", "OilBoiler.png");
+        if (!AppEnvironment.IsTestMode) // Needed because the Bitmap doesnt work in unit testing
+        {
+            Image = ImageHelper.LoadFromResource(new Uri("avares://Semester-2-Development-of-Software-Systems-Group-22/Assets/OilBoiler.png"));
+        }
     }
 }
+
+
 
 
 public class ProductionUnitsData
@@ -85,7 +94,8 @@ public class ProductionUnitsData
                                     MaxHeatOutput = Convert.ToDouble(lineSplits[2]) , 
                                     ProductionCost = Convert.ToDouble(lineSplits[4]) , 
                                     CO2Emissions = Convert.ToDouble(lineSplits[5]) ,
-                                    GasConsumption = Convert.ToDouble(lineSplits[6])};
+                                    FuelConsumption = Convert.ToDouble(lineSplits[6])};
+                                    
                                             
                         ProductionUnits.Add(gasBoiler);
                         break;
@@ -96,7 +106,7 @@ public class ProductionUnitsData
                                     MaxHeatOutput = Convert.ToDouble(lineSplits[2]) , 
                                     ProductionCost = Convert.ToDouble(lineSplits[4]) , 
                                     CO2Emissions = Convert.ToDouble(lineSplits[5]) ,
-                                    OilConsumption = Convert.ToDouble(lineSplits[6]) };
+                                    FuelConsumption = Convert.ToDouble(lineSplits[6]) };
                         
                         ProductionUnits.Add(oilBoiler);
                         break;

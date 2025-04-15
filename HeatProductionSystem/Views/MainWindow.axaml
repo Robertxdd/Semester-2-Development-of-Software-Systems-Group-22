@@ -32,12 +32,10 @@
         <Border Background="LightGray" Grid.Column="0">
             <StackPanel Spacing="10" HorizontalAlignment="Center">
 
-                <Button Content="Dashboard"     Command="{Binding ChangeViewCommand}"   CommandParameter="0" Classes="Views"/> 
-                <Button Content="Settings"      Command="{Binding ChangeViewCommand}"   CommandParameter="1" Classes="Views"/>
-                <Button Content="Optimizer"     Command="{Binding ChangeViewCommand}"   CommandParameter="2" Classes="Views"/>                
-                <Button Content="Result Data"   Command="{Binding ChangeViewCommand}"   CommandParameter="3" Classes="Views"/>
-                <Button Content="Simulator"     Command="{Binding ChangeViewCommand}"   CommandParameter="4" Classes="Views"/>
-               <Button Content="Quit"           Command="{Binding ChangeViewCommand}"   CommandParameter="5" Classes="Views"/>
+                <Button Content="Dashboard"         Command="{Binding ChangeViewCommand}"   CommandParameter="0" Classes="Views"/> 
+                <Button Content="Optimizer"         Command="{Binding ChangeViewCommand}"   CommandParameter="1" Classes="Views"/>                
+                <Button Content="Production Units"  Command="{Binding ChangeViewCommand}"   CommandParameter="2" Classes="Views"/>
+               <Button Content="Quit"               Command="{Binding ChangeViewCommand}"   CommandParameter="3" Classes="Views"/>
             </StackPanel>
         </Border>
 
