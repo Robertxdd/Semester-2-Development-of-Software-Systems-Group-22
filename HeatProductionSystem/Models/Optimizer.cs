@@ -2,11 +2,15 @@ using System;
 using HeatProductionSystem.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace HeatProductionSystem
 {
     public class Optimizer
     {
+        public List<HeatData> HeatData { get; private set; } = new List<HeatData>();
+        public ObservableCollection<ProductionUnits> ProductionUnits { get; private set; }
+
         public void ReadInformation()
         {
             var heatData = HeatFetcher.FetchHeatData();
@@ -77,3 +81,4 @@ namespace HeatProductionSystem
         }
     }
 }
+    

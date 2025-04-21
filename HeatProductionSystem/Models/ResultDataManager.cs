@@ -25,7 +25,7 @@ namespace HeatProductionSystem
             optimizationResults.Add(result);
         }
 
-
+    
         public void SaveResultsToCsv(string unitName)
 {
   
