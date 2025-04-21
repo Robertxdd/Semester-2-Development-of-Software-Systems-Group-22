@@ -31,7 +31,7 @@
                                             Height="300"/>
                     
                         
-                        <!--
+                
                      
                         <TextBlock Text="Heat demand with a daily time resolution" 
                                    FontSize="24" 
@@ -49,7 +49,7 @@
                                             TooltipPosition="Top"
                                             Margin="0,0,0,10"/>
 
-                        -->
+                   
                     
                     </StackPanel>
 
