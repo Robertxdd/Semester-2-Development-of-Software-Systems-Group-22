@@ -16,8 +16,10 @@ public partial class OptimizerViewModel : ViewModelBase
 
     [ObservableProperty]
     private ISeries[] electricitySeries;
+
     [ObservableProperty]
     private Axis[] electricityPriceTimeXAxes;
+
     public ObservableCollection<string> AvailableScenarios { get; } = new()
     {
         "Scenario 1",
@@ -26,29 +28,38 @@ public partial class OptimizerViewModel : ViewModelBase
     
     [ObservableProperty]
     private string selectedScenario;
-    partial void OnSelectedScenarioChanged(string value) // Automatically runs every time SelectedScenario is changed
+
+    partial void OnSelectedScenarioChanged(string value)
     {
         LoadScenario(value);
         ButtonExpanded = false;
     }
 
     [ObservableProperty]
-    private bool buttonExpanded = false; // The Expander button in the UI
+    private bool buttonExpanded = false;
 
     [ObservableProperty]
     private ObservableCollection<ProductionUnits> productionUnitList;
 
+    [ObservableProperty]
+    private ISeries[] heatDemandSeries;
+
+    [ObservableProperty]
+    private Axis[] timeXAxis;
+
+    [ObservableProperty]
+    private Axis[] heatYAxis;
+
     public OptimizerViewModel()
     {
-        SelectedScenario = "Scenario 1";  // Sets default Scenario in UI to Scenario 1
+        SelectedScenario = "Scenario 1";
     }
-    
 
     private void LoadScenario(string? scenario)
     {
         if (scenario == "Scenario 1")
         {
-         Series = new ISeries[]
+            Series = new ISeries[]
             {
                 new LineSeries<double>
                 {
@@ -68,7 +79,6 @@ public partial class OptimizerViewModel : ViewModelBase
 
             electricitySeries = new ISeries[]
             {
-                
                 new ColumnSeries<double>
                 {
                     Name = "DKK / Mwh(el)",
@@ -85,7 +95,39 @@ public partial class OptimizerViewModel : ViewModelBase
                     Labels = ElectricityTimeSeries,
                 }
             };
-            
+
+            var HeatDemandValues = new double[]
+            {
+                4.1, 4.1, 4.2, 4.1, 4.2, 4.6, 4.8, 5.2, 5.5, 5.3, 4.7, 4.5,
+                4.4, 4.4, 4.5, 4.5, 4.6, 4.7, 4.6, 4.5, 4.5, 4.6, 4.5, 4.7
+            };
+
+            heatDemandSeries = new ISeries[]
+            {
+                new LineSeries<double>
+                {
+                    Values = HeatDemandValues,
+                    Stroke = new SolidColorPaint(SKColors.OrangeRed, 2),
+                    Fill = null
+                }
+            };
+
+            timeXAxis = new Axis[]
+            {
+                new Axis
+                {
+                    Name = "Hour",
+                    Labels = Enumerable.Range(0, 24).Select(x => x.ToString("00")).ToArray()
+                }
+            };
+
+            heatYAxis = new Axis[]
+            {
+                new Axis
+                {
+                    Name = "MW"
+                }
+            };
         }
         else if (scenario == "Scenario 2")
         {
