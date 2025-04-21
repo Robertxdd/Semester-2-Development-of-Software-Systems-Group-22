@@ -8,9 +8,6 @@ namespace HeatProductionSystem
 {
     public class Optimizer
     {
-        public List<HeatData> HeatData { get; private set; } = new List<HeatData>();
-        public ObservableCollection<ProductionUnits> ProductionUnits { get; private set; }
-
         public void ReadInformation()
         {
             var heatData = HeatFetcher.FetchHeatData();
@@ -81,4 +78,3 @@ namespace HeatProductionSystem
         }
     }
 }
-    
