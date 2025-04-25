@@ -48,7 +48,7 @@ public abstract class ProductionUnits
 
 public class GasBoiler : ProductionUnits
 {   
-    private double _productionCost;
+    private double _productionCost; // This is because ProductionCost and NetProductionCost is the same for this boiler
     
     public override double ProductionCost 
     {
@@ -71,7 +71,7 @@ public class GasBoiler : ProductionUnits
 
 public class OilBoiler : ProductionUnits
 {   
-    private double _productionCost;
+    private double _productionCost; // This is because ProductionCost and NetProductionCost is the same for this boiler
 
     public override double ProductionCost 
     {
@@ -150,7 +150,7 @@ public class ProductionUnitsData
                         break;
                 }
             }
-            return (Scenario1Units, Scenario1Units);
+            return (Scenario1Units, Scenario2Units);
         }
     }
 }
