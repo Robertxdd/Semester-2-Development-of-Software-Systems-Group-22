@@ -22,9 +22,10 @@ public abstract class ProductionUnits
     public double CurrentHeatOutput { get; set; } = 0; // Default to 0 since unit is OFF (measured in MWh)
 
     public double FuelConsumption { get; set; }
-    public double ProductionCost { get; set; }  // DKK/MWh
     public double CO2Emissions { get; set; }  // kg/MWh
     public bool IsActive { get; set; } = false;  // Default is set to OFF
+    public virtual double ProductionCost { get; set; }  // DKK/MWh
+    public double NetProductionCost { get; set; } = 0;
 
     public void SetHeatOutput(double percentage)
     {
@@ -46,7 +47,19 @@ public abstract class ProductionUnits
 
 
 public class GasBoiler : ProductionUnits
-{
+{   
+    private double _productionCost;
+    
+    public override double ProductionCost 
+    {
+        get => _productionCost;
+        set
+        {
+            _productionCost = value;
+            NetProductionCost = value;
+        }
+    }
+
     public GasBoiler()
     {
         if (!AppEnvironment.IsTestMode) // Needed because the Bitmap doesnt work in unit testing
@@ -57,7 +70,19 @@ public class GasBoiler : ProductionUnits
 }
 
 public class OilBoiler : ProductionUnits
-{
+{   
+    private double _productionCost;
+
+    public override double ProductionCost 
+    {
+        get => _productionCost;
+        set
+        {
+            _productionCost = value;
+            NetProductionCost = value;
+        }
+    }
+
     public OilBoiler()
     {
         if (!AppEnvironment.IsTestMode) // Needed because the Bitmap doesnt work in unit testing
@@ -71,14 +96,27 @@ public class OilBoiler : ProductionUnits
 
 
 public class ProductionUnitsData
-{
+{   
+     public static ObservableCollection<ProductionUnits> Scenario1Units()
+    {
+        return LoadProductionUnits().Scenario1Units;
+    }
+
+    public static ObservableCollection<ProductionUnits> Scenario2Units()
+    {
+        return LoadProductionUnits().Scenario2Units;
+    
+    }
+
+
     public ObservableCollection<ProductionUnits> Units { get; set; }
 
-    public static ObservableCollection<ProductionUnits> ProductionUnitsCollection()
+    public static (ObservableCollection<ProductionUnits> Scenario1Units, ObservableCollection<ProductionUnits> Scenario2Units) LoadProductionUnits()
     {                                            
         string unitsFilePath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "HeatProductionSystem", "Assets", "ProductionUnitsSpecifications.csv");
         
-        var ProductionUnits = new ObservableCollection<ProductionUnits>();
+        var Scenario1Units = new ObservableCollection<ProductionUnits>();
+        var Scenario2Units = new ObservableCollection<ProductionUnits>();
 
         using (var reader = new StreamReader(unitsFilePath))
         {
@@ -97,7 +135,7 @@ public class ProductionUnitsData
                                     FuelConsumption = Convert.ToDouble(lineSplits[6])};
                                     
                                             
-                        ProductionUnits.Add(gasBoiler);
+                        Scenario1Units.Add(gasBoiler);
                         break;
 
                     case "Oil Boiler":
@@ -108,11 +146,11 @@ public class ProductionUnitsData
                                     CO2Emissions = Convert.ToDouble(lineSplits[5]) ,
                                     FuelConsumption = Convert.ToDouble(lineSplits[6]) };
                         
-                        ProductionUnits.Add(oilBoiler);
+                        Scenario1Units.Add(oilBoiler);
                         break;
                 }
             }
-            return ProductionUnits;
+            return (Scenario1Units, Scenario1Units);
         }
     }
 }
