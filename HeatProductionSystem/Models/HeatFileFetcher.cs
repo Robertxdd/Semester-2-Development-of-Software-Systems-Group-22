@@ -20,7 +20,7 @@ public class HeatFetcher
 
         using (var reader = new StreamReader(heatFilePath))
         {
-            reader.ReadLine(); // for skipping the header test 
+            reader.ReadLine(); // for skipping the header test 23
             reader.ReadLine(); 
             reader.ReadLine(); 
 
