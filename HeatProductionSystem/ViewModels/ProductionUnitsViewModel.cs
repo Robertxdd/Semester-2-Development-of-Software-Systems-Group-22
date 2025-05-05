@@ -36,12 +36,12 @@ public partial class ProductionUnitsViewModel : ViewModelBase
     {
         if (scenario == "Scenario 1")
         {
-            ProductionUnitList = ProductionUnitsData.ProductionUnitsCollection();
+            ProductionUnitList = ProductionUnitsData.Scenario1Units();
             
         }
         else if (scenario == "Scenario 2")
         {
-            ProductionUnitList = new ObservableCollection<ProductionUnits>(); // empty collection
+            ProductionUnitList = ProductionUnitsData.Scenario2Units();
         }
     }
 }

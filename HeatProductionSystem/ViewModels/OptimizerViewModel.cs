@@ -7,6 +7,12 @@ using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 using System.Linq;
+using System.Threading.Tasks;
+using System;
+
+
+
+
 
 namespace HeatProductionSystem.ViewModels;
 
@@ -19,15 +25,6 @@ public partial class OptimizerViewModel : ViewModelBase
 
     [ObservableProperty]
     private Axis[] electricityPriceTimeXAxes;
-
-    public ObservableCollection<string> AvailableScenarios { get; } = new()
-    {
-        "Scenario 1",
-        "Scenario 2"
-    };
-    
-    [ObservableProperty]
-    private string selectedScenario;
 
     partial void OnSelectedScenarioChanged(string value)
     {
@@ -53,7 +50,83 @@ public partial class OptimizerViewModel : ViewModelBase
     public OptimizerViewModel()
     {
         SelectedScenario = "Scenario 1";
+        SelectedPeriod = "Winter";
     }
+
+
+    [ObservableProperty]
+    public double delayInSeconds;
+
+    [ObservableProperty]
+    public double totalFuelConsumption;
+
+    [ObservableProperty]
+    public double totalCost;
+
+    [ObservableProperty]
+    public double totalCO2Emissions;
+
+    public ObservableCollection<string> AvailableScenarios { get; } = new()
+    {
+        "Scenario 1",
+        "Scenario 2"
+    };
+
+    public ObservableCollection<string> AvailablePeriod { get; } = new()
+    {
+        "Winter",
+        "Summer"
+    };
+    
+    [ObservableProperty]
+    private string selectedScenario;
+
+    [ObservableProperty]
+    private string selectedPeriod;
+
+    public ObservableCollection<ProductionUnits>  CurrentHourUnits { get; } = new(); // A collection of units to show CurrentHeatOutput on the UI
+
+    public bool simulationRunning = false;
+
+    public async Task OptimizerSimulation(double delayInSeconds)
+    {   
+        try
+        {
+            var optimizer = new Optimizer();
+            var optimizedData = optimizer.Optimize(SelectedScenario, SelectedPeriod);
+
+            foreach (var hour in optimizedData)
+            {   
+                if (!simulationRunning) break; // Enables you to later be able to stop the simulation
+
+                 CurrentHourUnits.Clear();
+
+                foreach (var unit in hour)
+                {
+                     CurrentHourUnits.Add(unit);
+
+                    // UI statistics
+                    TotalFuelConsumption += optimizer.TotalFuelConsumption;
+                    TotalCost += optimizer.TotalCost;
+                    TotalCO2Emissions += optimizer.TotalCO2Emissions;
+                }
+
+                // Add charts here so they can update dynamically throughout the simulation
+
+
+                await Task.Yield();
+                await Task.Delay((int)(delayInSeconds * 1000));
+            }
+        }
+        
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ERROR] Optimizer failed: {ex.Message}");
+        }
+    }
+
+
+
 
     private void LoadScenario(string? scenario)
     {

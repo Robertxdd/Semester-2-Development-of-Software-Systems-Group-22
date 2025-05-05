@@ -43,6 +43,12 @@ public abstract class ProductionUnits
         CurrentHeatOutput = 0;
         IsActive = false;
     }
+
+    // Used for cloning in the optimizer so we don't have to recreate the units all the time
+    public virtual ProductionUnits Clone() 
+    {
+        return (ProductionUnits)this.MemberwiseClone();
+    }
 }
 
 
