@@ -50,7 +50,7 @@ public class Optimizer
                 HP1.NetProductionCost = HP1.ProductionCost + (heatDemandElPrice * (GM1.MaxElectricityOutput / GM1.MaxElectricityOutput));
             }
 
-            productionUnits.OrderBy(unit => unit.NetProductionCost).ToList();
+            productionUnits = productionUnits.OrderBy(unit => unit.NetProductionCost).ToList();
 
             foreach (var unit in productionUnits)
             {
