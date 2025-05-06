@@ -23,7 +23,7 @@
                                     SelectedItem="{Binding SelectedScenario, Mode=TwoWay}"/>
                         </Expander>
 
-                        <!-- Added tab control to display charts -->
+                        <!-- Added tabs -->
                         <TabControl Margin="0,20,0,0">
                             <TabItem Header="Electricity Prices">
                                 <lvc:CartesianChart Series="{Binding ElectricitySeries}" 
