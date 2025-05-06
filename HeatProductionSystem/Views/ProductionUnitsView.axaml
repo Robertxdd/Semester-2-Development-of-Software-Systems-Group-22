@@ -31,25 +31,29 @@
                                                 </Border>
 
                                                 <StackPanel Margin="20 0 0 0">
-                                                    <StackPanel Orientation="Horizontal" Margin="2">
+                                                    <StackPanel Orientation="Horizontal" Margin="2" Spacing="2">
                                                         <TextBlock Text="Name: " Classes="Font" FontWeight="Bold"/>
                                                         <TextBlock Text="{Binding Name}" Classes="Font"/>
                                                     </StackPanel>
-                                                    <StackPanel Orientation="Horizontal" Margin="2">
+                                                    <StackPanel Orientation="Horizontal" Margin="2" Spacing="2">
                                                         <TextBlock Text="Max Heat: " Classes="Font" FontWeight="Bold"/>
                                                         <TextBlock Text="{Binding MaxHeatOutput}" Classes="Font"/>
+                                                        <TextBlock Text="MW" Classes="Font"/>
                                                     </StackPanel>
-                                                    <StackPanel Orientation="Horizontal" Margin="2">
+                                                    <StackPanel Orientation="Horizontal" Margin="2" Spacing="2">
                                                         <TextBlock Text="Production Cost: " Classes="Font" FontWeight="Bold"/>
                                                         <TextBlock Text="{Binding ProductionCost}" Classes="Font"/>
+                                                        <TextBlock Text="Dkk / MWh(th)" Classes="Font"/>
                                                     </StackPanel>
-                                                    <StackPanel Orientation="Horizontal" Margin="2">
+                                                    <StackPanel Orientation="Horizontal" Margin="2" Spacing="2">
                                                         <TextBlock Text="Fuel Consumption: " Classes="Font" FontWeight="Bold"/>
                                                         <TextBlock Text="{Binding FuelConsumption}" Classes="Font"/>
+                                                        <TextBlock Text="Kg / Mwh(th)" Classes="Font"/>
                                                     </StackPanel>
-                                                    <StackPanel Orientation="Horizontal" Margin="2">
+                                                    <StackPanel Orientation="Horizontal" Margin="2" Spacing="2">
                                                         <TextBlock Text="CO2 Emissions: " Classes="Font" FontWeight="Bold"/>
                                                         <TextBlock Text="{Binding CO2Emissions}" Classes="Font"/>
+                                                        <TextBlock Text="MWh(gas) 7 MWh(th)" Classes="Font"/>
                                                     </StackPanel>
                                                 </StackPanel>
                                             </StackPanel>
