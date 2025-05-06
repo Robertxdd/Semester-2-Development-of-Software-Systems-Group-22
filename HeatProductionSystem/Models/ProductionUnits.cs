@@ -67,6 +67,30 @@ public class OilBoiler : ProductionUnits
     }
 }
 
+public class GasMotor : ProductionUnits
+{
+    public float MaxElectricity {get; set; }
+    public GasMotor()   //Actual Image must still be created for the Gasmotor
+    {
+        if (!AppEnvironment.IsTestMode) // Needed because the Bitmap doesnt work in unit testing
+        {
+            Image = ImageHelper.LoadFromResource(new Uri("avares://Semester-2-Development-of-Software-Systems-Group-22/Assets/Grid.png"));
+        }
+    }
+}
+
+public class HeatPump : ProductionUnits
+{
+    public float MaxElectricity {get; set; }
+    public HeatPump()   //Actual Image must still be created for the Heatpump
+    {
+        if (!AppEnvironment.IsTestMode) // Needed because the Bitmap doesnt work in unit testing
+        {
+            Image = ImageHelper.LoadFromResource(new Uri("avares://Semester-2-Development-of-Software-Systems-Group-22/Assets/Grid.png"));
+        }
+    }
+}
+
 
 
 
