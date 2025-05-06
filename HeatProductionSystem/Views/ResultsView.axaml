@@ -9,7 +9,7 @@
             <Viewbox Stretch="Uniform" VerticalAlignment="Top">
                 <Border MinWidth="600">
                     <StackPanel>
-                        <TextBlock Text="Heat Production Optimization System" FontSize="24" HorizontalAlignment="Center" Margin="0 10 0 0"/>
+                        <TextBlock Text="Production Units Results" FontSize="24" HorizontalAlignment="Center" Margin="0 10 0 0"/>
 
                        
                         <ComboBox ItemsSource="{Binding AvailableProductionUnits}" 
