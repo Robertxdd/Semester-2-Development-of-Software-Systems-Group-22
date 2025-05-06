@@ -22,9 +22,10 @@ public abstract class ProductionUnits
     public double CurrentHeatOutput { get; set; } = 0; // Default to 0 since unit is OFF (measured in MWh)
 
     public double FuelConsumption { get; set; }
-    public double ProductionCost { get; set; }  // DKK/MWh
     public double CO2Emissions { get; set; }  // kg/MWh
     public bool IsActive { get; set; } = false;  // Default is set to OFF
+    public virtual double ProductionCost { get; set; }  // DKK/MWh
+    public double NetProductionCost { get; set; } = 0;
 
     public void SetHeatOutput(double percentage)
     {
@@ -42,11 +43,29 @@ public abstract class ProductionUnits
         CurrentHeatOutput = 0;
         IsActive = false;
     }
+
+    // Used for cloning in the optimizer so we don't have to recreate the units all the time
+    public virtual ProductionUnits Clone() 
+    {
+        return (ProductionUnits)this.MemberwiseClone();
+    }
 }
 
 
 public class GasBoiler : ProductionUnits
-{
+{   
+    private double _productionCost; // This is because ProductionCost and NetProductionCost is the same for this boiler
+    
+    public override double ProductionCost 
+    {
+        get => _productionCost;
+        set
+        {
+            _productionCost = value;
+            NetProductionCost = value;
+        }
+    }
+
     public GasBoiler()
     {
         if (!AppEnvironment.IsTestMode) // Needed because the Bitmap doesnt work in unit testing
@@ -57,7 +76,19 @@ public class GasBoiler : ProductionUnits
 }
 
 public class OilBoiler : ProductionUnits
-{
+{   
+    private double _productionCost; // This is because ProductionCost and NetProductionCost is the same for this boiler
+
+    public override double ProductionCost 
+    {
+        get => _productionCost;
+        set
+        {
+            _productionCost = value;
+            NetProductionCost = value;
+        }
+    }
+
     public OilBoiler()
     {
         if (!AppEnvironment.IsTestMode) // Needed because the Bitmap doesnt work in unit testing
@@ -69,7 +100,7 @@ public class OilBoiler : ProductionUnits
 
 public class GasMotor : ProductionUnits
 {
-    public float MaxElectricity {get; set; }
+    public double MaxElectricityOutput {get; set; }
     public GasMotor()   //Actual Image must still be created for the Gasmotor
     {
         if (!AppEnvironment.IsTestMode) // Needed because the Bitmap doesnt work in unit testing
@@ -81,7 +112,7 @@ public class GasMotor : ProductionUnits
 
 public class HeatPump : ProductionUnits
 {
-    public float MaxElectricity {get; set; }
+    public double MaxElectricityOutput {get; set; }
     public HeatPump()   //Actual Image must still be created for the Heatpump
     {
         if (!AppEnvironment.IsTestMode) // Needed because the Bitmap doesnt work in unit testing
@@ -95,14 +126,26 @@ public class HeatPump : ProductionUnits
 
 
 public class ProductionUnitsData
-{
+{   
+     public static ObservableCollection<ProductionUnits> Scenario1Units()
+    {
+        return LoadProductionUnits().Scenario1Units;
+    }
+
+    public static ObservableCollection<ProductionUnits> Scenario2Units()
+    {
+        return LoadProductionUnits().Scenario2Units;
+    
+    }
+
     public ObservableCollection<ProductionUnits> Units { get; set; }
 
-    public static ObservableCollection<ProductionUnits> ProductionUnitsCollection()
+    public static (ObservableCollection<ProductionUnits> Scenario1Units, ObservableCollection<ProductionUnits> Scenario2Units) LoadProductionUnits()
     {                                            
         string unitsFilePath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "HeatProductionSystem", "Assets", "ProductionUnitsSpecifications.csv");
         
-        var ProductionUnits = new ObservableCollection<ProductionUnits>();
+        var Scenario1Units = new ObservableCollection<ProductionUnits>();
+        var Scenario2Units = new ObservableCollection<ProductionUnits>();
 
         using (var reader = new StreamReader(unitsFilePath))
         {
@@ -110,10 +153,10 @@ public class ProductionUnitsData
             {
                 var lineSplits = reader.ReadLine().Split(','); 
 
-                switch (lineSplits[0])
+                switch (lineSplits[1])
                 {
-                    case "Gas Boiler":
-                        var gasBoiler = new GasBoiler { 
+                    case "GB1":
+                        var gasBoiler1 = new GasBoiler { 
                                     Name = lineSplits[1] , 
                                     MaxHeatOutput = Convert.ToDouble(lineSplits[2]) , 
                                     ProductionCost = Convert.ToDouble(lineSplits[4]) , 
@@ -121,10 +164,23 @@ public class ProductionUnitsData
                                     FuelConsumption = Convert.ToDouble(lineSplits[6])};
                                     
                                             
-                        ProductionUnits.Add(gasBoiler);
+                        Scenario1Units.Add(gasBoiler1);
+                        Scenario2Units.Add(gasBoiler1);
+                        break;
+                    
+                    case "GB2":
+                        var gasBoiler2 = new GasBoiler { 
+                                    Name = lineSplits[1] , 
+                                    MaxHeatOutput = Convert.ToDouble(lineSplits[2]) , 
+                                    ProductionCost = Convert.ToDouble(lineSplits[4]) , 
+                                    CO2Emissions = Convert.ToDouble(lineSplits[5]) ,
+                                    FuelConsumption = Convert.ToDouble(lineSplits[6])};
+                                    
+                                            
+                        Scenario1Units.Add(gasBoiler2);
                         break;
 
-                    case "Oil Boiler":
+                    case "OB1":
                         var oilBoiler = new OilBoiler { 
                                     Name = lineSplits[1] , 
                                     MaxHeatOutput = Convert.ToDouble(lineSplits[2]) , 
@@ -132,11 +188,34 @@ public class ProductionUnitsData
                                     CO2Emissions = Convert.ToDouble(lineSplits[5]) ,
                                     FuelConsumption = Convert.ToDouble(lineSplits[6]) };
                         
-                        ProductionUnits.Add(oilBoiler);
+                        Scenario1Units.Add(oilBoiler);
+                        Scenario2Units.Add(oilBoiler);
+                        break;
+                    
+                    case "GM1":
+                        var gasMotor = new GasMotor { 
+                                    Name = lineSplits[1] , 
+                                    MaxHeatOutput = Convert.ToDouble(lineSplits[2]) , 
+                                    MaxElectricityOutput = Convert.ToDouble(lineSplits[3]) , 
+                                    ProductionCost = Convert.ToDouble(lineSplits[4]) , 
+                                    CO2Emissions = Convert.ToDouble(lineSplits[5]) ,
+                                    FuelConsumption = Convert.ToDouble(lineSplits[6]) };
+                        
+                        Scenario2Units.Add(gasMotor);
+                        break;
+                
+                    case "HP1":
+                        var heatPump = new HeatPump { 
+                                    Name = lineSplits[1] , 
+                                    MaxHeatOutput = Convert.ToDouble(lineSplits[2]) , 
+                                    MaxElectricityOutput = Convert.ToDouble(lineSplits[3]) ,
+                                    ProductionCost = Convert.ToDouble(lineSplits[4]) };
+                        
+                        Scenario2Units.Add(heatPump);
                         break;
                 }
             }
-            return ProductionUnits;
+            return (Scenario1Units, Scenario2Units);
         }
     }
 }

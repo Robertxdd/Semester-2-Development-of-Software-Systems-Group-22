@@ -36,21 +36,12 @@ public partial class ProductionUnitsViewModel : ViewModelBase
     {
         if (scenario == "Scenario 1")
         {
-            ProductionUnitList = ProductionUnitsData.ProductionUnitsCollection();
+            ProductionUnitList = ProductionUnitsData.Scenario1Units();
             
         }
-        else if (scenario == "Scenario 2")  //Scenario 2 misses a method for object initialization, which is why theyre for now being hardcoded
-        {                                   
-            //Also, Creating a new Collection of ProductionUnits seems unnecessary: Make 1 collection for each scenario initially 
-            //Hold references to the scenarios, and then switch between them:
-
-            ProductionUnitList = new ObservableCollection<ProductionUnits>()
-            {
-                new GasBoiler(){Name = "GB1", MaxHeatOutput = 4, ProductionCost = 520, CO2Emissions = 175, FuelConsumption = 0.9f},
-                new OilBoiler(){Name = "OB1", MaxHeatOutput = 4, ProductionCost = 670, CO2Emissions = 330, FuelConsumption = 1.5f},
-                new GasMotor(){Name = "GM1", MaxHeatOutput = 3.5f, ProductionCost = 990, CO2Emissions = 650, FuelConsumption = 1.8f, MaxElectricity = 2.6f},
-                new HeatPump(){Name = "HP1", MaxHeatOutput = 6, ProductionCost = 60, MaxElectricity = -6}
-            };
+        else if (scenario == "Scenario 2")
+        {
+            ProductionUnitList = ProductionUnitsData.Scenario2Units(); // empty collection
         }
     }
 }
