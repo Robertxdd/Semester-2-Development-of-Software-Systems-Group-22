@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:HeatProductionSystem.ViewModels"
+             x:Class="HeatProductionSystem.Views.ResultsView"
+             x:DataType="vm:ResultsViewModel">
+
+    <Grid HorizontalAlignment="Center">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0 10 0 0">
+            <Viewbox Stretch="Uniform" VerticalAlignment="Top">
+                <Border MinWidth="600">
+                    <StackPanel>
+                        <TextBlock Text="Heat Production Optimization System" FontSize="24" HorizontalAlignment="Center" Margin="0 10 0 0"/>
+
+                       
+                        <ComboBox ItemsSource="{Binding AvailableProductionUnits}" 
+                                  SelectedItem="{Binding SelectedProductionUnit, Mode=TwoWay}" 
+                                  Margin="20" 
+                                  Width="200"/>
+
+                        
+                        <StackPanel Margin="10">
+                            <TextBlock Text="Production Unit Data:" FontWeight="Bold" Margin="0,10,0,5"/>
+                            <ItemsControl ItemsSource="{Binding ProductionUnitData}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" FontSize="16"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+
+                    </StackPanel>
+                </Border>
+            </Viewbox>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

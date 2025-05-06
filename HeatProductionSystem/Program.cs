@@ -22,10 +22,10 @@ namespace HeatProductionSystem
                 var optimizer = new Optimizer();
 
                 optimizer.ReadInformation();
-
-                resultDataManager.SaveResultsToCsv("GB1");
-                resultDataManager.SaveResultsToCsv("GB2");
-                resultDataManager.SaveResultsToCsv("OB1");
+// i commented the save results to csv so we dont save every time we load the project it needs a button to prevent spamming the files
+               // resultDataManager.SaveResultsToCsv("GB1");
+               // resultDataManager.SaveResultsToCsv("GB2");
+               // resultDataManager.SaveResultsToCsv("OB1");
 
             }
             catch (Exception ex)

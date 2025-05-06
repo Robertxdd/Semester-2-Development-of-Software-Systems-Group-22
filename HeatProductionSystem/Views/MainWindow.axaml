@@ -35,7 +35,8 @@
                 <Button Content="Dashboard"         Command="{Binding ChangeViewCommand}"   CommandParameter="0" Classes="Views"/> 
                 <Button Content="Optimizer"         Command="{Binding ChangeViewCommand}"   CommandParameter="1" Classes="Views"/>                
                 <Button Content="Production Units"  Command="{Binding ChangeViewCommand}"   CommandParameter="2" Classes="Views"/>
-               <Button Content="Quit"               Command="{Binding ChangeViewCommand}"   CommandParameter="3" Classes="Views"/>
+                <Button Content="Results"           Command="{Binding ChangeViewCommand}"   CommandParameter="3" Classes="Views"/>
+               <Button Content="Quit"               Command="{Binding ChangeViewCommand}"   CommandParameter="4" Classes="Views"/>
             </StackPanel>
         </Border>
 

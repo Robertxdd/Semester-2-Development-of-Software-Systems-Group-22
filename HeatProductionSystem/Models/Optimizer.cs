@@ -8,8 +8,8 @@ namespace HeatProductionSystem
 {
     public class Optimizer
     {
-        public List<HeatData> HeatData { get; private set; } = new List<HeatData>();
-        public ObservableCollection<ProductionUnits> ProductionUnits { get; private set; }
+       public List<HeatData> HeatData { get; private set; } = new();
+        public List<ProductionUnits> ProductionData { get; private set; } = new();
 
         public void ReadInformation()
         {

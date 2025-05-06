@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using HeatProductionSystem.Views;
 
 namespace HeatProductionSystem.ViewModels;
 
@@ -12,6 +13,8 @@ public partial class MainWindowViewModel : ViewModelBase
     private ViewModelBase productionUnitsView;
     private ViewModelBase dashboardView;
     private ViewModelBase optimizerView;
+
+    private ViewModelBase ResultsView;
  
     public MainWindowViewModel()
     {
@@ -19,6 +22,7 @@ public partial class MainWindowViewModel : ViewModelBase
         dashboardView = new DashboardViewModel();
         optimizerView = new OptimizerViewModel();
         productionUnitsView = new ProductionUnitsViewModel();
+        ResultsView = new ResultsViewModel();
   
 
         selectedView = dashboardView; 
@@ -43,6 +47,10 @@ public partial class MainWindowViewModel : ViewModelBase
                 break;
 
             case 3:
+                SelectedView = ResultsView;
+                break;
+
+            case 4:
                 //Maybe to be implemented later: 
                 //A function that properly shuts down the program
                 Environment.Exit(0);

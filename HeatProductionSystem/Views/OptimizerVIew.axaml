@@ -23,39 +23,33 @@
                                     SelectedItem="{Binding SelectedScenario, Mode=TwoWay}"/>
                         </Expander>
 
-                        <!-- Here is where you add the chart -->
-                        <lv:CartesianChart  Series="{Binding Series}" Height="300" />
+                        <!-- Added tab control to display charts -->
+                        <TabControl Margin="0,20,0,0">
+                            <TabItem Header="Electricity Prices">
+                                <lvc:CartesianChart Series="{Binding ElectricitySeries}" 
+                                                    XAxes="{Binding ElectricityPriceTimeXAxes}" 
+                                                    Height="300"/>
+                            </TabItem>
 
-                        <lvc:CartesianChart Series="{Binding ElectricitySeries}" 
-                                            XAxes="{Binding ElectricityPriceTimeXAxes}" 
-                                            Height="300"/>
-                    
-                        
-                
-                     
-                        <TextBlock Text="Heat demand with a daily time resolution" 
-                                   FontSize="24" 
-                                   FontWeight="Bold" 
-                                   FontFamily="Comic Sans MS"
-                                   HorizontalAlignment="Center" 
-                                   Margin="0,0,0,20"/>
+                            <TabItem Header="Heat Demand">
+                                <lvc:CartesianChart Series="{Binding HeatDemandSeries}"
+                                                    XAxes="{Binding TimeXAxis}"
+                                                    YAxes="{Binding HeatYAxis}"
+                                                    Height="300"
+                                                    DrawMarginFrame="{x:Null}"
+                                                    ZoomMode="X"
+                                                    TooltipPosition="Top"
+                                                    Margin="0,0,0,10"/>
+                            </TabItem>
 
-                        <lvc:CartesianChart Series="{Binding HeatDemandSeries}"
-                                            XAxes="{Binding TimeXAxis}"
-                                            YAxes="{Binding HeatYAxis}"
-                                            Height="300"
-                                            DrawMarginFrame="{x:Null}"
-                                            ZoomMode="X"
-                                            TooltipPosition="Top"
-                                            Margin="0,0,0,10"/>
+                            <TabItem Header="Heat Schedule">
+                                <lv:CartesianChart Series="{Binding Series}" Height="300" />
+                            </TabItem>
+                        </TabControl>
 
-                   
-                    
                     </StackPanel>
-
                 </Border>
             </Viewbox>
         </ScrollViewer>
     </Grid>
 </UserControl>
-
