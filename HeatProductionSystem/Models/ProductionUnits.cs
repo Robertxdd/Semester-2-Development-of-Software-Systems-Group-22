@@ -114,7 +114,6 @@ public class ProductionUnitsData
     
     }
 
-
     public ObservableCollection<ProductionUnits> Units { get; set; }
 
     public static (ObservableCollection<ProductionUnits> Scenario1Units, ObservableCollection<ProductionUnits> Scenario2Units) LoadProductionUnits()
@@ -130,10 +129,10 @@ public class ProductionUnitsData
             {
                 var lineSplits = reader.ReadLine().Split(','); 
 
-                switch (lineSplits[0])
+                switch (lineSplits[1])
                 {
-                    case "Gas Boiler":
-                        var gasBoiler = new GasBoiler { 
+                    case "GB1":
+                        var gasBoiler1 = new GasBoiler { 
                                     Name = lineSplits[1] , 
                                     MaxHeatOutput = Convert.ToDouble(lineSplits[2]) , 
                                     ProductionCost = Convert.ToDouble(lineSplits[4]) , 
@@ -141,7 +140,20 @@ public class ProductionUnitsData
                                     FuelConsumption = Convert.ToDouble(lineSplits[6])};
                                     
                                             
-                        Scenario1Units.Add(gasBoiler);
+                        Scenario1Units.Add(gasBoiler1);
+                        Scenario2Units.Add(gasBoiler1);
+                        break;
+                    
+                    case "GB2":
+                        var gasBoiler2 = new GasBoiler { 
+                                    Name = lineSplits[1] , 
+                                    MaxHeatOutput = Convert.ToDouble(lineSplits[2]) , 
+                                    ProductionCost = Convert.ToDouble(lineSplits[4]) , 
+                                    CO2Emissions = Convert.ToDouble(lineSplits[5]) ,
+                                    FuelConsumption = Convert.ToDouble(lineSplits[6])};
+                                    
+                                            
+                        Scenario1Units.Add(gasBoiler2);
                         break;
 
                     case "Oil Boiler":
@@ -153,6 +165,29 @@ public class ProductionUnitsData
                                     FuelConsumption = Convert.ToDouble(lineSplits[6]) };
                         
                         Scenario1Units.Add(oilBoiler);
+                        Scenario2Units.Add(oilBoiler);
+                        break;
+                    
+                    case "GM1":
+                        var gasMotor = new GasMotor { 
+                                    Name = lineSplits[1] , 
+                                    MaxHeatOutput = Convert.ToDouble(lineSplits[2]) , 
+                                    ProductionCost = Convert.ToDouble(lineSplits[4]) , 
+                                    CO2Emissions = Convert.ToDouble(lineSplits[5]) ,
+                                    FuelConsumption = Convert.ToDouble(lineSplits[6]) };
+                        
+                        Scenario2Units.Add(gasMotor);
+                        break;
+                
+                    case "HP1":
+                        var heatPump = new HeatPump { 
+                                    Name = lineSplits[1] , 
+                                    MaxHeatOutput = Convert.ToDouble(lineSplits[2]) , 
+                                    ProductionCost = Convert.ToDouble(lineSplits[4]) , 
+                                    CO2Emissions = Convert.ToDouble(lineSplits[5]) ,
+                                    FuelConsumption = Convert.ToDouble(lineSplits[6]) };
+                        
+                        Scenario2Units.Add(heatPump);
                         break;
                 }
             }
