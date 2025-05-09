@@ -9,6 +9,8 @@ using SkiaSharp;
 using System.Linq;
 using System.Threading.Tasks;
 using System;
+using CommunityToolkit.Mvvm.Input;
+
 
 
 
@@ -25,12 +27,6 @@ public partial class OptimizerViewModel : ViewModelBase
 
     [ObservableProperty]
     private Axis[] electricityPriceTimeXAxes;
-
-    partial void OnSelectedScenarioChanged(string value)
-    {
-        LoadScenario(value);
-        ButtonExpanded = false;
-    }
 
     [ObservableProperty]
     private bool buttonExpanded = false;
@@ -51,6 +47,10 @@ public partial class OptimizerViewModel : ViewModelBase
     {
         SelectedScenario = "Scenario 1";
         SelectedPeriod = "Winter";
+        SelectedPreference = "Price";
+        SelectedLiveAction = "No";
+
+        Placeholder();
     }
 
 
@@ -65,18 +65,6 @@ public partial class OptimizerViewModel : ViewModelBase
 
     [ObservableProperty]
     public double totalCO2Emissions;
-
-    public ObservableCollection<string> AvailableScenarios { get; } = new()
-    {
-        "Scenario 1",
-        "Scenario 2"
-    };
-
-    public ObservableCollection<string> AvailablePeriod { get; } = new()
-    {
-        "Winter",
-        "Summer"
-    };
     
     [ObservableProperty]
     private string selectedScenario;
@@ -84,26 +72,39 @@ public partial class OptimizerViewModel : ViewModelBase
     [ObservableProperty]
     private string selectedPeriod;
 
+    [ObservableProperty]
+    private string selectedPreference;
+
+    [ObservableProperty]
+    private string selectedLiveAction;
+
     public ObservableCollection<ProductionUnits>  CurrentHourUnits { get; } = new(); // A collection of units to show CurrentHeatOutput on the UI
 
-    public bool simulationRunning = false;
+    public bool SimulationRunning = false;
 
     public async Task OptimizerSimulation(double delayInSeconds)
     {   
+        Console.WriteLine("Simulation started");
+        
         try
         {
             var optimizer = new Optimizer();
-            var optimizedData = optimizer.Optimize(SelectedScenario, SelectedPeriod);
+            var optimizedData = optimizer.Optimize(SelectedScenario, SelectedPeriod, SelectedPreference);
+
+            Console.WriteLine("Optimizer created");
 
             foreach (var hour in optimizedData)
             {   
-                if (!simulationRunning) break; // Enables you to later be able to stop the simulation
+                if (!SimulationRunning) break; // Enables you to later be able to stop the simulation
 
                  CurrentHourUnits.Clear();
 
                 foreach (var unit in hour)
-                {
-                     CurrentHourUnits.Add(unit);
+                {   
+                    // Recalculating CurrentHeatOutput into a percentage based on MaxHeatOuptup
+                    unit.CurrentHeatOutput = unit.CurrentHeatOutput / unit.MaxHeatOutput * 100;
+
+                    CurrentHourUnits.Add(unit);
 
                     // UI statistics
                     TotalFuelConsumption += optimizer.TotalFuelConsumption;
@@ -117,6 +118,8 @@ public partial class OptimizerViewModel : ViewModelBase
                 await Task.Yield();
                 await Task.Delay((int)(delayInSeconds * 1000));
             }
+
+            Console.WriteLine("Outside loop");
         }
         
         catch (Exception ex)
@@ -125,7 +128,31 @@ public partial class OptimizerViewModel : ViewModelBase
         }
     }
 
+    [RelayCommand]
+    public async Task Optimize()
+    {
+        SimulationRunning = true;
+        
+        Console.WriteLine("Button pressed!");
+        Console.WriteLine($"SelectedPeriod = {SelectedScenario}");
+        Console.WriteLine($"SelectedPeriod = {SelectedPeriod}");
+        Console.WriteLine($"SelectedPeriod = {SelectedPreference}");
+        
+        await OptimizerSimulation(DelayInSeconds);
+    }
 
+    private void Placeholder() // Simply a placeholder for the units' CurrentHeatOutput in the UI
+    {
+        foreach (var unit in new ProductionUnits[] 
+        {
+            new GasBoiler { Name = "GB1"} ,
+            new OilBoiler { Name = "OB1"} ,
+            new GasMotor { Name = "GM1"} ,
+            new HeatPump { Name = "HP1"} ,
+        })
+
+            CurrentHourUnits.Add(unit);   
+    }
 
 
     private void LoadScenario(string? scenario)

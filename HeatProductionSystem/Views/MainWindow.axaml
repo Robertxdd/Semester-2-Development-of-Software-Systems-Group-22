@@ -14,6 +14,8 @@
         <StyleInclude Source="/Views/Styles.axaml"/>
     </Window.Styles>
 
+    
+
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
@@ -21,31 +23,31 @@
     </Design.DataContext>
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="165"/>  <!-- Sidebar default width -->
-            <ColumnDefinition Width="5"/>    <!-- GridSplitter -->
-            <ColumnDefinition Width="*"/>    <!-- Main content -->
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/> <!-- Top bar -->
+            <RowDefinition Height="*"/>  <!-- Main content -->
+        </Grid.RowDefinitions>
 
-        <!-- Sidebar (Maybe add Icons later, then it might look ok)-->   
-         
-        <Border Background="LightGray" Grid.Column="0">
-            <StackPanel Spacing="10" HorizontalAlignment="Center">
+        <!-- Main content area -->
+        <ContentControl Grid.Row="1"
+                        Content="{Binding SelectedView}" />
 
-                <Button Content="Dashboard"         Command="{Binding ChangeViewCommand}"   CommandParameter="0" Classes="Views"/> 
-                <Button Content="Optimizer"         Command="{Binding ChangeViewCommand}"   CommandParameter="1" Classes="Views"/>                
-                <Button Content="Production Units"  Command="{Binding ChangeViewCommand}"   CommandParameter="2" Classes="Views"/>
-                <Button Content="Results"           Command="{Binding ChangeViewCommand}"   CommandParameter="3" Classes="Views"/>
-               <Button Content="Quit"               Command="{Binding ChangeViewCommand}"   CommandParameter="4" Classes="Views"/>
+        <!-- Top navigation bar -->
+        <Border Grid.Row="0" Background="LightGray" >
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+
+                <Button Content="Dashboard"         Command="{Binding ChangeViewCommand}"   CommandParameter="0"    Classes="Views"/>
+                <Button Content="Optimizer"         Command="{Binding ChangeViewCommand}"   CommandParameter="1"    Classes="Views"/>
+                <Button Content="Production Units"  Command="{Binding ChangeViewCommand}"   CommandParameter="2"    Classes="Views"/>
+                <Button Content="Results"           Command="{Binding ChangeViewCommand}"   CommandParameter="3"    Classes="Views"/>
+                <Button Content="Quit"              Command="{Binding ChangeViewCommand}"   CommandParameter="4"    Classes="Views"/>
+            
             </StackPanel>
         </Border>
 
-        <!-- Resizable Splitter
-        <GridSplitter Grid.Column="1" Width="5" Background="DarkGray"
-                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/> -->
+        <!-- Dropdown overlay using Canvas for absolute positioning -->
+      
 
-        <!-- The "Main" Screen -->
-        <ContentControl Grid.Column="2" Content="{Binding SelectedView}"/>
     </Grid>
 
 </Window>

@@ -13,8 +13,10 @@ public class Optimizer
     public double TotalFuelConsumption { get; private set; }
     public double TotalCO2Emissions { get; private set; }
     
-    public List<List<ProductionUnits>> Optimize(string scenario, string period) 
-    {
+    public List<List<ProductionUnits>> Optimize(string scenario, string period, string preference) 
+    {   
+        Console.WriteLine("Optimization has begun..");
+
         var optimizationResults = new List<List<ProductionUnits>>();
         var resultDataManager = new ResultDataManager();
         var usedUnits = new List<string>(); // For storing unit Names for the resultDataManager
@@ -22,10 +24,14 @@ public class Optimizer
         var heatData = period == "Summer" 
             ? HeatFetcher.SummerData()
             : HeatFetcher.WinterData(); 
+
+        Console.WriteLine($"Heat data count: {heatData.Count()}");
         
         var baseProductionUnits = scenario == "Scenario 1" 
                 ? ProductionUnitsData.Scenario1Units().ToList() 
                 : ProductionUnitsData.Scenario2Units().ToList();
+        
+        Console.WriteLine($"SelectedScenario = {scenario}, SelectedPeriod = {period}");
 
         foreach (var heatDemand in heatData)
         {   
@@ -48,7 +54,11 @@ public class Optimizer
                 HP1.NetProductionCost = HP1.ProductionCost + (heatDemandElPrice * (GM1.MaxElectricityOutput / GM1.MaxHeatOutput));
             }
 
-            productionUnits = productionUnits.OrderBy(unit => unit.NetProductionCost).ToList();
+            if (preference == "Price")
+                productionUnits = productionUnits.OrderBy(unit => unit.NetProductionCost).ToList();
+            
+            else
+                productionUnits = productionUnits.OrderBy(unit => unit.CO2Emissions).ToList();
 
             foreach (var unit in productionUnits)
             {
@@ -71,12 +81,18 @@ public class Optimizer
                     usedUnits.Add(unit.Name);
                 }
             }   
+
+            optimizationResults.Add(productionUnits);
         }
 
         // After processing all heat demands, save the results to CSV for each unit
-        foreach (var unitName in usedUnits) 
-            resultDataManager.SaveResultsToCsv(unitName);
-            
+        
+        // CURRENCTLY NOT WORKING BELOW
+        
+        //foreach (var unitName in usedUnits) 
+            //resultDataManager.SaveResultsToCsv(unitName);
+        
+        Console.WriteLine("Optimization has finished..");
 
         return optimizationResults;
     }

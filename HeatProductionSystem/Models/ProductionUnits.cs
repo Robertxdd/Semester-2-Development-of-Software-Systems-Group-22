@@ -15,17 +15,21 @@ namespace HeatProductionSystem.Models;
 
 public abstract class ProductionUnits
 {
+    public virtual string UnitType => GetType().Name;
     public string Name { get; set; } = "Unnamed Unit";
     public Bitmap Image { get; set; }
 
     public double MaxHeatOutput { get; set; }  // Also refered to as Max heat in provided documents (measured in MW)
     public double CurrentHeatOutput { get; set; } = 0; // Default to 0 since unit is OFF (measured in MWh)
+    public double MaxElectricityOutput {get; set; } = 0;
 
     public double FuelConsumption { get; set; }
     public double CO2Emissions { get; set; }  // kg/MWh
     public bool IsActive { get; set; } = false;  // Default is set to OFF
+
     public virtual double ProductionCost { get; set; }  // DKK/MWh
     public double NetProductionCost { get; set; } = 0;
+    
 
     public void SetHeatOutput(double percentage)
     {
@@ -100,7 +104,7 @@ public class OilBoiler : ProductionUnits
 
 public class GasMotor : ProductionUnits
 {
-    public double MaxElectricityOutput {get; set; }
+    
     public GasMotor()   //Actual Image must still be created for the Gasmotor
     {
         if (!AppEnvironment.IsTestMode) // Needed because the Bitmap doesnt work in unit testing
@@ -112,7 +116,7 @@ public class GasMotor : ProductionUnits
 
 public class HeatPump : ProductionUnits
 {
-    public double MaxElectricityOutput {get; set; }
+    
     public HeatPump()   //Actual Image must still be created for the Heatpump
     {
         if (!AppEnvironment.IsTestMode) // Needed because the Bitmap doesnt work in unit testing
