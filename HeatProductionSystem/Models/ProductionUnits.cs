@@ -1,14 +1,7 @@
-
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Diagnostics;
-using Avalonia.Controls;
 using Avalonia.Media.Imaging;
-using System;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform;
-
 
 
 namespace HeatProductionSystem.Models;
@@ -223,4 +216,7 @@ public class ProductionUnitsData
         }
     }
 }
+
+
+
     

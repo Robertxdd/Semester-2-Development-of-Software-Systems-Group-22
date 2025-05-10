@@ -1,5 +1,9 @@
+using System;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using HeatProductionSystem.ViewModels;
 
 
@@ -33,6 +37,5 @@ public partial class OptimizerView : ContentControl
             }
         }
     }
-
     
 }

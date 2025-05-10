@@ -10,6 +10,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System;
 using CommunityToolkit.Mvvm.Input;
+using System.Collections.Generic;
+using System.Globalization;
+using Avalonia.Data.Converters;
 
 
 
@@ -19,7 +22,7 @@ using CommunityToolkit.Mvvm.Input;
 namespace HeatProductionSystem.ViewModels;
 
 public partial class OptimizerViewModel : ViewModelBase
-{
+{       
     public ISeries[] Series { get; set; }
 
     [ObservableProperty]
@@ -30,9 +33,6 @@ public partial class OptimizerViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool buttonExpanded = false;
-
-    [ObservableProperty]
-    private ObservableCollection<ProductionUnits> productionUnitList;
 
     [ObservableProperty]
     private ISeries[] heatDemandSeries;
@@ -48,14 +48,13 @@ public partial class OptimizerViewModel : ViewModelBase
         SelectedScenario = "Scenario 1";
         SelectedPeriod = "Winter";
         SelectedPreference = "Price";
-        SelectedLiveAction = "No";
+        SelectedLiveAction = "Yes";
 
         Placeholder();
     }
 
-
     [ObservableProperty]
-    public double delayInSeconds;
+    public string delayInSeconds;
 
     [ObservableProperty]
     public double totalFuelConsumption;
@@ -78,11 +77,15 @@ public partial class OptimizerViewModel : ViewModelBase
     [ObservableProperty]
     private string selectedLiveAction;
 
-    public ObservableCollection<ProductionUnits>  CurrentHourUnits { get; } = new(); // A collection of units to show CurrentHeatOutput on the UI
+    [ObservableProperty]
+    private bool textBoxVisibility;
+
+    // A collection of units to show CurrentHeatOutput on the UI
+    public ObservableCollection<UnitWithArrow> CurrentUnitsWithArrow { get; } = new(); 
 
     public bool SimulationRunning = false;
 
-    public async Task OptimizerSimulation(double delayInSeconds)
+    public async Task OptimizerSimulation(double Delay_InSeconds)
     {   
         Console.WriteLine("Simulation started");
         
@@ -91,20 +94,27 @@ public partial class OptimizerViewModel : ViewModelBase
             var optimizer = new Optimizer();
             var optimizedData = optimizer.Optimize(SelectedScenario, SelectedPeriod, SelectedPreference);
 
-            Console.WriteLine("Optimizer created");
-
             foreach (var hour in optimizedData)
             {   
-                if (!SimulationRunning) break; // Enables you to later be able to stop the simulation
+                // Enables you to later be able to stop the simulation
+                if (!SimulationRunning) break; 
 
-                 CurrentHourUnits.Clear();
+                 CurrentUnitsWithArrow.Clear();
 
                 foreach (var unit in hour)
                 {   
-                    // Recalculating CurrentHeatOutput into a percentage based on MaxHeatOuptup
-                    unit.CurrentHeatOutput = unit.CurrentHeatOutput / unit.MaxHeatOutput * 100;
+                    // An ObservableCollection for showing CurrentHeatOutput in the UI
+                    var unitsWithUIElements = new UnitWithArrow
+                    {
+                        Unit = unit ,
+                        ArrowPosition = CalculateArrowPosition(unit) ,
+                        BarHeight = 164 - CalculateArrowPosition(unit) 
+                    };
+                    
+                    CurrentUnitsWithArrow.Add(unitsWithUIElements);
 
-                    CurrentHourUnits.Add(unit);
+                    // Recalculating CurrentHeatOutput into a percentage based on MaxHeatOutput for the UI
+                    unitsWithUIElements.Unit.CurrentHeatOutput = unit.CurrentHeatOutput / unit.MaxHeatOutput * 100;
 
                     // UI statistics
                     TotalFuelConsumption += optimizer.TotalFuelConsumption;
@@ -116,7 +126,9 @@ public partial class OptimizerViewModel : ViewModelBase
 
 
                 await Task.Yield();
-                await Task.Delay((int)(delayInSeconds * 1000));
+                await Task.Delay((int)(Delay_InSeconds * 1000));
+
+                
             }
 
             Console.WriteLine("Outside loop");
@@ -131,27 +143,72 @@ public partial class OptimizerViewModel : ViewModelBase
     [RelayCommand]
     public async Task Optimize()
     {
-        SimulationRunning = true;
+        if (double.TryParse(DelayInSeconds, out double delay) || SelectedLiveAction == "No")
+        {   
+            if (SelectedLiveAction == "No")
+                delay = 0;
+
+            SimulationRunning = true;
         
-        Console.WriteLine("Button pressed!");
-        Console.WriteLine($"SelectedPeriod = {SelectedScenario}");
-        Console.WriteLine($"SelectedPeriod = {SelectedPeriod}");
-        Console.WriteLine($"SelectedPeriod = {SelectedPreference}");
+            Console.WriteLine($"Selected Scenario = {SelectedScenario}");
+            Console.WriteLine($"Selected Period = {SelectedPeriod}");
+            Console.WriteLine($"Selected Preference = {SelectedPreference}");
+            Console.WriteLine($"Selected Live-Action = {SelectedLiveAction}");
+            Console.WriteLine($"Selected Delay = {delay}");
         
-        await OptimizerSimulation(DelayInSeconds);
+            await OptimizerSimulation(delay);
+        }
+
+        else
+        {
+            Console.WriteLine("Invalid input");
+
+            // Possibly make a popup that tells you the input is invalid
+        }
     }
 
-    private void Placeholder() // Simply a placeholder for the units' CurrentHeatOutput in the UI
+    private double CalculateArrowPosition(ProductionUnits unit)
+    {
+        // 164 is the bottom most position on the Canvas while 0 is the highest
+
+        double CurrentHeatOutputPercentage;
+        double CurrentHeatOutputArrowPosition;
+
+        CurrentHeatOutputPercentage = unit.CurrentHeatOutput / unit.MaxHeatOutput * 100;
+        CurrentHeatOutputArrowPosition = 164 - (164 * (CurrentHeatOutputPercentage / 100));
+
+        return CurrentHeatOutputArrowPosition;
+    }
+    
+    partial void OnSelectedLiveActionChanged(string value)
+    {
+        if (value == "Yes")
+            TextBoxVisibility = true;
+        
+        else
+            TextBoxVisibility = false;
+    }
+
+    // Simply a placeholder for the units' CurrentHeatOutput in the UI
+    private void Placeholder() 
     {
         foreach (var unit in new ProductionUnits[] 
         {
             new GasBoiler { Name = "GB1"} ,
+            new GasBoiler { Name = "GB2"} ,
             new OilBoiler { Name = "OB1"} ,
             new GasMotor { Name = "GM1"} ,
             new HeatPump { Name = "HP1"} ,
         })
+        {
+            var placeholder = new UnitWithArrow
+            {
+                Unit = unit,
+                ArrowPosition = 164
+            };
 
-            CurrentHourUnits.Add(unit);   
+            CurrentUnitsWithArrow.Add(placeholder);   
+        }
     }
 
 

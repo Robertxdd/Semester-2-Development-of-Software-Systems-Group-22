@@ -36,11 +36,11 @@
         <Border Grid.Row="0" Background="LightGray" >
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
 
-                <Button Content="Dashboard"         Command="{Binding ChangeViewCommand}"   CommandParameter="0"    Classes="Views"/>
-                <Button Content="Optimizer"         Command="{Binding ChangeViewCommand}"   CommandParameter="1"    Classes="Views"/>
-                <Button Content="Production Units"  Command="{Binding ChangeViewCommand}"   CommandParameter="2"    Classes="Views"/>
-                <Button Content="Results"           Command="{Binding ChangeViewCommand}"   CommandParameter="3"    Classes="Views"/>
-                <Button Content="Quit"              Command="{Binding ChangeViewCommand}"   CommandParameter="4"    Classes="Views"/>
+                <Button Content="Dashboard"         Command="{Binding ChangeViewCommand}"   CommandParameter="0"    Classes="NavigationBar"/>
+                <Button Content="Optimizer"         Command="{Binding ChangeViewCommand}"   CommandParameter="1"    Classes="NavigationBar"/>
+                <Button Content="Production Units"  Command="{Binding ChangeViewCommand}"   CommandParameter="2"    Classes="NavigationBar"/>
+                <Button Content="Results"           Command="{Binding ChangeViewCommand}"   CommandParameter="3"    Classes="NavigationBar"/>
+                <Button Content="Quit"              Command="{Binding ChangeViewCommand}"   CommandParameter="4"    Classes="NavigationBar"/>
             
             </StackPanel>
         </Border>

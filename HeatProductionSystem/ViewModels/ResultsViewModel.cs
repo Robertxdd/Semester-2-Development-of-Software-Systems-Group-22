@@ -36,7 +36,7 @@ namespace HeatProductionSystem.ViewModels
         private void LoadDataForSelectedUnit(string unit)
         {
             string baseDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string relativeDirectory = Path.Combine(baseDirectory, @"..\..\..\Assets\ProductionUnitResults");
+            string relativeDirectory = Path.Combine(baseDirectory, @"../../../Assets/ProductionUnitResults");
             string resolvedDirectory = Path.GetFullPath(relativeDirectory);
 
             string filePath = unit switch

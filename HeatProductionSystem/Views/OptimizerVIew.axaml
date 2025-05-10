@@ -4,7 +4,8 @@
              xmlns:lv="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
              xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
              x:Class="HeatProductionSystem.Views.OptimizerView"
-             x:DataType="vm:OptimizerViewModel">
+             x:DataType="vm:OptimizerViewModel"
+             xmlns:media="clr-namespace:Avalonia.Media;assembly=Avalonia.Base">
 
     
     <Grid ColumnDefinitions="Auto, *, Auto">
@@ -12,9 +13,9 @@
         <!-- Optimization Settings Column -->
         <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10">
             <StackPanel Grid.Column="0">
-                <TextBlock Text="Optimization Settings"/>
+                <TextBlock Text="Optimization Settings" Classes="Header"/>
 
-                <TextBlock Text="Scenario"/>
+                <TextBlock Text="Scenario" Classes="Header2" />
                 <RadioButton GroupName="ScenarioGroup" 
                              Content="Scenario 1" 
                              Tag="Scenario 1" 
@@ -28,7 +29,7 @@
                              Checked="RadioButton_Checked" 
                              Classes="Design1" />
 
-                <TextBlock Text="Period"/>
+                <TextBlock Text="Period" Classes="Header2" />
                 <RadioButton GroupName="PeriodGroup" 
                              Content="Winter" 
                              Tag="Winter" 
@@ -42,7 +43,7 @@
                              Checked="RadioButton_Checked" 
                              Classes="Design1" />
 
-                <TextBlock Text="Preference"/>
+                <TextBlock Text="Preference" Classes="Header2" />
                 <RadioButton GroupName="PreferenceGroup" 
                              Content="Price" 
                              Tag="Price" 
@@ -56,33 +57,34 @@
                              Checked="RadioButton_Checked"
                              Classes="Design1" />
 
-                <TextBlock Text="Live-Action"/>
-                <RadioButton GroupName="Live-ActionGroup" 
+                <TextBlock Text="Live-Action" Classes="Header2" />
+                <RadioButton GroupName="LiveActionGroup" 
                              Content="Yes" 
                              Tag="Yes" 
                              IsChecked="True"
                              Checked="RadioButton_Checked"
                              Classes="Design1" />
                 
-                <RadioButton GroupName="Live-ActionGroup" 
+                <RadioButton GroupName="LiveActionGroup" 
                              Content="No" 
                              Tag="No" 
                              Checked="RadioButton_Checked"
                              Classes="Design1" />
 
-                <TextBox MaxHeight="5"
-                         Margin="10,20,0,0"
-                         VerticalAlignment="Top"
-                         Text="{Binding DelayInSeconds, Mode=TwoWay}"
-                         Watermark="Insert seconds" />
+                <TextBox Text="{Binding DelayInSeconds, Mode=TwoWay}"
+                         IsVisible="{Binding TextBoxVisibility}" 
+                         Watermark="Enter seconds" 
+                         Classes="LiveAction" />
 
                 <Button Content="Optimize"
-                        Command="{Binding Optimize}" />
+                        Command="{Binding Optimize}" 
+                        HorizontalAlignment="Center"
+                        Classes="Optimize" />
                 
             </StackPanel>
         </Border>
 
-        <Grid Grid.Column="1" RowDefinitions="*, Auto">
+        <Grid Grid.Column="1" RowDefinitions="*, 300">
 
             <!-- Chart Area -->
             <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10">
@@ -95,7 +97,7 @@
             <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10">
                 <Grid Grid.Row="1" ColumnDefinitions="*">
 
-                    <ItemsControl ItemsSource="{Binding CurrentHourUnits}" Grid.Column="0">
+                    <ItemsControl ItemsSource="{Binding CurrentUnitsWithArrow}" Grid.Column="0">
 
                         <!--  Sets the Units horizontally  -->
                         <ItemsControl.ItemsPanel>
@@ -107,83 +109,74 @@
 
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10" MaxWidth="">
-                                    
-                                    <!-- CurrentHeatOutput Meter Gauge -->
-                                    <Grid RowDefinitions="14*, 10*, 14*, 12*, 8*, 8*, 9*, 7*, 8*, 10*, Auto"
-                                          ColumnDefinitions="Auto, *, Auto, Auto">
-                                        
-                                        <Label Grid.Column="0" Grid.Row="0">100—</Label>
-                                        <Label Grid.Column="0"  Grid.Row="1">86—</Label>
-                                        <Label Grid.Column="0" Grid.Row="2">76—</Label>
-                                        <Label Grid.Column="0" Grid.Row="3">62—</Label>
-                                        <Label Grid.Column="0" Grid.Row="4">50—</Label>
-                                        <Label Grid.Column="0" Grid.Row="5">42—</Label>
-                                        <Label Grid.Column="0" Grid.Row="6">34—</Label>
-                                        <Label Grid.Column="0" Grid.Row="7">25—</Label>
-                                        <Label Grid.Column="0" Grid.Row="8">18—</Label>
-                                        <Label Grid.Column="0" Grid.Row="9">10—</Label>
-                                        <Label Grid.Column="0" Grid.Row="10"></Label>
+                                <Border BorderBrush="Black" BorderThickness="1" Padding="10,5" Margin="10" MaxWidth="" CornerRadius="6" Width="150">
+                                    <StackPanel>  
 
-                                        <!-- CurrentHeatOutput Bar -->
+                                        <!-- Unit Name -->
+                                        <TextBlock Text="{Binding Unit.Name}" Classes="Header" HorizontalAlignment="Center" Margin="0,0,0,5"/>
                                         
-                                        <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="11" Width="20" RowDefinitions="50*, 50*">
+                                        <!-- CurrentHeatOutput Meter Gauge -->
+                                        <Grid RowDefinitions="*, *, *, *, *, *, *, *, *, *, Auto"
+                                            ColumnDefinitions="13, Auto, *, Auto, Auto" HorizontalAlignment="Center">
+                                            
+                                            <Label Grid.Column="1" Grid.Row="0"  Classes="Text"  Width="28" HorizontalAlignment="Right" Margin="-10,0,0,0" >100—</Label>
+                                            <Label Grid.Column="1" Grid.Row="1"  Classes="Text"  >90—</Label>
+                                            <Label Grid.Column="1" Grid.Row="2"  Classes="Text"  >80—</Label>
+                                            <Label Grid.Column="1" Grid.Row="3"  Classes="Text"  >70—</Label>
+                                            <Label Grid.Column="1" Grid.Row="4"  Classes="Text"  >60—</Label>
+                                            <Label Grid.Column="1" Grid.Row="5"  Classes="Text"  >50—</Label>
+                                            <Label Grid.Column="1" Grid.Row="6"  Classes="Text"  >40—</Label>
+                                            <Label Grid.Column="1" Grid.Row="7"  Classes="Text"  >30—</Label>
+                                            <Label Grid.Column="1" Grid.Row="8"  Classes="Text"  >20—</Label>
+                                            <Label Grid.Column="1" Grid.Row="9"  Classes="Text"  >10—</Label>
+                                            <Label Grid.Column="1" Grid.Row="10" Classes="Text"  ></Label>
 
-                                                <Rectangle Grid.Row="0" Fill="Green" Width="20" ></Rectangle>
-                                                <Rectangle Grid.Row="1" Fill="Black" Width="20" ></Rectangle>
+
+                                            <!-- CurrentHeatOutput Middle Column -->
+                                            
+                                            <Grid Grid.Row="0" Grid.Column="2" Grid.RowSpan="11" Width="50" RowDefinitions="*" ColumnDefinitions="Auto, Auto, Auto" >
+                                                <Rectangle Height="164" MaxHeight="164" Width="1" Fill="Black" Grid.Column="0" Margin="8,5,5,0" VerticalAlignment="Bottom"/>
+                                                <Rectangle Height="{Binding BarHeight}" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,5,0,0" Fill="#5FC023" Width="20" />
+                                                <Rectangle Height="164" Width="1" Fill="Black" Grid.Column="2" Margin="5,5,0,0" VerticalAlignment="Bottom"/>  
+                                            </Grid>
+
+
+                                            <Label Grid.Column="3" Grid.Row="0"  Classes="Text" >—</Label>
+                                            <Label Grid.Column="3" Grid.Row="1"  Classes="Text" >—</Label>
+                                            <Label Grid.Column="3" Grid.Row="2"  Classes="Text" >—</Label>
+                                            <Label Grid.Column="3" Grid.Row="3"  Classes="Text" >—</Label>
+                                            <Label Grid.Column="3" Grid.Row="4"  Classes="Text" >—</Label>
+                                            <Label Grid.Column="3" Grid.Row="5"  Classes="Text" >—</Label>
+                                            <Label Grid.Column="3" Grid.Row="6"  Classes="Text" >—</Label>
+                                            <Label Grid.Column="3" Grid.Row="7"  Classes="Text" >—</Label>
+                                            <Label Grid.Column="3" Grid.Row="8"  Classes="Text" >—</Label>
+                                            <Label Grid.Column="3" Grid.Row="9"  Classes="Text" >—</Label>
+                                            <Label Grid.Column="3" Grid.Row="10" Classes="Text" ></Label>
+
+                                            <!-- Arrow -->
+                                            <Canvas Grid.Row="0" Grid.Column="4" Grid.RowSpan="11" Width="20" Margin="5,6,0,5">
+                                                <Path x:Name="ArrowPath" Margin="0,-9,0,0" Canvas.Top="{Binding ArrowPosition}" Fill="Black" Data="M 15 3 L 4 10 L 15 17 Z">
+                                                </Path>
+                                            </Canvas>
 
                                         </Grid>
 
+                                        <!-- CurrentHeatOutput in percentage -->
+                                        <TextBlock Text="{Binding Unit.CurrentHeatOutput, StringFormat='{}{0:0.0}%'}}" HorizontalAlignment="Center" Margin="10,6,0,0"/>
 
-                                        <Label Grid.Column="2" Grid.Row="0">—</Label>
-                                        <Label Grid.Column="2"  Grid.Row="1">—</Label>
-                                        <Label Grid.Column="2" Grid.Row="2">—</Label>
-                                        <Label Grid.Column="2" Grid.Row="3">—</Label>
-                                        <Label Grid.Column="2" Grid.Row="4">—</Label>
-                                        <Label Grid.Column="2" Grid.Row="5">—</Label>
-                                        <Label Grid.Column="2" Grid.Row="6">—</Label>
-                                        <Label Grid.Column="2" Grid.Row="7">—</Label>
-                                        <Label Grid.Column="2" Grid.Row="8">—</Label>
-                                        <Label Grid.Column="2" Grid.Row="9">—</Label>
-                                        <Label Grid.Column="2" Grid.Row="10"></Label>
-
-                                        <!-- Arrow -->
-                                        <Canvas Grid.Row="0" Grid.Column="3" Grid.RowSpan="11" Width="20">
-                                            <Rectangle Fill="Black" Width="20" Height="20"></Rectangle>
-                                        </Canvas>
-                                        
-                                    </Grid>
-
-
-
-                                    <!--
-                                    <StackPanel>
-                                        <Grid Width="50" Height="50">
-                                            <Ellipse Fill="LightGray" />
-                                            <TextBlock
-                                                Margin="5,0,0,0"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                Text="{Binding CurrentHeatOutput, StringFormat='{}{0:0.0}%'}" />
-                                        </Grid>
-                                        <TextBlock HorizontalAlignment="Center" Text="{Binding Name}" />
                                     </StackPanel>
-                                    -->
                                 </Border>
-
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-
                 </Grid>
             </Border>
         </Grid>
 
         <!-- Statistics Column -->
-
         <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10">
             <StackPanel Grid.Column="2">
-                <TextBlock Text="Statistics"/>
+                <TextBlock Text="Statistics" Classes="Header"/>
                 
             </StackPanel>
         </Border>
