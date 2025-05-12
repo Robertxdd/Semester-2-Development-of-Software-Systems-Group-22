@@ -102,7 +102,7 @@ public class GasMotor : ProductionUnits
     {
         if (!AppEnvironment.IsTestMode) // Needed because the Bitmap doesnt work in unit testing
         {
-            Image = ImageHelper.LoadFromResource(new Uri("avares://Semester-2-Development-of-Software-Systems-Group-22/Assets/Grid.png"));
+            Image = ImageHelper.LoadFromResource(new Uri("avares://Semester-2-Development-of-Software-Systems-Group-22/Assets/GasMotor.png"));
         }
     }
 }
@@ -114,7 +114,7 @@ public class HeatPump : ProductionUnits
     {
         if (!AppEnvironment.IsTestMode) // Needed because the Bitmap doesnt work in unit testing
         {
-            Image = ImageHelper.LoadFromResource(new Uri("avares://Semester-2-Development-of-Software-Systems-Group-22/Assets/Grid.png"));
+            Image = ImageHelper.LoadFromResource(new Uri("avares://Semester-2-Development-of-Software-Systems-Group-22/Assets/HeatPump.png"));
         }
     }
 }
