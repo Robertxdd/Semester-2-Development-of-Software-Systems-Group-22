@@ -6,6 +6,8 @@
              x:Class="HeatProductionSystem.Views.OptimizerView"
              x:DataType="vm:OptimizerViewModel"
              xmlns:media="clr-namespace:Avalonia.Media;assembly=Avalonia.Base">
+             
+
 
     
     <Grid ColumnDefinitions="Auto, *, Auto">
@@ -87,11 +89,17 @@
         <Grid Grid.Column="1" RowDefinitions="*, 300">
 
             <!-- Chart Area -->
-            <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10">
-                <StackPanel Grid.Row="0">
-                    <TextBlock Text="Hello"/>
-                </StackPanel>
-            </Border>
+           <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10">
+    <StackPanel>
+        <TextBlock Text="Heat Schedule - Winter" Classes="Header" Margin="0,0,0,10"/>
+        
+        <!-- Heat schedule chart binding -->
+        <lvc:CartesianChart Height="300"
+                            Series="{Binding HeatDemandSeries}"   
+                            XAxes="{Binding TimeXAxis}"           
+                            YAxes="{Binding HeatYAxis}" />        
+    </StackPanel>
+</Border>
 
             <!-- Showcase for the CurrentHeatOutput per Unit -->
             <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10">
