@@ -121,6 +121,8 @@ namespace HeatProductionSystem.ViewModels
 
                     // Add charts here so they can update dynamically throughout the simulation
 
+                    LoadScenario("Scenario 1");
+
                     await Task.Yield();
                     await Task.Delay((int)(Delay_InSeconds * 1000));
                 }
@@ -249,7 +251,7 @@ namespace HeatProductionSystem.ViewModels
                 var ElectricityPriceSeries = HeatDataSeries.Select(x => x.ElPriceW).ToArray();
                 var ElectricityTimeSeries = HeatDataSeries.Select(x => x.TimeFromW).ToArray();
 
-                electricitySeries = new ISeries[]
+                ElectricitySeries = new ISeries[]
                 {
                     new ColumnSeries<double>
                     {
@@ -259,7 +261,7 @@ namespace HeatProductionSystem.ViewModels
                     }
                 };
 
-                electricityPriceTimeXAxes = new Axis[]
+                ElectricityPriceTimeXAxes = new Axis[]
                 {
                     new Axis
                     {

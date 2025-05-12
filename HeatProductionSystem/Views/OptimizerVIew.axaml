@@ -89,17 +89,58 @@
         <Grid Grid.Column="1" RowDefinitions="*, 300">
 
             <!-- Chart Area -->
-           <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10">
-    <StackPanel>
-        <TextBlock Text="Heat Schedule - Winter" Classes="Header" Margin="0,0,0,10"/>
-        
-        <!-- Heat schedule chart binding -->
-        <lvc:CartesianChart Height="300"
-                            Series="{Binding HeatDemandSeries}"   
-                            XAxes="{Binding TimeXAxis}"           
-                            YAxes="{Binding HeatYAxis}" />        
-    </StackPanel>
-</Border>
+
+
+
+            <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10">
+                <Grid ColumnDefinitions="* , 200" RowDefinitions="*">
+                    
+                    <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+                        <!-- The chart for the various -->
+                    <lvc:CartesianChart 
+                        Series="{Binding ElectricitySeries}" 
+                        XAxes="{Binding ElectricityPriceTimeXAxes}"
+                        ZoomMode="X"/>
+                    </Border>
+
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Right" Margin="10" Spacing="20"
+                    VerticalAlignment="Center">
+                        <TextBlock Text="Charts" HorizontalAlignment="Center"/>
+                        <RadioButton Content="Electricity Prices"
+                                    GroupName="Charts"
+                                     Tag="ElectricityPrice"
+                                     Classes="Design1" 
+                                     Width="170"/>
+                        <RadioButton Content="HeatDemand"
+                                     GroupName="Charts"
+                                     Tag="HeatDemand"
+                                     Classes="Design1"
+                                     Width="170"/>
+                        <RadioButton Content="Heat Schedule"
+                                     GroupName="Charts"
+                                     Tag="HeatSchedule"
+                                     Classes="Design1"
+                                     Width="170"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+
+            <!-- Get the two different charts working in on -->
+
+
+            <!-- <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10">
+                <StackPanel>
+                    <TextBlock Text="Heat Schedule - Winter" Classes="Header" Margin="0,0,0,10"/>
+                    
+                    <lvc:CartesianChart Height="300"
+                                        Series="{Binding HeatDemandSeries}"   
+                                        XAxes="{Binding TimeXAxis}"           
+                                        YAxes="{Binding HeatYAxis}" />        
+                </StackPanel>
+            </Border> -->
+
 
             <!-- Showcase for the CurrentHeatOutput per Unit -->
             <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10">
