@@ -8,12 +8,15 @@ namespace HeatProductionSystem.ViewModels
 {
     public partial class ResultsViewModel : ViewModelBase
     {
-        
+
         public ObservableCollection<string> AvailableProductionUnits { get; } = new()
         {
             "Gas Boiler 1",
             "Oil Boiler",
-            "Gas Boiler 2"
+            "Gas Boiler 2",
+            "Heat Pump",
+            "Gas Motor"
+
         };
 
         [ObservableProperty]
@@ -24,7 +27,7 @@ namespace HeatProductionSystem.ViewModels
 
         public ResultsViewModel()
         {
-            
+
             SelectedProductionUnit = AvailableProductionUnits.FirstOrDefault();
         }
 
@@ -44,6 +47,9 @@ namespace HeatProductionSystem.ViewModels
                 "Gas Boiler 1" => Path.Combine(resolvedDirectory, "GB1_Results.csv"),
                 "Oil Boiler" => Path.Combine(resolvedDirectory, "OB1_Results.csv"),
                 "Gas Boiler 2" => Path.Combine(resolvedDirectory, "GB2_Results.csv"),
+                "Heat Pump" => Path.Combine(resolvedDirectory, "HP1_Results.csv"),
+                "Gas Motor" => Path.Combine(resolvedDirectory, "GM1_Results.csv"),
+
                 _ => string.Empty
             };
 
@@ -56,18 +62,18 @@ namespace HeatProductionSystem.ViewModels
             }
 
             if (File.Exists(filePath))
-{
-    var lines = File.ReadAllLines(filePath).ToList();
+            {
+                var lines = File.ReadAllLines(filePath).ToList();
 
-    foreach (var line in lines)
-    {
-        ProductionUnitData.Add(line);
-    }
-}
-else
-{
-    ProductionUnitData.Add("File not found: " + filePath);
-}
+                foreach (var line in lines)
+                {
+                    ProductionUnitData.Add(line);
+                }
+            }
+            else
+            {
+                ProductionUnitData.Add("File not found: " + filePath);
+            }
         }
     }
 }
