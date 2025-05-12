@@ -4,8 +4,187 @@
              xmlns:lv="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
              xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
              x:Class="HeatProductionSystem.Views.OptimizerView"
-             x:DataType="vm:OptimizerViewModel">
+             x:DataType="vm:OptimizerViewModel"
+             xmlns:media="clr-namespace:Avalonia.Media;assembly=Avalonia.Base">
 
+    
+    <Grid ColumnDefinitions="Auto, *, Auto">
+        
+        <!-- Optimization Settings Column -->
+        <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10">
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Optimization Settings" Classes="Header"/>
+
+                <TextBlock Text="Scenario" Classes="Header2" />
+                <RadioButton GroupName="ScenarioGroup" 
+                             Content="Scenario 1" 
+                             Tag="Scenario 1" 
+                             IsChecked="True"
+                             Checked="RadioButton_Checked" 
+                             Classes="Design1"/>
+
+                <RadioButton GroupName="ScenarioGroup" 
+                             Content="Scenario 2" 
+                             Tag="Scenario 2" 
+                             Checked="RadioButton_Checked" 
+                             Classes="Design1" />
+
+                <TextBlock Text="Period" Classes="Header2" />
+                <RadioButton GroupName="PeriodGroup" 
+                             Content="Winter" 
+                             Tag="Winter" 
+                             IsChecked="True"
+                             Checked="RadioButton_Checked" 
+                             Classes="Design1"/>
+
+                <RadioButton GroupName="PeriodGroup" 
+                             Content="Summer" 
+                             Tag="Summer" 
+                             Checked="RadioButton_Checked" 
+                             Classes="Design1" />
+
+                <TextBlock Text="Preference" Classes="Header2" />
+                <RadioButton GroupName="PreferenceGroup" 
+                             Content="Price" 
+                             Tag="Price" 
+                             IsChecked="True"
+                             Checked="RadioButton_Checked"
+                             Classes="Design1" />
+
+                <RadioButton GroupName="PreferenceGroup" 
+                             Content="CO2 Emissions" 
+                             Tag="CO2 Emissions" 
+                             Checked="RadioButton_Checked"
+                             Classes="Design1" />
+
+                <TextBlock Text="Live-Action" Classes="Header2" />
+                <RadioButton GroupName="LiveActionGroup" 
+                             Content="Yes" 
+                             Tag="Yes" 
+                             IsChecked="True"
+                             Checked="RadioButton_Checked"
+                             Classes="Design1" />
+                
+                <RadioButton GroupName="LiveActionGroup" 
+                             Content="No" 
+                             Tag="No" 
+                             Checked="RadioButton_Checked"
+                             Classes="Design1" />
+
+                <TextBox Text="{Binding DelayInSeconds, Mode=TwoWay}"
+                         IsVisible="{Binding TextBoxVisibility}" 
+                         Watermark="Enter seconds" 
+                         Classes="LiveAction" />
+
+                <Button Content="Optimize"
+                        Command="{Binding Optimize}" 
+                        HorizontalAlignment="Center"
+                        Classes="Optimize" />
+                
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Column="1" RowDefinitions="*, 300">
+
+            <!-- Chart Area -->
+            <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10">
+                <StackPanel Grid.Row="0">
+                    <TextBlock Text="Hello"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Showcase for the CurrentHeatOutput per Unit -->
+            <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10">
+                <Grid Grid.Row="1" ColumnDefinitions="*">
+
+                    <ItemsControl ItemsSource="{Binding CurrentUnitsWithArrow}" Grid.Column="0">
+
+                        <!--  Sets the Units horizontally  -->
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="1" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="Black" BorderThickness="1" Padding="10,5" Margin="10" MaxWidth="" CornerRadius="6" Width="150">
+                                    <StackPanel>  
+
+                                        <!-- Unit Name -->
+                                        <TextBlock Text="{Binding Unit.Name}" Classes="Header" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                        
+                                        <!-- CurrentHeatOutput Meter Gauge -->
+                                        <Grid RowDefinitions="*, *, *, *, *, *, *, *, *, *, Auto"
+                                            ColumnDefinitions="13, Auto, *, Auto, Auto" HorizontalAlignment="Center">
+                                            
+                                            <Label Grid.Column="1" Grid.Row="0"  Classes="Text"  Width="28" HorizontalAlignment="Right" Margin="-10,0,0,0" >100—</Label>
+                                            <Label Grid.Column="1" Grid.Row="1"  Classes="Text"  >90—</Label>
+                                            <Label Grid.Column="1" Grid.Row="2"  Classes="Text"  >80—</Label>
+                                            <Label Grid.Column="1" Grid.Row="3"  Classes="Text"  >70—</Label>
+                                            <Label Grid.Column="1" Grid.Row="4"  Classes="Text"  >60—</Label>
+                                            <Label Grid.Column="1" Grid.Row="5"  Classes="Text"  >50—</Label>
+                                            <Label Grid.Column="1" Grid.Row="6"  Classes="Text"  >40—</Label>
+                                            <Label Grid.Column="1" Grid.Row="7"  Classes="Text"  >30—</Label>
+                                            <Label Grid.Column="1" Grid.Row="8"  Classes="Text"  >20—</Label>
+                                            <Label Grid.Column="1" Grid.Row="9"  Classes="Text"  >10—</Label>
+                                            <Label Grid.Column="1" Grid.Row="10" Classes="Text"  ></Label>
+
+
+                                            <!-- CurrentHeatOutput Middle Column -->
+                                            
+                                            <Grid Grid.Row="0" Grid.Column="2" Grid.RowSpan="11" Width="50" RowDefinitions="*" ColumnDefinitions="Auto, Auto, Auto" >
+                                                <Rectangle Height="164" MaxHeight="164" Width="1" Fill="Black" Grid.Column="0" Margin="8,5,5,0" VerticalAlignment="Bottom"/>
+                                                <Rectangle Height="{Binding BarHeight}" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,5,0,0" Fill="#5FC023" Width="20" />
+                                                <Rectangle Height="164" Width="1" Fill="Black" Grid.Column="2" Margin="5,5,0,0" VerticalAlignment="Bottom"/>  
+                                            </Grid>
+
+
+                                            <Label Grid.Column="3" Grid.Row="0"  Classes="Text" >—</Label>
+                                            <Label Grid.Column="3" Grid.Row="1"  Classes="Text" >—</Label>
+                                            <Label Grid.Column="3" Grid.Row="2"  Classes="Text" >—</Label>
+                                            <Label Grid.Column="3" Grid.Row="3"  Classes="Text" >—</Label>
+                                            <Label Grid.Column="3" Grid.Row="4"  Classes="Text" >—</Label>
+                                            <Label Grid.Column="3" Grid.Row="5"  Classes="Text" >—</Label>
+                                            <Label Grid.Column="3" Grid.Row="6"  Classes="Text" >—</Label>
+                                            <Label Grid.Column="3" Grid.Row="7"  Classes="Text" >—</Label>
+                                            <Label Grid.Column="3" Grid.Row="8"  Classes="Text" >—</Label>
+                                            <Label Grid.Column="3" Grid.Row="9"  Classes="Text" >—</Label>
+                                            <Label Grid.Column="3" Grid.Row="10" Classes="Text" ></Label>
+
+                                            <!-- Arrow -->
+                                            <Canvas Grid.Row="0" Grid.Column="4" Grid.RowSpan="11" Width="20" Margin="5,6,0,5">
+                                                <Path x:Name="ArrowPath" Margin="0,-9,0,0" Canvas.Top="{Binding ArrowPosition}" Fill="Black" Data="M 15 3 L 4 10 L 15 17 Z">
+                                                </Path>
+                                            </Canvas>
+
+                                        </Grid>
+
+                                        <!-- CurrentHeatOutput in percentage -->
+                                        <TextBlock Text="{Binding Unit.CurrentHeatOutput, StringFormat='{}{0:0.0}%'}}" HorizontalAlignment="Center" Margin="10,6,0,0"/>
+
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Statistics Column -->
+        <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10">
+            <StackPanel Grid.Column="2">
+                <TextBlock Text="Statistics" Classes="Header"/>
+                
+            </StackPanel>
+        </Border>
+    </Grid>
+    
+    
+    
+    <!--
     <Grid HorizontalAlignment="Center">
         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0 10 0 0">
             <Viewbox Stretch="Uniform" VerticalAlignment="Top">
@@ -23,39 +202,35 @@
                                     SelectedItem="{Binding SelectedScenario, Mode=TwoWay}"/>
                         </Expander>
 
-                        <!-- Here is where you add the chart -->
-                        <lv:CartesianChart  Series="{Binding Series}" Height="300" />
-
-                        <lvc:CartesianChart Series="{Binding ElectricitySeries}" 
-                                            XAxes="{Binding ElectricityPriceTimeXAxes}" 
-                                            Height="300"/>
-                    
                         
-                
-                     
-                        <TextBlock Text="Heat demand with a daily time resolution" 
-                                   FontSize="24" 
-                                   FontWeight="Bold" 
-                                   FontFamily="Comic Sans MS"
-                                   HorizontalAlignment="Center" 
-                                   Margin="0,0,0,20"/>
+                        <TabControl Margin="0,20,0,0">
+                            <TabItem Header="Electricity Prices">
+                                <lvc:CartesianChart Series="{Binding ElectricitySeries}" 
+                                                    XAxes="{Binding ElectricityPriceTimeXAxes}" 
+                                                    Height="300"/>
+                            </TabItem>
 
-                        <lvc:CartesianChart Series="{Binding HeatDemandSeries}"
-                                            XAxes="{Binding TimeXAxis}"
-                                            YAxes="{Binding HeatYAxis}"
-                                            Height="300"
-                                            DrawMarginFrame="{x:Null}"
-                                            ZoomMode="X"
-                                            TooltipPosition="Top"
-                                            Margin="0,0,0,10"/>
+                            <TabItem Header="Heat Demand">
+                                <lvc:CartesianChart Series="{Binding HeatDemandSeries}"
+                                                    XAxes="{Binding TimeXAxis}"
+                                                    YAxes="{Binding HeatYAxis}"
+                                                    Height="300"
+                                                    DrawMarginFrame="{x:Null}"
+                                                    ZoomMode="X"
+                                                    TooltipPosition="Top"
+                                                    Margin="0,0,0,10"/>
+                            </TabItem>
 
-                   
-                    
+                            <TabItem Header="Heat Schedule">
+                                <lv:CartesianChart Series="{Binding Series}" Height="300" />
+                            </TabItem>
+                        </TabControl>
+
                     </StackPanel>
-
                 </Border>
             </Viewbox>
         </ScrollViewer>
     </Grid>
-</UserControl>
+     -->
 
+</UserControl>

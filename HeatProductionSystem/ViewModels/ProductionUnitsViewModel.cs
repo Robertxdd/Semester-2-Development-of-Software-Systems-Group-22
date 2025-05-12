@@ -1,47 +1,59 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using HeatProductionSystem.Models;
+using System;
 
 namespace HeatProductionSystem.ViewModels;
 
 public partial class ProductionUnitsViewModel : ViewModelBase
 {
-    public ObservableCollection<string> AvailableScenarios { get; } = new()
-    {
-        "Scenario 1",
-        "Scenario 2"
-    };
-    
     [ObservableProperty]
     private string selectedScenario;
-    partial void OnSelectedScenarioChanged(string value) // Automatically runs every time SelectedScenario is changed
-    {
-        LoadScenario(value);
-        ButtonExpanded = false;
-    }
 
     [ObservableProperty]
-    private bool buttonExpanded = false; // The Expander button in the UI
-
-    [ObservableProperty]
-    private ObservableCollection<ProductionUnits> productionUnitList;
+    private ObservableCollection<ProductionUnits> productionUnitList = new ObservableCollection<ProductionUnits>();
 
     public ProductionUnitsViewModel()
     {
-        SelectedScenario = "Scenario 1";  // Sets default Scenario in UI to Scenario 1
+        SelectedScenario = "Scenario 1"; 
     }
-    
 
-    private void LoadScenario(string? scenario)
+    partial void OnSelectedScenarioChanged(string value)
     {
-        if (scenario == "Scenario 1")
+        if (value == "Scenario 1")
         {
-            ProductionUnitList = ProductionUnitsData.ProductionUnitsCollection();
+            ProductionUnitList = ProductionUnitsData.Scenario1Units();
             
+            foreach (var unit in ProductionUnitList)
+            {
+                Console.WriteLine($"Unit Name: {unit.Name}");
+            }
+
+            Console.WriteLine("");
+
         }
-        else if (scenario == "Scenario 2")
+
+        else if (value == "Scenario 2")
         {
-            ProductionUnitList = new ObservableCollection<ProductionUnits>(); // empty collection
+            ProductionUnitList = ProductionUnitsData.Scenario2Units();
+
+            foreach (var unit in ProductionUnitList)
+            {
+                Console.WriteLine($"Unit Name: {unit.Name}");
+            }
+
+            Console.WriteLine("");
         }
     }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }

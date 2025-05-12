@@ -16,6 +16,10 @@
         <DataTemplate DataType="{x:Type local:OptimizerViewModel}">
             <views:OptimizerView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type local:ResultsViewModel}">
+            <views:ResultsView/>
+        </DataTemplate>
+
     </Application.DataTemplates>
 
   
