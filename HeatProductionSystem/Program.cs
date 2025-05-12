@@ -26,6 +26,8 @@ namespace HeatProductionSystem
                // resultDataManager.SaveResultsToCsv("GB1");
                // resultDataManager.SaveResultsToCsv("GB2");
                // resultDataManager.SaveResultsToCsv("OB1");
+                resultDataManager.SaveResultsToCsv("HP1");
+                resultDataManager.SaveResultsToCsv("OB1");
 
             }
             catch (Exception ex)
