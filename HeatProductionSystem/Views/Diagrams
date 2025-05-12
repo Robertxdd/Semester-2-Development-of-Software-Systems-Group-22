@@ -1,0 +1,73 @@
+using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
+using HeatProductionSystem.Models;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Input;
+using System;
+
+using SkiaSharp;
+using System.Collections.Generic;
+
+
+namespace HeatProductionSystem.Diagrams;
+
+
+public class HeatDemandChart
+{
+
+    public ObservableCollection<string> TimeLabels { get; } = new();
+    public ObservableCollection<double> TotalHeatDemand { get; } = new();
+    public List<List<ProductionUnits>> PriorityOutputSeries { get; } = new();
+
+   public void CreateChart(List<ProductionUnits> step)
+   {
+        var productionUnits = new List<ProductionUnits>();
+        
+        double gb1 = 0, gb2 = 0, ob1 = 0, gm1 = 0, hp1 = 0, total = 0;
+        string timeLabel = "";
+
+        foreach (var unit in step)
+        {
+            
+        if (string.IsNullOrEmpty(timeLabel))
+                timeLabel = unit.Timestamp.ToString("dd-MM HH:mm");
+        
+            productionUnits.Add(unit);
+            total += unit.CurrentHeatOutput;
+        }
+
+        TimeLabels.Add(timeLabel);
+        TotalHeatDemand.Add(total);
+        PriorityOutputSeries.Add(productionUnits);
+   }
+}
+
+public class TimeSeriesHeatDemandChart
+{
+    public ObservableCollection<string> TimeLabels { get; } = new();
+    public ObservableCollection<double> HeatDemand { get; } = new();
+
+    public string SelectedDay { get; set; }
+    
+
+    public void CreateChart()
+    {
+        var heatData = HeatFetcher.FetchHeatData();
+
+        
+
+        for (int hour = 0; hour < 24; hour++)
+        {   
+            string hourstamp = $"{hour}:00";
+            string targetTime = $"{SelectedDay} {hourstamp}";
+
+
+
+        }
+
+    }
+
+}
+
+
+
