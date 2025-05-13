@@ -99,8 +99,8 @@
 
                         <!-- The chart for the various -->
                     <lvc:CartesianChart 
-                        Series="{Binding ElectricitySeries}" 
-                        XAxes="{Binding ElectricityPriceTimeXAxes}"
+                        Series="{Binding SelectedSeries}" 
+                        XAxes="{Binding SelectedAxis}"
                         ZoomMode="X"/>
                     </Border>
 
@@ -110,17 +110,20 @@
                         <RadioButton Content="Electricity Prices"
                                     GroupName="Charts"
                                      Tag="ElectricityPrice"
-                                     Classes="Design1" 
+                                     Classes="Design1"
+                                     Checked="RadioButton_Checked"
                                      Width="170"/>
                         <RadioButton Content="HeatDemand"
                                      GroupName="Charts"
                                      Tag="HeatDemand"
                                      Classes="Design1"
+                                     Checked="RadioButton_Checked"
                                      Width="170"/>
                         <RadioButton Content="Heat Schedule"
                                      GroupName="Charts"
                                      Tag="HeatSchedule"
                                      Classes="Design1"
+                                     Checked="RadioButton_Checked"
                                      Width="170"/>
                     </StackPanel>
                 </Grid>

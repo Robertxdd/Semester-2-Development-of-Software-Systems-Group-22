@@ -18,7 +18,12 @@ namespace HeatProductionSystem.ViewModels
 {
     public partial class OptimizerViewModel : ViewModelBase
     {
-        public ISeries[] Series { get; set; }
+        [ObservableProperty]
+        private string selectedChart;
+        [ObservableProperty]
+        public ISeries[] selectedSeries;
+        [ObservableProperty]
+        public Axis[] selectedAxis;
 
         [ObservableProperty]
         private ISeries[] electricitySeries;
@@ -173,7 +178,27 @@ namespace HeatProductionSystem.ViewModels
 
             return CurrentHeatOutputArrowPosition;
         }
-
+        partial void OnSelectedChartChanged(string? oldValue, string newValue)
+        {
+            if(newValue == oldValue) return;
+            
+            //Update the current ISeries & Axis to the newly selected chart
+            switch(newValue)
+            {
+                case "ElectricityPrice":
+                    SelectedSeries = ElectricitySeries;
+                    SelectedAxis = ElectricityPriceTimeXAxes;
+                    break;
+                case "HeatDemand":
+                    Console.WriteLine("Switched to HeatDemand Chart");
+                    break;
+                case "HeatSchedule":
+                    Console.WriteLine("Switched to HeatSchedule Chart");
+                    break;
+                default:
+                    break;
+            }
+        }
         partial void OnSelectedLiveActionChanged(string value)
         {
             if (value == "Yes")
