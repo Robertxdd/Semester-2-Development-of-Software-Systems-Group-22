@@ -1,45 +1,47 @@
 using Xunit;
-using System.Collections.Generic;
 using HeatProductionSystem;
-using HeatProductionSystem.Models;
-using Avalonia.Remote.Protocol;
 
-namespace HeatProductionSystem;
-
-public class UnitTest_Optimizer
+public class OptimizerTests
 {
     [Fact]
-    public void Optimizer_CorrectData()
+    public void Optimize_Scenario1_Summer_Price_ReturnsValidResults()
     {
-        AppEnvironment.IsTestMode = true;
-        //arrange 
-        var originalHeatData = HeatFetcher.FetchHeatData();
-        var originalUnitsData = ProductionUnitsData.ProductionUnitsCollection();
+        // Arrange
         var optimizer = new Optimizer();
+        string scenario = "Scenario 1";
+        string period = "Summer";
+        string preference = "Price";
 
-        //act
-        optimizer.ReadInformation();
-        var actualHeatData = optimizer.HeatData;
-        var actualUnitsData = optimizer.ProductionUnits;
 
-        //assert
-        Assert.Equal(originalHeatData.Count, actualHeatData.Count);
-        for (int i = 0; i < originalHeatData.Count; i++)//testing HeatData information
-            {
-                Assert.Equal(originalHeatData[i].TimeFromW, actualHeatData[i].TimeFromW);
-                Assert.Equal(originalHeatData[i].TimeToW, actualHeatData[i].TimeToW);
-                Assert.Equal(originalHeatData[i].HeatDemandW, actualHeatData[i].HeatDemandW);
-                Assert.Equal(originalHeatData[i].ElPriceW, actualHeatData[i].ElPriceW);
-                Assert.Equal(originalHeatData[i].TimeFromS, actualHeatData[i].TimeFromS);
-                Assert.Equal(originalHeatData[i].TimeToS, actualHeatData[i].TimeToS);
-                Assert.Equal(originalHeatData[i].HeatDemandS, actualHeatData[i].HeatDemandS);
-                Assert.Equal(originalHeatData[i].ElPriceS, actualHeatData[i].ElPriceS);
-            }
+        // Act
+        var results = optimizer.Optimize(scenario, period, preference);
 
-        Assert.Equal(originalUnitsData.Select(x => x.Name), actualUnitsData.Select(x => x.Name));//testing ProductionUnits information                      
-        Assert.Equal(originalUnitsData.Select(x => x.MaxHeatOutput), actualUnitsData.Select(x => x.MaxHeatOutput));   
-        Assert.Equal(originalUnitsData.Select(x => x.ProductionCost), actualUnitsData.Select(x => x.ProductionCost));
-        Assert.Equal(originalUnitsData.Select(x => x.CO2Emissions), actualUnitsData.Select(x => x.CO2Emissions)); 
-        Assert.Equal(originalUnitsData.Select(x => x.FuelConsumption),actualUnitsData.Select(x => x.FuelConsumption)); 
+        // Assert
+        //The data is not real needs to be changed with real one
+        Assert.Equal(284242.4000000001, optimizer.TotalCost);
+        Assert.Equal(12298.950000000006, optimizer.TotalFuelConsumption);
+        Assert.Equal(2391462.5 , optimizer.TotalCO2Emissions);
+        Assert.Equal(336, results.Count);
+
+    }
+
+    [Fact]
+    public void Optimize_Scenario2_Winter_CO2_ReturnsValidResults()
+    {
+        // Arrange
+        var optimizer = new Optimizer();
+        string scenario = "Scenario 2";
+        string period = "Winter";
+        string preference = "CO2";
+
+        // Act
+        var results = optimizer.Optimize(scenario, period, preference);
+
+        // Assert
+        //The data is not real needs to be changed with real one
+        Assert.Equal(1584677.3942857152, optimizer.TotalCost);
+        Assert.Equal(6309.000000000002, optimizer.TotalFuelConsumption);
+        Assert.Equal(1226750, optimizer.TotalCO2Emissions);
+        Assert.Equal(336, results.Count);
     }
 }
