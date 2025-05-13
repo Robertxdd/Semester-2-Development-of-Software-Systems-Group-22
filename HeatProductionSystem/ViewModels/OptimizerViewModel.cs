@@ -51,7 +51,7 @@ namespace HeatProductionSystem.ViewModels
             SelectedLiveAction = "Yes";
 
             // Initialize charts directly here
-            InitializeCharts();
+
             Placeholder();
         }
 
@@ -180,10 +180,10 @@ namespace HeatProductionSystem.ViewModels
         }
         partial void OnSelectedChartChanged(string? oldValue, string newValue)
         {
-            if(newValue == oldValue) return;
-            
+            if (newValue == oldValue) return;
+
             //Update the current ISeries & Axis to the newly selected chart
-            switch(newValue)
+            switch (newValue)
             {
                 case "ElectricityPrice":
                     SelectedSeries = ElectricitySeries;
@@ -193,7 +193,8 @@ namespace HeatProductionSystem.ViewModels
                     Console.WriteLine("Switched to HeatDemand Chart");
                     break;
                 case "HeatSchedule":
-                    Console.WriteLine("Switched to HeatSchedule Chart");
+                    SelectedSeries = HeatDemandSeries; // If you later separate them, use the dedicated schedule series
+                    SelectedAxis = TimeXAxis;
                     break;
                 default:
                     break;
@@ -228,43 +229,6 @@ namespace HeatProductionSystem.ViewModels
                 CurrentUnitsWithArrow.Add(placeholder);
             }
         }
-  // WIP CHART
-     private void InitializeCharts()
-{
-    var HeatDataSeriesW = HeatFetcher.WinterData();
-
-    var TimeFromW = HeatDataSeriesW.Select(x => x.TimeFromW).ToArray();
-    var HeatDemandW = HeatDataSeriesW.Select(x => x.HeatDemandW).ToArray();
-
-    heatDemandSeries = new ISeries[]
-    {
-        new ColumnSeries<double>
-        {
-            Name = "Heat Demand (MW)",
-            Values = HeatDemandW,
-            Stroke = new SolidColorPaint(SKColors.Black, 2),
-            Fill = new SolidColorPaint(SKColors.Black.WithAlpha(100)) 
-        }
-    };
-
-    timeXAxis = new Axis[]
-    {
-        new Axis
-        {
-            Name = "Time",
-            Labels = TimeFromW
-        }
-    };
-
-    heatYAxis = new Axis[]
-    {
-        new Axis
-        {
-            Name = "Heat Demand (MW)"
-        }
-    };
-}
-    
 
 
         private void LoadScenario(string? scenario)
@@ -292,8 +256,47 @@ namespace HeatProductionSystem.ViewModels
                     {
                         Name = "Date",
                         Labels = ElectricityTimeSeries,
-                    }   
+                    }
                 };
+
+                // Heat Schedule chart
+                var HeatDemandSeries = HeatDataSeries.Select(x => x.HeatDemandW).ToArray();
+                var HeatDemandTimeLabels = HeatDataSeries.Select(x => x.TimeFromW).ToArray();
+
+                this.HeatDemandSeries = new ISeries[]
+                {
+
+
+
+    new ColumnSeries<double>
+     {
+        Name = "Heat Demand (MW)",
+        Values = HeatDemandSeries,
+        Stroke = new SolidColorPaint(SKColors.Red, 2),
+        Fill = new SolidColorPaint(SKColors.Red.WithAlpha(100))
+    }
+                };
+
+                this.TimeXAxis = new Axis[]
+                {
+    new Axis
+    {
+        Name = "Time",
+        Labels = HeatDemandTimeLabels
+    }
+                };
+
+                this.HeatYAxis = new Axis[]
+                {
+    new Axis
+    {
+        Name = "Heat Demand (MW)"
+    }
+                };
+
+
+
+
             }
             else if (scenario == "Scenario 2")
             {
