@@ -34,8 +34,10 @@ public partial class OptimizerView : ContentControl
             case "LiveActionGroup":
                 vm.SelectedLiveAction = value;
                 break;
+            case "Charts":
+                vm.SelectedChart = value;
+                break;
             }
         }
     }
-    
 }

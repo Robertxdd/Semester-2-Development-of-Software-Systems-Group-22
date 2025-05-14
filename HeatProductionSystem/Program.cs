@@ -15,23 +15,6 @@ namespace HeatProductionSystem
             // Run the Avalonia app (for GUI-related setup)
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
            
-            try
-            {
-
-                var resultDataManager = new ResultDataManager();
-                var optimizer = new Optimizer();
-
-                optimizer.Optimize("Scenario 1", "Winter", "Price");
-// i commented the save results to csv so we dont save every time we load the project it needs a button to prevent spamming the files
-               // resultDataManager.SaveResultsToCsv("GB1");
-               // resultDataManager.SaveResultsToCsv("GB2");
-               // resultDataManager.SaveResultsToCsv("OB1");
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error during optimization: " + ex.Message);
-            }
         }
 
         // Avalonia configuration, don't remove; also used by visual designer.

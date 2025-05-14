@@ -14,8 +14,6 @@ public partial class ResultsViewModel : ViewModelBase
     
     [ObservableProperty]
     private ObservableCollection<TimestampGroup> optimizationResults = new();
-
-    public double Height { get; set; } = 40;
     
     public ResultsViewModel()
     {
@@ -73,8 +71,6 @@ public partial class ResultsViewModel : ViewModelBase
                 
                 groupedUnits[unitTimestamp].Units.Add(unitData);   
 
-                // double unitsUIHeight = 105 / groupedUnits[unitTimestamp].Units.Count;
-                // Height.Add(unitsUIHeight);
 
             }
         }

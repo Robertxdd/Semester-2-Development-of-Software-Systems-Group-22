@@ -27,7 +27,16 @@ public partial class OptimizerViewModel : ViewModelBase
     public static event Action OptimizationEvent;
     
     public ISeries[] Series { get; set; }
+ 
+    [ObservableProperty]
+    private string selectedChart;
 
+    [ObservableProperty]
+    public ISeries[] selectedSeries;
+
+    [ObservableProperty]
+    public Axis[] selectedAxis;
+    
     [ObservableProperty]
     private ISeries[] electricitySeries;
 
@@ -135,23 +144,15 @@ public partial class OptimizerViewModel : ViewModelBase
                     CurrentUnitsWithArrow.Add(unitsWithUIElements);
 
                
-
-                    
-
-
                     // UI statistics
                     // TotalCost += unit.CurrentHeatOutput * unit.NetProductionCost;
                     TotalFuelConsumption += unit.CurrentHeatOutput * unit.FuelConsumption;
                     TotalCO2Emissions += unit.CurrentHeatOutput * unit.CO2Emissions;
                     TotalCost += unit.CurrentHeatOutput * unit.NetProductionCost;
-                    
-
 
                 }
 
                 // Add charts here so they can update dynamically throughout the simulation
-                
-                //Console.WriteLine($"{hour.First()}");
 
 
                 HeatScheduleChart.Update(hour);
@@ -192,8 +193,6 @@ public partial class OptimizerViewModel : ViewModelBase
 
 
 
-
-        
             Console.WriteLine($"Selected Scenario = {SelectedScenario}");
             Console.WriteLine($"Selected Period = {SelectedPeriod}");
             Console.WriteLine($"Selected Preference = {SelectedPreference}");
@@ -222,6 +221,29 @@ public partial class OptimizerViewModel : ViewModelBase
         CurrentHeatOutputArrowPosition = 164 - (164 * (CurrentHeatOutputPercentage / 100));
 
         return CurrentHeatOutputArrowPosition;
+    }
+
+    partial void OnSelectedChartChanged(string? oldValue, string newValue)
+    {
+        if (newValue == oldValue) return;
+
+        //Update the current ISeries & Axis to the newly selected chart
+        switch (newValue)
+        {
+            case "ElectricityPrice":
+                SelectedSeries = ElectricitySeries;
+                SelectedAxis = ElectricityPriceTimeXAxes;
+                break;
+            case "HeatDemand":
+                Console.WriteLine("Switched to HeatDemand Chart");
+                break;
+            case "HeatSchedule":
+                SelectedSeries = HeatDemandSeries; // If you later separate them, use the dedicated schedule series
+                SelectedAxis = TimeXAxis;
+                break;
+            default:
+                break;
+        }
     }
     
     partial void OnSelectedLiveActionChanged(string value)
@@ -280,84 +302,84 @@ public partial class OptimizerViewModel : ViewModelBase
         }
     }
 
+    // I don't think it's being used, but I'm not sure
+    // private void LoadScenario(string? scenario)
+    // {
+    //     if (scenario == "Scenario 1")
+    //     {
+    //         Series = new ISeries[]
+    //         {
+    //             new LineSeries<double>
+    //             {
+    //                 Values = new double[] { 2, 4, 6, 8 },
+    //                 Stroke = new SolidColorPaint(SKColors.Blue, 2)
+    //             },
+    //             new LineSeries<double>
+    //             {
+    //                 Values = new double[] { 1, 3, 5, 7 },
+    //                 Stroke = new SolidColorPaint(SKColors.Red, 2)
+    //             }
+    //         };
 
-    private void LoadScenario(string? scenario)
-    {
-        if (scenario == "Scenario 1")
-        {
-            Series = new ISeries[]
-            {
-                new LineSeries<double>
-                {
-                    Values = new double[] { 2, 4, 6, 8 },
-                    Stroke = new SolidColorPaint(SKColors.Blue, 2)
-                },
-                new LineSeries<double>
-                {
-                    Values = new double[] { 1, 3, 5, 7 },
-                    Stroke = new SolidColorPaint(SKColors.Red, 2)
-                }
-            };
+    //         var HeatDataSeries = HeatFetcher.WinterData();
+    //         var ElectricityPriceSeries = HeatDataSeries.Select(x => x.ElPriceW).ToArray();
+    //         var ElectricityTimeSeries = HeatDataSeries.Select(x => x.TimeFromW).ToArray();
 
-            var HeatDataSeries = HeatFetcher.WinterData();
-            var ElectricityPriceSeries = HeatDataSeries.Select(x => x.ElPriceW).ToArray();
-            var ElectricityTimeSeries = HeatDataSeries.Select(x => x.TimeFromW).ToArray();
+    //         electricitySeries = new ISeries[]
+    //         {
+    //             new ColumnSeries<double>
+    //             {
+    //                 Name = "DKK / Mwh(el)",
+    //                 Values = ElectricityPriceSeries,
+    //                 Stroke = new SolidColorPaint(SKColors.LightGreen, 2),
+    //             }
+    //         };
 
-            electricitySeries = new ISeries[]
-            {
-                new ColumnSeries<double>
-                {
-                    Name = "DKK / Mwh(el)",
-                    Values = ElectricityPriceSeries,
-                    Stroke = new SolidColorPaint(SKColors.LightGreen, 2),
-                }
-            };
+    //         electricityPriceTimeXAxes = new Axis[]
+    //         {
+    //             new Axis
+    //             {
+    //                 Name = "Date",
+    //                 Labels = ElectricityTimeSeries,
+    //             }
+    //         };
 
-            electricityPriceTimeXAxes = new Axis[]
-            {
-                new Axis
-                {
-                    Name = "Date",
-                    Labels = ElectricityTimeSeries,
-                }
-            };
+    //         var HeatDemandValues = new double[]
+    //         {
+    //             4.1, 4.1, 4.2, 4.1, 4.2, 4.6, 4.8, 5.2, 5.5, 5.3, 4.7, 4.5,
+    //             4.4, 4.4, 4.5, 4.5, 4.6, 4.7, 4.6, 4.5, 4.5, 4.6, 4.5, 4.7
+    //         };
 
-            var HeatDemandValues = new double[]
-            {
-                4.1, 4.1, 4.2, 4.1, 4.2, 4.6, 4.8, 5.2, 5.5, 5.3, 4.7, 4.5,
-                4.4, 4.4, 4.5, 4.5, 4.6, 4.7, 4.6, 4.5, 4.5, 4.6, 4.5, 4.7
-            };
+    //         heatDemandSeries = new ISeries[]
+    //         {
+    //             new LineSeries<double>
+    //             {
+    //                 Values = HeatDemandValues,
+    //                 Stroke = new SolidColorPaint(SKColors.OrangeRed, 2),
+    //                 Fill = null
+    //             }
+    //         };
 
-            heatDemandSeries = new ISeries[]
-            {
-                new LineSeries<double>
-                {
-                    Values = HeatDemandValues,
-                    Stroke = new SolidColorPaint(SKColors.OrangeRed, 2),
-                    Fill = null
-                }
-            };
+    //         timeXAxis = new Axis[]
+    //         {
+    //             new Axis
+    //             {
+    //                 Name = "Hour",
+    //                 Labels = Enumerable.Range(0, 24).Select(x => x.ToString("00")).ToArray()
+    //             }
+    //         };
 
-            timeXAxis = new Axis[]
-            {
-                new Axis
-                {
-                    Name = "Hour",
-                    Labels = Enumerable.Range(0, 24).Select(x => x.ToString("00")).ToArray()
-                }
-            };
-
-            heatYAxis = new Axis[]
-            {
-                new Axis
-                {
-                    Name = "MW"
-                }
-            };
-        }
-        else if (scenario == "Scenario 2")
-        {
+    //         heatYAxis = new Axis[]
+    //         {
+    //             new Axis
+    //             {
+    //                 Name = "MW"
+    //             }
+    //         };
+    //     }
+    //     else if (scenario == "Scenario 2")
+    //     {
             
-        }
-    }
+    //     }
+    // }
 }
