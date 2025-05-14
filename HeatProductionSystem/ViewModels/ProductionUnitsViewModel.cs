@@ -10,8 +10,10 @@ public partial class ProductionUnitsViewModel : ViewModelBase
     [ObservableProperty]
     private string selectedScenario;
 
+    [ObservableProperty] private bool scenarioIsChecked = true;
+
     [ObservableProperty]
-    private ObservableCollection<ProductionUnits> productionUnitList = new ObservableCollection<ProductionUnits>();
+    private ObservableCollection<ProductionUnits> productionUnitList = new();
 
     public ProductionUnitsViewModel()
     {

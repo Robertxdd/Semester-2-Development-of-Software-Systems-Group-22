@@ -1,71 +1,59 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
-namespace HeatProductionSystem
+namespace HeatProductionSystem.Models;
+
+// Result Data objects class (properties shown on the UI)
+public class UnitResults
 {
-    public class ResultDataManager
+    public string UnitName { get; set; }
+    public double HeatProduced { get; set; }
+    public double Cost { get; set; }
+    public double FuelConsumed { get; set; }
+}
+
+// Result Data Manager logic
+public class ResultDataManager
+{
+    public static readonly Dictionary<string, List<UnitResults>> resultDataByTime = new();
+
+    // Creates the objects for the Result Data Manager and adds them to a list
+    public static void CreateResultData(string timestamp, string unitName, double heatProduced, double cost, double fuelConsumed)
     {
-
-        private List<OptimizationResult> optimizationResults = new List<OptimizationResult>();
-
-        public void AddResult(string unitName, double heatProduced, double cost, double fuelConsumed)
+        if (!resultDataByTime.ContainsKey(timestamp))
         {
-
-            var result = new OptimizationResult
-            {
-                
-                UnitName = unitName, // ex GB1
-                HeatProduced = heatProduced, // the used heat
-                Cost = cost, // total cost
-                FuelConsumed = fuelConsumed //fuel consumed
-            };
-
-            optimizationResults.Add(result);
+            resultDataByTime[timestamp] = new List<UnitResults>();
         }
 
-    
-        public void SaveResultsToCsv(string unitName)
-{
-  
-    string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-
-    string relativeDirectory = Path.Combine(baseDirectory, @"..\..\..\Assets\ProductionUnitResults");
-
-    // Resolve the absolute path
-    string resolvedDirectory = Path.GetFullPath(relativeDirectory);
-
-    string filePath = unitName switch
-    {
-        "GB1" => Path.Combine(resolvedDirectory, "GB1_Results.csv"),
-        "GB2" => Path.Combine(resolvedDirectory, "GB2_Results.csv"),
-        "OB1" => Path.Combine(resolvedDirectory, "OB1_Results.csv"),
-        _ => throw new Exception($"Unknown unit name: {unitName}")
-    };
-   
-    var resultsForUnit = optimizationResults.Where(r => r.UnitName == unitName).ToList();// to convert all results for a specific unit name that checks if all results have a unit name 
-    
-
-    // Writing to CSV
-    if (File.Exists(filePath)) 
-    {
-        using (var writer = new StreamWriter(filePath, append: true))  // append is adding instead of overwrite
+        resultDataByTime[timestamp].Add(new UnitResults 
         {
-            
-            foreach (var result in resultsForUnit)
+            UnitName = unitName ,
+            HeatProduced = heatProduced ,
+            Cost = cost ,
+            FuelConsumed = fuelConsumed
+        });
+    }
+
+    //  Writes the resultDataByTime to the csv file
+    public static void SaveToCSV()
+    {   
+        string filePath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "HeatProductionSystem", "Assets", "ProductionUnitResults", "Test.csv");
+
+        using var writer = new StreamWriter(filePath);
+
+        writer.WriteLine("Timestamp, UnitName, HeatProduced (MWh(th)), Cost (DKK), GasConsumption (MWh(Fuel))");
+
+        foreach (var instance in resultDataByTime)
+        {   
+            foreach (var unit in instance.Value)
             {
-                writer.WriteLine($"{result.UnitName},{result.HeatProduced},{result.Cost},{result.FuelConsumed}");
+                writer.WriteLine($"{instance.Key}, {unit.UnitName}, {unit.HeatProduced}, {unit.Cost}, {unit.FuelConsumed}");
             }
+            writer.WriteLine("");
         }
+    }
 
-        
-    }
-    else
-    {
-        Console.WriteLine($"File does not exist: {filePath}. File cannot be saved.");
-    }
 }
-    }
-}
-

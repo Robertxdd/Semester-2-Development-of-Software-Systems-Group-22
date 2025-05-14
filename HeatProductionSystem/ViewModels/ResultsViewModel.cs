@@ -1,73 +1,96 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
+using HeatProductionSystem.Models;
 using System.IO;
 using System.Linq;
-using System.Reflection;
+using System;
+using System.Collections.Generic;
 
-namespace HeatProductionSystem.ViewModels
-{
-    public partial class ResultsViewModel : ViewModelBase
+namespace HeatProductionSystem.ViewModels;
+
+public partial class ResultsViewModel : ViewModelBase
+{   
+    
+    
+    [ObservableProperty]
+    private ObservableCollection<TimestampGroup> optimizationResults = new();
+
+    public double Height { get; set; } = 40;
+    
+    public ResultsViewModel()
     {
+        LoadResultsFromCSV();
         
-        public ObservableCollection<string> AvailableProductionUnits { get; } = new()
+        OptimizerViewModel.OptimizationEvent += LoadResultsFromCSV;
+       
+    }
+    
+    public void LoadResultsFromCSV()
+    {   
+        string filePath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "HeatProductionSystem", "Assets", "ProductionUnitResults", "Test.csv");
+        
+        OptimizationResults.Clear();
+
+        if (!File.Exists(filePath))
+            return;
+        
+        var lines = File.ReadAllLines(filePath).Skip(1);
+        var groupedUnits = new Dictionary<string, TimestampGroup>();
+
+        foreach (var line in lines)
         {
-            "Gas Boiler 1",
-            "Oil Boiler",
-            "Gas Boiler 2"
-        };
-
-        [ObservableProperty]
-        private string selectedProductionUnit;
-
-        [ObservableProperty]
-        private ObservableCollection<string> productionUnitData = new();
-
-        public ResultsViewModel()
-        {
-            
-            SelectedProductionUnit = AvailableProductionUnits.FirstOrDefault();
-        }
-
-        partial void OnSelectedProductionUnitChanged(string value)
-        {
-            LoadDataForSelectedUnit(value);
-        }
-
-        private void LoadDataForSelectedUnit(string unit)
-        {
-            string baseDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string relativeDirectory = Path.Combine(baseDirectory, @"../../../Assets/ProductionUnitResults");
-            string resolvedDirectory = Path.GetFullPath(relativeDirectory);
-
-            string filePath = unit switch
+            var parts = line.Split(',');
+            if (parts.Length >= 5)
             {
-                "Gas Boiler 1" => Path.Combine(resolvedDirectory, "GB1_Results.csv"),
-                "Oil Boiler" => Path.Combine(resolvedDirectory, "OB1_Results.csv"),
-                "Gas Boiler 2" => Path.Combine(resolvedDirectory, "GB2_Results.csv"),
-                _ => string.Empty
-            };
+                
+                
+                // string unitTimestamp = parts[0];
+                string[] unitTimestampParts = parts[0].Split('—');
+                string unitTimestamp;
+                if (unitTimestampParts.Length == 2) 
+                    unitTimestamp = $"     Time from:\n{unitTimestampParts[0]}\n\n     Time To:\n{unitTimestampParts[1]} ";
+                
+                else
+                    unitTimestamp = parts[0];
+                 
+                
+                var unitData = new UnitResults
+                {
+                    UnitName = parts[1],
+                    HeatProduced = Convert.ToDouble(parts[2]),
+                    Cost = Convert.ToDouble(parts[3]),
+                    FuelConsumed = Convert.ToDouble(parts[4])
+                };
+                
+                if (!groupedUnits.ContainsKey(unitTimestamp))
+                {
+                    groupedUnits[unitTimestamp] = new TimestampGroup
+                    {
+                        Timestamp = unitTimestamp,
+                        Units = new ObservableCollection<UnitResults>()
+                    };
+                }
+                
+                groupedUnits[unitTimestamp].Units.Add(unitData);   
 
-            ProductionUnitData.Clear();
+                // double unitsUIHeight = 105 / groupedUnits[unitTimestamp].Units.Count;
+                // Height.Add(unitsUIHeight);
 
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                ProductionUnitData.Add("Unknown unit selected: " + unit);
-                return;
             }
-
-            if (File.Exists(filePath))
-{
-    var lines = File.ReadAllLines(filePath).ToList();
-
-    foreach (var line in lines)
-    {
-        ProductionUnitData.Add(line);
-    }
-}
-else
-{
-    ProductionUnitData.Add("File not found: " + filePath);
-}
         }
+        
+        foreach (var group in groupedUnits.Values)
+        {
+            OptimizationResults.Add(group);
+        }
+
+    
     }
 }
+
+
+
+
+
+
+

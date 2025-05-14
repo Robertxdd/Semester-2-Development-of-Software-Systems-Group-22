@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections.ObjectModel;
 using HeatProductionSystem.Models;
+using HeatProductionSystem.ViewModels;
+using HeatProductionSystem.Views;
 
 namespace HeatProductionSystem;
 
@@ -12,26 +14,28 @@ public class Optimizer
     public double TotalCost { get; private set; }
     public double TotalFuelConsumption { get; private set; }
     public double TotalCO2Emissions { get; private set; }
+
+
+
     
     public List<List<ProductionUnits>> Optimize(string scenario, string period, string preference) 
     {   
         Console.WriteLine("Optimization has begun..");
 
         var optimizationResults = new List<List<ProductionUnits>>();
-        var resultDataManager = new ResultDataManager();
-        var usedUnits = new List<string>(); // For storing unit Names for the resultDataManager
+
+
+
         
         var heatData = period == "Summer" 
             ? HeatFetcher.SummerData()
             : HeatFetcher.WinterData(); 
 
-        Console.WriteLine($"Heat data count: {heatData.Count()}");
         
         var baseProductionUnits = scenario == "Scenario 1" 
                 ? ProductionUnitsData.Scenario1Units().ToList() 
                 : ProductionUnitsData.Scenario2Units().ToList();
         
-        Console.WriteLine($"SelectedScenario = {scenario}, SelectedPeriod = {period}");
 
         foreach (var heatDemand in heatData)
         {   
@@ -44,6 +48,10 @@ public class Optimizer
             double heatDemandElPrice = period == "Summer" 
                 ? heatDemand.ElPriceS
                 : heatDemand.ElPriceW;
+            
+            string heatDemandTimestamp = period == "Summer"
+                ? heatDemand.TimeFromS + " — " + heatDemand.TimeToS
+                : heatDemand.TimeFromW + " — " + heatDemand.TimeToW;
 
             if (scenario == "Scenario 2")  // Calculate Net Production Cost for GasMotor and HeatPump
             {
@@ -71,26 +79,31 @@ public class Optimizer
                     unit.SetHeatOutput(heatPercentage);
 
                     heatNeeded -= usedHeat;
+
                     TotalCost += unit.CurrentHeatOutput * unit.NetProductionCost;
                     TotalFuelConsumption += unit.CurrentHeatOutput * unit.FuelConsumption;
                     TotalCO2Emissions += unit.CurrentHeatOutput * unit.CO2Emissions;
-
                     
+                    
+                    ResultDataManager.CreateResultData(heatDemandTimestamp, unit.Name, usedHeat, usedHeat * unit.NetProductionCost, unit.FuelConsumption * usedHeat);
                     // Store the result data for unit
-                    resultDataManager.AddResult(unit.Name, usedHeat, usedHeat * unit.NetProductionCost, usedHeat * unit.FuelConsumption);
-                    usedUnits.Add(unit.Name);
+                    //resultDataManager.AddResult(unit.Name, usedHeat, usedHeat * unit.NetProductionCost, usedHeat * unit.FuelConsumption);
+                    //usedUnits.Add(unit.Name);
+                    
                 }
+
             }   
 
             optimizationResults.Add(productionUnits);
+
+            
+
+            
         }
 
-        // After processing all heat demands, save the results to CSV for each unit
+        ResultDataManager.SaveToCSV();
         
-        // CURRENCTLY NOT WORKING BELOW
-        
-        //foreach (var unitName in usedUnits) 
-            //resultDataManager.SaveResultsToCsv(unitName);
+
         
         Console.WriteLine("Optimization has finished..");
 

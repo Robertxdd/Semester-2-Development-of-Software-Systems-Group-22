@@ -23,6 +23,9 @@ namespace HeatProductionSystem.ViewModels;
 
 public partial class OptimizerViewModel : ViewModelBase
 {       
+    // Event that informs Result Data Manager a new optimization has been completed and to update
+    public static event Action OptimizationEvent;
+    
     public ISeries[] Series { get; set; }
 
     [ObservableProperty]
@@ -43,15 +46,24 @@ public partial class OptimizerViewModel : ViewModelBase
     [ObservableProperty]
     private Axis[] heatYAxis;
 
+    // Setting ScenarioIsChecked to true in constructor instead allows On..Changed() method to immediately run, which is a placeholder for units
+    [ObservableProperty] private bool scenarioIsChecked;
+    [ObservableProperty] private bool periodIsChecked = true;
+    [ObservableProperty] private bool preferenceIsChecked = true;
+    [ObservableProperty] private bool liveActionIsChecked = true;
+
+
     public OptimizerViewModel()
     {
         SelectedScenario = "Scenario 1";
         SelectedPeriod = "Winter";
         SelectedPreference = "Price";
-        SelectedLiveAction = "Yes";
-
-        Placeholder();
+        SelectedLiveAction = "No";
+        
+        ScenarioIsChecked = true;
+        
     }
+
 
     [ObservableProperty]
     public string delayInSeconds;
@@ -78,7 +90,14 @@ public partial class OptimizerViewModel : ViewModelBase
     private string selectedLiveAction;
 
     [ObservableProperty]
-    private bool textBoxVisibility;
+    private bool textBoxVisibility = false;
+
+    public HeatScheduleChart HeatScheduleChart = new();
+
+    public ISeries[] HeatScheduleSeries => HeatScheduleChart.Series;
+    public Axis[] HeatScheduleXAxis => HeatScheduleChart.XAxis;
+    public Axis[] HeatScheduleYAxis => HeatScheduleChart.YAxis;
+
 
     // A collection of units to show CurrentHeatOutput on the UI
     public ObservableCollection<UnitWithArrow> CurrentUnitsWithArrow { get; } = new(); 
@@ -93,6 +112,8 @@ public partial class OptimizerViewModel : ViewModelBase
         {
             var optimizer = new Optimizer();
             var optimizedData = optimizer.Optimize(SelectedScenario, SelectedPeriod, SelectedPreference);
+            
+
 
             foreach (var hour in optimizedData)
             {   
@@ -113,25 +134,40 @@ public partial class OptimizerViewModel : ViewModelBase
                     
                     CurrentUnitsWithArrow.Add(unitsWithUIElements);
 
-                    // Recalculating CurrentHeatOutput into a percentage based on MaxHeatOutput for the UI
-                    unitsWithUIElements.Unit.CurrentHeatOutput = unit.CurrentHeatOutput / unit.MaxHeatOutput * 100;
+               
+
+                    
+
 
                     // UI statistics
-                    TotalFuelConsumption += optimizer.TotalFuelConsumption;
-                    TotalCost += optimizer.TotalCost;
-                    TotalCO2Emissions += optimizer.TotalCO2Emissions;
+                    // TotalCost += unit.CurrentHeatOutput * unit.NetProductionCost;
+                    TotalFuelConsumption += unit.CurrentHeatOutput * unit.FuelConsumption;
+                    TotalCO2Emissions += unit.CurrentHeatOutput * unit.CO2Emissions;
+                    TotalCost += unit.CurrentHeatOutput * unit.NetProductionCost;
+                    
+
+
                 }
 
                 // Add charts here so they can update dynamically throughout the simulation
+                
+                //Console.WriteLine($"{hour.First()}");
+
+
+                HeatScheduleChart.Update(hour);
+
 
 
                 await Task.Yield();
                 await Task.Delay((int)(Delay_InSeconds * 1000));
-
-                
+            
             }
 
             Console.WriteLine("Outside loop");
+            SimulationRunning = false;
+
+            // Invokes event 
+            OptimizationEvent?.Invoke();
         }
         
         catch (Exception ex)
@@ -149,6 +185,14 @@ public partial class OptimizerViewModel : ViewModelBase
                 delay = 0;
 
             SimulationRunning = true;
+            TotalCost = TotalCO2Emissions = TotalFuelConsumption = 0;
+
+            HeatScheduleChart.TotalHeatDemand.Clear();
+            HeatScheduleChart.TimeLabels.Clear();
+
+
+
+
         
             Console.WriteLine($"Selected Scenario = {SelectedScenario}");
             Console.WriteLine($"Selected Period = {SelectedPeriod}");
@@ -190,24 +234,49 @@ public partial class OptimizerViewModel : ViewModelBase
     }
 
     // Simply a placeholder for the units' CurrentHeatOutput in the UI
-    private void Placeholder() 
+    partial void OnScenarioIsCheckedChanged(bool value) 
     {
-        foreach (var unit in new ProductionUnits[] 
+        if (SimulationRunning == false)
         {
-            new GasBoiler { Name = "GB1"} ,
-            new GasBoiler { Name = "GB2"} ,
-            new OilBoiler { Name = "OB1"} ,
-            new GasMotor { Name = "GM1"} ,
-            new HeatPump { Name = "HP1"} ,
-        })
-        {
-            var placeholder = new UnitWithArrow
-            {
-                Unit = unit,
-                ArrowPosition = 164
-            };
+            CurrentUnitsWithArrow.Clear();
 
-            CurrentUnitsWithArrow.Add(placeholder);   
+            if (value == true)
+            {
+                foreach (var unit in new ProductionUnits[] 
+                {
+                    new GasBoiler { Name = "GB1"} ,
+                    new GasBoiler { Name = "GB2"} ,
+                    new OilBoiler { Name = "OB1"} ,
+                })
+                {
+                    var placeholder = new UnitWithArrow
+                    {
+                        Unit = unit,
+                        ArrowPosition = 164
+                    };
+
+                    CurrentUnitsWithArrow.Add(placeholder);   
+                }
+            }
+            else
+            {
+                foreach (var unit in new ProductionUnits[] 
+                {
+                    new GasBoiler { Name = "GB1"} ,
+                    new OilBoiler { Name = "OB1"} ,
+                    new GasMotor { Name = "GM1"} ,
+                    new HeatPump { Name = "HP1"} ,
+                })
+                {
+                    var placeholder = new UnitWithArrow
+                    {
+                        Unit = unit,
+                        ArrowPosition = 164
+                    };
+
+                    CurrentUnitsWithArrow.Add(placeholder);   
+                }
+            }
         }
     }
 

@@ -19,13 +19,14 @@
                 <RadioButton GroupName="ScenarioGroup" 
                              Content="Scenario 1" 
                              Tag="Scenario 1" 
-                             IsChecked="True"
+                             IsChecked="{Binding ScenarioIsChecked}"
                              Checked="RadioButton_Checked" 
                              Classes="Design1"/>
 
                 <RadioButton GroupName="ScenarioGroup" 
                              Content="Scenario 2" 
                              Tag="Scenario 2" 
+                             IsChecked="{Binding !ScenarioIsChecked}"
                              Checked="RadioButton_Checked" 
                              Classes="Design1" />
 
@@ -33,12 +34,13 @@
                 <RadioButton GroupName="PeriodGroup" 
                              Content="Winter" 
                              Tag="Winter" 
-                             IsChecked="True"
+                             IsChecked="{Binding PeriodIsChecked}"
                              Checked="RadioButton_Checked" 
                              Classes="Design1"/>
 
                 <RadioButton GroupName="PeriodGroup" 
                              Content="Summer" 
+                             IsChecked="{Binding !PeriodIsChecked}"
                              Tag="Summer" 
                              Checked="RadioButton_Checked" 
                              Classes="Design1" />
@@ -47,13 +49,14 @@
                 <RadioButton GroupName="PreferenceGroup" 
                              Content="Price" 
                              Tag="Price" 
-                             IsChecked="True"
+                             IsChecked="{Binding PreferenceIsChecked}"
                              Checked="RadioButton_Checked"
                              Classes="Design1" />
 
                 <RadioButton GroupName="PreferenceGroup" 
                              Content="CO2 Emissions" 
                              Tag="CO2 Emissions" 
+                             IsChecked="{Binding !PreferenceIsChecked}"
                              Checked="RadioButton_Checked"
                              Classes="Design1" />
 
@@ -61,13 +64,14 @@
                 <RadioButton GroupName="LiveActionGroup" 
                              Content="Yes" 
                              Tag="Yes" 
-                             IsChecked="True"
+                             IsChecked="{Binding !LiveActionIsChecked}"
                              Checked="RadioButton_Checked"
                              Classes="Design1" />
                 
                 <RadioButton GroupName="LiveActionGroup" 
                              Content="No" 
                              Tag="No" 
+                             IsChecked="{Binding LiveActionIsChecked}"
                              Checked="RadioButton_Checked"
                              Classes="Design1" />
 
@@ -84,20 +88,31 @@
             </StackPanel>
         </Border>
 
-        <Grid Grid.Column="1" RowDefinitions="*, 300">
+        <Grid Grid.Column="1" RowDefinitions="*, Auto" >
 
             <!-- Chart Area -->
             <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10">
-                <StackPanel Grid.Row="0">
-                    <TextBlock Text="Hello"/>
+                <StackPanel>
+                    
+                    <lvc:CartesianChart
+                        MinWidth="250"
+                        MinHeight="250"
+                        Series="{Binding HeatScheduleSeries}"
+                        XAxes="{Binding HeatScheduleXAxis}"
+                        YAxes="{Binding HeatScheduleYAxis}" 
+                        ZoomMode="X"
+                        />
+
+
                 </StackPanel>
             </Border>
 
-            <!-- Showcase for the CurrentHeatOutput per Unit -->
-            <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10">
-                <Grid Grid.Row="1" ColumnDefinitions="*">
 
-                    <ItemsControl ItemsSource="{Binding CurrentUnitsWithArrow}" Grid.Column="0">
+            <!-- Unit CurrentHeatOutput Area -->
+            <Border  Grid.Row="1" IsVisible="{Binding TextBoxVisibility}" BorderBrush="Black" Height="300" BorderThickness="1" Padding="10" Margin="10" >
+                <Grid >
+
+                    <ItemsControl ItemsSource="{Binding CurrentUnitsWithArrow}" >
 
                         <!--  Sets the Units horizontally  -->
                         <ItemsControl.ItemsPanel>
@@ -171,12 +186,28 @@
                     </ItemsControl>
                 </Grid>
             </Border>
+
         </Grid>
 
         <!-- Statistics Column -->
         <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10">
             <StackPanel Grid.Column="2">
                 <TextBlock Text="Statistics" Classes="Header"/>
+
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock Text="Cost: " />
+                    <TextBlock Text="{Binding TotalCost}: " />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock Text="CO2: " />
+                    <TextBlock Text="{Binding TotalCO2Emissions}: " />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock Text="Fuel: " />
+                    <TextBlock Text="{Binding TotalFuelConsumption}: " />
+                </StackPanel>
                 
             </StackPanel>
         </Border>

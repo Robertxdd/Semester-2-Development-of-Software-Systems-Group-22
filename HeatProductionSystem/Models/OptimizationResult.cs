@@ -9,4 +9,6 @@ public class OptimizationResult
     public double HeatProduced { get; set; }
     public double Cost { get; set; }
     public double FuelConsumed { get; set; }
+
+    
 }

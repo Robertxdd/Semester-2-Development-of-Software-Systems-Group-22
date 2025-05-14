@@ -1,37 +1,100 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:HeatProductionSystem.ViewModels"
+             xmlns:local="using:HeatProductionSystem.ViewModels"
              x:Class="HeatProductionSystem.Views.ResultsView"
              x:DataType="vm:ResultsViewModel">
 
-    <Grid HorizontalAlignment="Center">
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0 10 0 0">
-            <Viewbox Stretch="Uniform" VerticalAlignment="Top">
-                <Border MinWidth="600">
-                    <StackPanel>
-                        <TextBlock Text="Production Units Results" FontSize="24" HorizontalAlignment="Center" Margin="0 10 0 0"/>
-
-                       
-                        <ComboBox ItemsSource="{Binding AvailableProductionUnits}" 
-                                  SelectedItem="{Binding SelectedProductionUnit, Mode=TwoWay}" 
-                                  Margin="20" 
-                                  Width="200"/>
-
-                        
-                        <StackPanel Margin="10">
-                            <TextBlock Text="Production Unit Data:" FontWeight="Bold" Margin="0,10,0,5"/>
-                            <ItemsControl ItemsSource="{Binding ProductionUnitData}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding}" FontSize="16"/>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
-
-                    </StackPanel>
+    
+        <Grid RowDefinitions="Auto, *" >
+        
+            <!-- Header for Result Data -->
+            <Grid Grid.Row="0" ColumnDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto" HorizontalAlignment="Center" Margin="0,10,0,2" Background="#F6F4F4">
+                
+                <Border Grid.Column="0" Classes="Grid" Width="150">
+                    <TextBlock Text="Timestamp" Classes="Grid" />
                 </Border>
-            </Viewbox>
-        </ScrollViewer>
-    </Grid>
+
+                <Border Grid.Column="1" Classes="Grid" BorderThickness="0 1 0 1" Width="100">
+                    <TextBlock Text="Boiler Name" Classes="Grid" />
+                </Border>
+
+                <Border Grid.Column="2" Classes="Grid" Width="185">
+                    <TextBlock Text="Procued Heat (MWh(th))" Classes="Grid" />
+                </Border>
+
+                <Border Grid.Column="3" Classes="Grid" BorderThickness="0 1 0 1" Width="90">
+                    <TextBlock Text="Cost (DKK)" Classes="Grid" />
+                </Border>
+
+                <Border Grid.Column="4" Classes="Grid" Width="220">
+                    <TextBlock Text="Consumed Fuel (MWh(Fuel))" Classes="Grid" />
+                </Border>
+            </Grid>
+
+            <ScrollViewer Grid.Row="1">
+
+            
+
+            
+
+
+
+
+
+                <!-- ItemsControl for Result Data -->
+                <ItemsControl  ItemsSource="{Binding OptimizationResults}" Margin="0,0,0,10">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="Auto,*" HorizontalAlignment="Center" Background="#F6F4F4">
+
+                                <!-- Timestamps Column -->
+                                <Border Grid.Column="0" Classes="Grid" Width="150" BorderThickness="2,1,1,1"  >
+                                    <TextBlock Text="{Binding Timestamp}" Classes="Grid" />
+                                </Border>
+
+                                
+                                    <!-- Units Column -->
+                                    <ItemsControl Grid.Column="1" ItemsSource="{Binding Units}" Margin="0,0,0,0"  >
+
+                                        <!-- Makes the Units fill the entire space vertically -->
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <UniformGrid Columns="1"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+
+                                        <ItemsControl.ItemTemplate >
+                                            <DataTemplate>
+                                                    <Grid Grid.Row="0" ColumnDefinitions="100, 185, 90, 220"  HorizontalAlignment="Left"  >
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="*" />
+                                                        </Grid.RowDefinitions>
+                                                        
+                                                        <Border Grid.Column="0"   Classes="Grid" BorderThickness="1 1 0 1">
+                                                            <TextBlock Text="{Binding UnitName}" />
+                                                        </Border>
+
+                                                        <Border Grid.Column="1" Classes="Grid" >
+                                                            <TextBlock Text="{Binding HeatProduced}" />
+                                                        </Border>
+
+                                                        <Border Grid.Column="2" Classes="Grid" BorderThickness="0 1 0 1" >
+                                                            <TextBlock Text="{Binding Cost}" />
+                                                        </Border>
+
+                                                        <Border Grid.Column="3" Classes="Grid" BorderThickness="1,1,2,1" >
+                                                            <TextBlock Text="{Binding FuelConsumed}" />
+                                                        </Border>
+                                                    </Grid> 
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+            </ScrollViewer>
+        </Grid>
 </UserControl>
