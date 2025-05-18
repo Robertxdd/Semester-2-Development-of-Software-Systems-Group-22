@@ -104,7 +104,8 @@
                         <!-- The chart for the various -->
                     <lvc:CartesianChart 
                         Series="{Binding SelectedSeries}" 
-                        XAxes="{Binding SelectedAxis}"
+                        XAxes="{Binding SelectedXAxis}"
+                        YAxes="{Binding SelectedYAxis}"
                         ZoomMode="X"/>
                     </Border>
 
@@ -129,6 +130,12 @@
                                      Classes="Design1"
                                      Checked="RadioButton_Checked"
                                      Width="170"/>
+                        <RadioButton Content="CO2 Emissions"
+                                     GroupName="Charts"
+                                     Tag="CO2Emissions"
+                                     Classes="Design1"
+                                     Checked="RadioButton_Checked"
+                                     Width="170"/>             
                     </StackPanel>
                 </Grid>
             </Border>

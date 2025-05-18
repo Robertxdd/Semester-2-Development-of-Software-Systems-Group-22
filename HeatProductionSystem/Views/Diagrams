@@ -69,5 +69,27 @@ public class TimeSeriesHeatDemandChart
 
 }
 
+public class CO2EmissionsChart
+    {
+        public ObservableCollection<string> TimeLabels { get; } = new();
+        public ObservableCollection<double> CO2Emissions { get; } = new();
 
+        public void CreateChart(List<ProductionUnits> step)
+        {
+            if (unitsAtTimeStep == null || unitsAtTimeStep.Count == 0)
+                return;
 
+            TimeLabels.Clear();
+            CO2Emissions.Clear();
+
+            foreach (var unit in unitsAtTimeStep)
+            {
+            if (string.IsNullOrEmpty(timeLabel))
+                timeLabel = unit.Timestamp.ToString("dd-MM HH:mm");
+
+                double co2Value = unit.CurrentHeatOutput * unit.CO2Emissions; 
+
+                CO2Emissions.Add(co2Value);
+            }
+        }
+    }

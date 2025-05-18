@@ -15,10 +15,6 @@ using System.Globalization;
 using Avalonia.Data.Converters;
 
 
-
-
-
-
 namespace HeatProductionSystem.ViewModels;
 
 public partial class OptimizerViewModel : ViewModelBase
@@ -26,13 +22,17 @@ public partial class OptimizerViewModel : ViewModelBase
     // Event that informs Result Data Manager a new optimization has been completed and to update
     public static event Action OptimizationEvent;
     
-    public ISeries[] Series { get; set; }
+    [ObservableProperty]
+    public ISeries[] selectedSeries;
+
+    [ObservableProperty]
+    public Axis[] selectedXAxis;
+
+    [ObservableProperty]
+    public Axis[] selectedYAxis;
  
     [ObservableProperty]
     private string selectedChart;
-
-    [ObservableProperty]
-    public ISeries[] selectedSeries;
 
     [ObservableProperty]
     public Axis[] selectedAxis;
@@ -107,6 +107,13 @@ public partial class OptimizerViewModel : ViewModelBase
     public Axis[] HeatScheduleXAxis => HeatScheduleChart.XAxis;
     public Axis[] HeatScheduleYAxis => HeatScheduleChart.YAxis;
 
+    public CO2EmissionsChart CO2EmissionsChart = new();
+
+    public ISeries[] CO2EmissionsSeries => CO2EmissionsChart.Series;
+    public Axis[] CO2XAxis => CO2EmissionsChart.XAxis;
+    public Axis[] CO2YAxis => CO2EmissionsChart.YAxis;
+
+
 
     // A collection of units to show CurrentHeatOutput on the UI
     public ObservableCollection<UnitWithArrow> CurrentUnitsWithArrow { get; } = new(); 
@@ -122,7 +129,7 @@ public partial class OptimizerViewModel : ViewModelBase
             var optimizer = new Optimizer();
             var optimizedData = optimizer.Optimize(SelectedScenario, SelectedPeriod, SelectedPreference);
             
-
+            int ChartCount = 0;
 
             foreach (var hour in optimizedData)
             {   
@@ -155,8 +162,8 @@ public partial class OptimizerViewModel : ViewModelBase
                 // Add charts here so they can update dynamically throughout the simulation
 
 
-                HeatScheduleChart.Update(hour);
-
+                HeatScheduleChart.Update(hour); ChartCount++;
+                CO2EmissionsChart.Update(hour, ChartCount);ChartCount++;
 
 
                 await Task.Yield();
@@ -240,6 +247,11 @@ public partial class OptimizerViewModel : ViewModelBase
             case "HeatSchedule":
                 SelectedSeries = HeatDemandSeries; // If you later separate them, use the dedicated schedule series
                 SelectedAxis = TimeXAxis;
+                break;
+            case "CO2Emissions":
+                SelectedSeries = CO2EmissionsChart.Series;
+                SelectedXAxis = CO2EmissionsChart.XAxis;
+                SelectedYAxis = CO2EmissionsChart.YAxis;
                 break;
             default:
                 break;

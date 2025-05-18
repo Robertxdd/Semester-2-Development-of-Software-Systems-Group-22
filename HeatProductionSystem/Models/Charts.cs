@@ -8,19 +8,44 @@ using LiveChartsCore.SkiaSharpView;
 using System.Collections.Generic;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
+using System.Linq;
 
 namespace HeatProductionSystem.Models;
 
 public abstract class Chart
-{   
-    public ObservableCollection<string> TimeLabels { get; } = new();
-    
+{
+    public ObservableCollection<string> TimeLabels { get; set; } = new();
+
     public ISeries[] Series { get; set; }
-
     public Axis[] XAxis { get; set; }
-
     public Axis[] YAxis { get; set; }
 
+    public virtual void Clear()
+    {
+        TimeLabels.Clear();
+    }
+
+    protected void TimeStamps(int count)
+    {
+        var AllTimestamps = ResultDataManager.resultDataByTime.Keys.ToList();
+
+        if (count < AllTimestamps.Count)
+        {
+            string timeFrom = AllTimestamps[count].Split('—')[0];
+            string[] splitTimeFrom = timeFrom.Split('/',' ');
+
+            if (splitTimeFrom.Length == 5)
+            {
+                string timestamp = splitTimeFrom[0] + "/" + splitTimeFrom[1] + " " + splitTimeFrom[3];
+                TimeLabels.Add(timestamp);
+            }
+
+            else
+            {
+                Console.WriteLine($"Malformed timestamp: {timeFrom}");
+            }
+        }
+    }
 }
 
 
@@ -93,8 +118,9 @@ public class HeatScheduleChart : Chart
             new Axis
             {
                 Labels = TimeLabels,
-
-                
+                LabelsRotation = 90,
+                LabelsDensity = 0,
+                NameTextSize = 10,
             }
         };
 
@@ -105,7 +131,7 @@ public class HeatScheduleChart : Chart
                 MinLimit = 0,
                 MaxLimit = 10,
                 MinStep = 2 ,
-                ForceStepToMin = true,
+                ForceStepToMin = true,  
 
                  
                 Name = "Heat Demand (MW)",
@@ -113,6 +139,56 @@ public class HeatScheduleChart : Chart
         };
 
     }
-
-
 }
+
+public class CO2EmissionsChart : Chart
+{
+    public ObservableCollection<double> TotalCO2Emissions { get; } = new();
+
+    public void Update(List<ProductionUnits> unitList, int count)
+    {
+        TimeStamps(count);
+
+        double totalCO2Emissions = 0;
+
+        foreach (var unit in unitList)
+        {
+            //CO2 per MW * generated heat(MW)
+            double CO2Emission = unit.CO2Emissions * unit.CurrentHeatOutput;
+            totalCO2Emissions += CO2Emission;
+        }
+
+        TotalCO2Emissions.Add(totalCO2Emissions);
+    }
+
+    public CO2EmissionsChart()
+    {
+        Series = new ISeries[]
+        {
+            new LineSeries<double>
+            {
+                Values = TotalCO2Emissions,
+                Name = "Total CO2 Emissions",
+                Stroke = new SolidColorPaint(SKColors.Black, 2),
+                GeometrySize = 0,
+                GeometryStroke = null
+            }
+        };
+
+        XAxis = new Axis[]
+        {   
+            new Axis
+            {
+                Labels = TimeLabels
+            }
+        };
+
+        YAxis = new Axis[]
+        {
+            new Axis
+            {
+                Name = "CO2 Emissions"
+            }
+        };
+    }
+} 
