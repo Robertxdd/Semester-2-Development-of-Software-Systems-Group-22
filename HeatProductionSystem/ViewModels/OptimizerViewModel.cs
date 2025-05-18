@@ -13,6 +13,7 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.Generic;
 using System.Globalization;
 using Avalonia.Data.Converters;
+using System.Diagnostics.Metrics;
 
 
 
@@ -102,6 +103,10 @@ public partial class OptimizerViewModel : ViewModelBase
     private bool textBoxVisibility = false;
 
     public HeatScheduleChart HeatScheduleChart = new();
+    public ElectricityPriceChart ElectricityPriceChart = new();
+
+    [ObservableProperty]
+    private Models.Chart activeChart;
 
     public ISeries[] HeatScheduleSeries => HeatScheduleChart.Series;
     public Axis[] HeatScheduleXAxis => HeatScheduleChart.XAxis;
@@ -121,7 +126,7 @@ public partial class OptimizerViewModel : ViewModelBase
         {
             var optimizer = new Optimizer();
             var optimizedData = optimizer.Optimize(SelectedScenario, SelectedPeriod, SelectedPreference);
-            
+            int elpricecounter = 0;
 
 
             foreach (var hour in optimizedData)
@@ -156,7 +161,8 @@ public partial class OptimizerViewModel : ViewModelBase
 
 
                 HeatScheduleChart.Update(hour);
-
+                ElectricityPriceChart.Update(optimizer.electricityPrices[elpricecounter]);
+                elpricecounter++;
 
 
                 await Task.Yield();
@@ -227,22 +233,18 @@ public partial class OptimizerViewModel : ViewModelBase
     {
         if (newValue == oldValue) return;
 
-        //Update the current ISeries & Axis to the newly selected chart
         switch (newValue)
         {
             case "ElectricityPrice":
-                SelectedSeries = ElectricitySeries;
-                SelectedAxis = ElectricityPriceTimeXAxes;
-                break;
-            case "HeatDemand":
-                Console.WriteLine("Switched to HeatDemand Chart");
+                ActiveChart = ElectricityPriceChart;
                 break;
             case "HeatSchedule":
-                SelectedSeries = HeatDemandSeries; // If you later separate them, use the dedicated schedule series
-                SelectedAxis = TimeXAxis;
+                ActiveChart = HeatScheduleChart;
                 break;
             default:
                 break;
+
+            //Add more charts here for switching
         }
     }
     
