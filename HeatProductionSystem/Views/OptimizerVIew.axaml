@@ -106,6 +106,10 @@
                         Series="{Binding SelectedSeries}" 
                         XAxes="{Binding SelectedXAxis}"
                         YAxes="{Binding SelectedYAxis}"
+
+                        Series="{Binding ActiveChart.Series}"
+                        XAxes="{Binding ActiveChart.XAxis}"
+
                         ZoomMode="X"/>
                     </Border>
 
