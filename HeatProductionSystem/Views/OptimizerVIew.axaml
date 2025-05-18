@@ -103,8 +103,8 @@
 
                         <!-- The chart for the various -->
                     <lvc:CartesianChart 
-                        Series="{Binding SelectedSeries}" 
-                        XAxes="{Binding SelectedAxis}"
+                        Series="{Binding ActiveChart.Series}"
+                        XAxes="{Binding ActiveChart.XAxis}"
                         ZoomMode="X"/>
                     </Border>
 
