@@ -49,6 +49,41 @@ public abstract class Chart
 }
 
 
+public class HeaDemandChart : Chart
+{
+    public ObservableCollection<double> TotalHeatDemand { get; } = new();
+    public ObservableCollection<string> TimeLabels { get; } = new();
+
+    public HeatDemandChart()
+    {
+        Series = new ISeries[]
+        {
+            new LineSeries<double>
+            {
+                Values = TotalHeatDemand,
+                Name = "Heat Demand",
+                Stroke = new SolidColorPaint(SKColors.Black, 2),
+                GeometrySize = 0
+            }
+        };
+
+        XAxis = new Axis[]
+        {
+            new Axis { Labels = TimeLabels, Name = "Time" }
+        };
+
+        YAxis = new Axis[]
+        {
+            new Axis { Name = "Heat Output (MW)" }
+        };
+    }
+
+    public void Update(double currentHeatDemand, string timeStamp)
+    {
+        TotalHeatDemand.Add(currentHeatDemand);
+        TimeLabels.Add(timeStamp);
+    }
+}
 
 
 
