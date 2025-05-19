@@ -19,10 +19,10 @@ using System.Diagnostics.Metrics;
 namespace HeatProductionSystem.ViewModels;
 
 public partial class OptimizerViewModel : ViewModelBase
-{       
+{
     // Event that informs Result Data Manager a new optimization has been completed and to update
     public static event Action OptimizationEvent;
-    
+
     [ObservableProperty]
     public ISeries[] selectedSeries;
 
@@ -31,13 +31,13 @@ public partial class OptimizerViewModel : ViewModelBase
 
     [ObservableProperty]
     public Axis[] selectedYAxis;
- 
+
     [ObservableProperty]
     private string selectedChart;
 
     [ObservableProperty]
     public Axis[] selectedAxis;
-    
+
     [ObservableProperty]
     private ISeries[] electricitySeries;
 
@@ -69,9 +69,9 @@ public partial class OptimizerViewModel : ViewModelBase
         SelectedPeriod = "Winter";
         SelectedPreference = "Price";
         SelectedLiveAction = "No";
-        
+
         ScenarioIsChecked = true;
-        
+
     }
 
 
@@ -86,7 +86,7 @@ public partial class OptimizerViewModel : ViewModelBase
 
     [ObservableProperty]
     public double totalCO2Emissions;
-    
+
     [ObservableProperty]
     private string selectedScenario;
 
@@ -110,6 +110,7 @@ public partial class OptimizerViewModel : ViewModelBase
 
     public ISeries[] HeatScheduleSeries => HeatScheduleChart.Series;
     public Axis[] HeatScheduleXAxis => HeatScheduleChart.XAxis;
+
     public Axis[] HeatScheduleYAxis => HeatScheduleChart.YAxis;
 
     public CO2EmissionsChart CO2EmissionsChart = new();
@@ -121,42 +122,42 @@ public partial class OptimizerViewModel : ViewModelBase
 
 
     // A collection of units to show CurrentHeatOutput on the UI
-    public ObservableCollection<UnitWithArrow> CurrentUnitsWithArrow { get; } = new(); 
+    public ObservableCollection<UnitWithArrow> CurrentUnitsWithArrow { get; } = new();
 
     public bool SimulationRunning = false;
 
     public async Task OptimizerSimulation(double Delay_InSeconds)
-    {   
+    {
         Console.WriteLine("Simulation started");
-        
+
         try
         {
             var optimizer = new Optimizer();
             var optimizedData = optimizer.Optimize(SelectedScenario, SelectedPeriod, SelectedPreference);
-            
+
             int ChartCount = 0;
             int elpricecounter = 0;
 
             foreach (var hour in optimizedData)
-            {   
+            {
                 // Enables you to later be able to stop the simulation
-                if (!SimulationRunning) break; 
+                if (!SimulationRunning) break;
 
-                 CurrentUnitsWithArrow.Clear();
+                CurrentUnitsWithArrow.Clear();
 
                 foreach (var unit in hour)
-                {   
+                {
                     // An ObservableCollection for showing CurrentHeatOutput in the UI
                     var unitsWithUIElements = new UnitWithArrow
                     {
-                        Unit = unit ,
-                        ArrowPosition = CalculateArrowPosition(unit) ,
-                        BarHeight = 164 - CalculateArrowPosition(unit) 
+                        Unit = unit,
+                        ArrowPosition = CalculateArrowPosition(unit),
+                        BarHeight = 164 - CalculateArrowPosition(unit)
                     };
-                    
+
                     CurrentUnitsWithArrow.Add(unitsWithUIElements);
 
-               
+
                     // UI statistics
                     // TotalCost += unit.CurrentHeatOutput * unit.NetProductionCost;
                     TotalFuelConsumption += unit.CurrentHeatOutput * unit.FuelConsumption;
@@ -169,16 +170,16 @@ public partial class OptimizerViewModel : ViewModelBase
 
 
 
-                HeatScheduleChart.Update(hour); ChartCount++;
-                CO2EmissionsChart.Update(hour, ChartCount);ChartCount++;
+                HeatScheduleChart.Update(hour, ChartCount); ChartCount++;
+                CO2EmissionsChart.Update(hour, ChartCount); ChartCount++;
 
-                HeatScheduleChart.Update(hour);
+
                 ElectricityPriceChart.Update(optimizer.electricityPrices[elpricecounter]);
                 elpricecounter++;
 
                 await Task.Yield();
                 await Task.Delay((int)(Delay_InSeconds * 1000));
-            
+
             }
 
             Console.WriteLine("Outside loop");
@@ -187,7 +188,7 @@ public partial class OptimizerViewModel : ViewModelBase
             // Invokes event 
             OptimizationEvent?.Invoke();
         }
-        
+
         catch (Exception ex)
         {
             Console.WriteLine($"[ERROR] Optimizer failed: {ex.Message}");
@@ -198,15 +199,15 @@ public partial class OptimizerViewModel : ViewModelBase
     public async Task Optimize()
     {
         if (double.TryParse(DelayInSeconds, out double delay) || SelectedLiveAction == "No")
-        {   
+        {
             if (SelectedLiveAction == "No")
                 delay = 0;
 
             SimulationRunning = true;
             TotalCost = TotalCO2Emissions = TotalFuelConsumption = 0;
 
-            HeatScheduleChart.TotalHeatDemand.Clear();
-            HeatScheduleChart.TimeLabels.Clear();
+            //HeatScheduleChart.TotalHeatDemand.Clear();
+            //HeatScheduleChart.TimeLabels.Clear();
 
 
 
@@ -215,7 +216,7 @@ public partial class OptimizerViewModel : ViewModelBase
             Console.WriteLine($"Selected Preference = {SelectedPreference}");
             Console.WriteLine($"Selected Live-Action = {SelectedLiveAction}");
             Console.WriteLine($"Selected Delay = {delay}");
-        
+
             await OptimizerSimulation(delay);
         }
 
@@ -251,6 +252,9 @@ public partial class OptimizerViewModel : ViewModelBase
                 break;
             case "HeatSchedule":
                 ActiveChart = HeatScheduleChart;
+                SelectedSeries = HeatScheduleChart.Series;
+                SelectedXAxis = HeatScheduleChart.XAxis;
+                SelectedYAxis = HeatScheduleChart.YAxis;
                 break;
             case "CO2Emissions":
                 SelectedSeries = CO2EmissionsChart.Series;
@@ -260,21 +264,21 @@ public partial class OptimizerViewModel : ViewModelBase
             default:
                 break;
 
-            //Add more charts here for switching
+                //Add more charts here for switching
         }
     }
-    
+
     partial void OnSelectedLiveActionChanged(string value)
     {
         if (value == "Yes")
             TextBoxVisibility = true;
-        
+
         else
             TextBoxVisibility = false;
     }
 
     // Simply a placeholder for the units' CurrentHeatOutput in the UI
-    partial void OnScenarioIsCheckedChanged(bool value) 
+    partial void OnScenarioIsCheckedChanged(bool value)
     {
         if (SimulationRunning == false)
         {
@@ -282,7 +286,7 @@ public partial class OptimizerViewModel : ViewModelBase
 
             if (value == true)
             {
-                foreach (var unit in new ProductionUnits[] 
+                foreach (var unit in new ProductionUnits[]
                 {
                     new GasBoiler { Name = "GB1"} ,
                     new GasBoiler { Name = "GB2"} ,
@@ -295,12 +299,12 @@ public partial class OptimizerViewModel : ViewModelBase
                         ArrowPosition = 164
                     };
 
-                    CurrentUnitsWithArrow.Add(placeholder);   
+                    CurrentUnitsWithArrow.Add(placeholder);
                 }
             }
             else
             {
-                foreach (var unit in new ProductionUnits[] 
+                foreach (var unit in new ProductionUnits[]
                 {
                     new GasBoiler { Name = "GB1"} ,
                     new OilBoiler { Name = "OB1"} ,
@@ -314,7 +318,7 @@ public partial class OptimizerViewModel : ViewModelBase
                         ArrowPosition = 164
                     };
 
-                    CurrentUnitsWithArrow.Add(placeholder);   
+                    CurrentUnitsWithArrow.Add(placeholder);
                 }
             }
         }
@@ -397,7 +401,7 @@ public partial class OptimizerViewModel : ViewModelBase
     //     }
     //     else if (scenario == "Scenario 2")
     //     {
-            
+
     //     }
     // }
 }

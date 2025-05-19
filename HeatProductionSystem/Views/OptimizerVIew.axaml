@@ -103,14 +103,12 @@
 
                         <!-- The chart for the various -->
                     <lvc:CartesianChart 
-                        Series="{Binding SelectedSeries}" 
-                        XAxes="{Binding SelectedXAxis}"
-                        YAxes="{Binding SelectedYAxis}"
-
+                     
                         Series="{Binding ActiveChart.Series}"
                         XAxes="{Binding ActiveChart.XAxis}"
-
                         ZoomMode="X"/>
+
+            
                     </Border>
 
                     <StackPanel Grid.Column="1" HorizontalAlignment="Right" Margin="10" Spacing="20"

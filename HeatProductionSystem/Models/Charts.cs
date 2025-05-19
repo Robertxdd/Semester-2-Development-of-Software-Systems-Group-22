@@ -32,7 +32,7 @@ public abstract class Chart
         if (count < AllTimestamps.Count)
         {
             string timeFrom = AllTimestamps[count].Split('—')[0];
-            string[] splitTimeFrom = timeFrom.Split('/',' ');
+            string[] splitTimeFrom = timeFrom.Split('/', ' ');
 
             if (splitTimeFrom.Length == 5)
             {
@@ -55,47 +55,9 @@ public abstract class Chart
 public class HeatScheduleChart : Chart
 {
     public ObservableCollection<double> TotalHeatDemand { get; } = new();
-    public ObservableCollection<List<ProductionUnits>> UsedUnits { get; } = new();
-    public List<List<double>> UnitsList { get; } = new();
-    
-    
-    public  void Update(List<ProductionUnits> unitList)
-    {   
-        List<ProductionUnits> ChartUnitsPerHour = new();
 
-        List<double> UnitsDouble = new();
-
-
-        foreach(var time in ResultDataManager.resultDataByTime.Keys)
-        {
-            TimeLabels.Add(time);
-        }
-
-        double totalHeatDemand = 0;
-
-        // Console.WriteLine($"List length: {unitList.Count}");
-
-        foreach (var unit in unitList)
-        {   
-
-            Console.WriteLine($"unit name: {unit.Name} - CurrentheatOutput: {unit.CurrentHeatOutput}");
-
-            totalHeatDemand += unit.CurrentHeatOutput;
-
-            UnitsDouble.Add(unit.CurrentHeatOutput);
-            
-            // ChartUnitsPerHour.Add(unit);
-            
-        }
-        Console.WriteLine($"TotalHeatDemand: {totalHeatDemand}");
-        TotalHeatDemand.Add(totalHeatDemand);
-        // UsedUnits.Add(ChartUnitsPerHour);
-
-        UnitsList.Add(UnitsDouble);
-
-        
-        
-    }
+    private Dictionary<string, ObservableCollection<double>> unitHeatOutputs = new();
+    private List<StackedAreaSeries<double>> stackedSeries = new();
 
     public HeatScheduleChart()
     {
@@ -104,42 +66,93 @@ public class HeatScheduleChart : Chart
             new LineSeries<double>
             {
                 Values = TotalHeatDemand,
-                Name = "Total",
+                Name = "Heat Demand",
                 Stroke = new SolidColorPaint(SKColors.Black, 2),
-                GeometrySize = 0,
-                GeometryStroke = null,
-                Fill = null
-            },
-            
+                GeometrySize = 0
+            }
         };
 
         XAxis = new Axis[]
         {
-            new Axis
-            {
-                Labels = TimeLabels,
-                LabelsRotation = 90,
-                LabelsDensity = 0,
-                NameTextSize = 10,
-            }
+            new Axis { Labels = TimeLabels }
         };
 
         YAxis = new Axis[]
         {
-            new Axis
-            {
-                MinLimit = 0,
-                MaxLimit = 10,
-                MinStep = 2 ,
-                ForceStepToMin = true,  
-
-                 
-                Name = "Heat Demand (MW)",
-            }
+            new Axis { Name = "Heat Output (MW)" }
         };
+    }
 
+    public void Update(List<ProductionUnits> unitList, int count)
+    {
+        TimeStamps(count);
+
+        double totalHeatDemand = 0;
+
+        foreach (var unit in unitList)
+        {
+            totalHeatDemand += unit.CurrentHeatOutput;
+
+            if (!unitHeatOutputs.ContainsKey(unit.Name))
+            {
+                unitHeatOutputs[unit.Name] = new ObservableCollection<double>();
+
+                var color = GetColorForUnit(unit.Name);
+
+                var newArea = new StackedAreaSeries<double>
+                {
+                    Values = unitHeatOutputs[unit.Name],
+                    Name = unit.Name,
+                    Fill = new SolidColorPaint(color),
+                    Stroke = null,
+                    GeometrySize = 0
+                };
+
+                stackedSeries.Add(newArea);
+
+                // Rebuild all series: stacked first, then demand line
+                var allSeries = new List<ISeries>();
+                allSeries.AddRange(stackedSeries);
+                allSeries.Add(new LineSeries<double>
+                {
+                    Values = TotalHeatDemand,
+                    Name = "Heat Demand",
+                    Stroke = new SolidColorPaint(SKColors.Black, 2),
+                    GeometrySize = 0
+                });
+
+                Series = allSeries.ToArray();
+            }
+
+            unitHeatOutputs[unit.Name].Add(unit.CurrentHeatOutput);
+        }
+
+        TotalHeatDemand.Add(totalHeatDemand);
+
+        // Pad missing data with 0 for consistency
+        foreach (var unitName in unitHeatOutputs.Keys)
+        {
+            if (!unitList.Any(u => u.Name == unitName))
+                unitHeatOutputs[unitName].Add(0);
+        }
+    }
+
+    private SKColor GetColorForUnit(string unitName)
+    {
+        return unitName switch
+        {
+            "GB1" => new SKColor(189, 138, 0),    // Mustard Yellow
+            "GB2" => new SKColor(122, 62, 0),     // Dark Brown
+            "OB1" => new SKColor(192, 192, 192),  // Gray
+            "HP1" => new SKColor(0, 192, 192),
+            "GM1" => new SKColor(0, 0, 192),
+            _ => SKColors.LightGray
+        };
     }
 }
+
+
+
 
 public class CO2EmissionsChart : Chart
 {
@@ -165,30 +178,30 @@ public class CO2EmissionsChart : Chart
     {
         Series = new ISeries[]
         {
-            new LineSeries<double>
-            {
-                Values = TotalCO2Emissions,
-                Name = "Total CO2 Emissions",
-                Stroke = new SolidColorPaint(SKColors.Black, 2),
-                GeometrySize = 0,
-                GeometryStroke = null
-            }
+                new LineSeries<double>
+                {
+                    Values = TotalCO2Emissions,
+                    Name = "Total CO2 Emissions",
+                    Stroke = new SolidColorPaint(SKColors.Black, 2),
+                    GeometrySize = 0,
+                    GeometryStroke = null
+                }
         };
 
         XAxis = new Axis[]
-        {   
-            new Axis
-            {
-                Labels = TimeLabels
-            }
+        {
+                new Axis
+                {
+                    Labels = TimeLabels
+                }
         };
 
         YAxis = new Axis[]
         {
-            new Axis
-            {
-                Name = "CO2 Emissions"
-            }
+                new Axis
+                {
+                    Name = "CO2 Emissions"
+                }
         };
     }
-} 
+}
