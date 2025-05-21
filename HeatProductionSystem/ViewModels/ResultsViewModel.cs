@@ -57,7 +57,8 @@ public partial class ResultsViewModel : ViewModelBase
                     UnitName = parts[1],
                     HeatProduced = Convert.ToDouble(parts[2]),
                     Cost = Convert.ToDouble(parts[3]),
-                    FuelConsumed = Convert.ToDouble(parts[4])
+                    FuelConsumed = Convert.ToDouble(parts[4]),
+                    CO2Emissions = Convert.ToDouble(parts[5])
                 };
                 
                 if (!groupedUnits.ContainsKey(unitTimestamp))

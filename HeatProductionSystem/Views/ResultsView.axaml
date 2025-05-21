@@ -9,7 +9,7 @@
         <Grid RowDefinitions="Auto, *" >
         
             <!-- Header for Result Data -->
-            <Grid Grid.Row="0" ColumnDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto" HorizontalAlignment="Center" Margin="0,10,0,2" Background="#F6F4F4">
+            <Grid Grid.Row="0" ColumnDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto" HorizontalAlignment="Center" Margin="0,10,0,2" Background="#F6F4F4">
                 
                 <Border Grid.Column="0" Classes="Grid" Width="150">
                     <TextBlock Text="Timestamp" Classes="Grid" />
@@ -23,23 +23,20 @@
                     <TextBlock Text="Procued Heat (MWh(th))" Classes="Grid" />
                 </Border>
 
-                <Border Grid.Column="3" Classes="Grid" BorderThickness="0 1 0 1" Width="90">
-                    <TextBlock Text="Cost (DKK)" Classes="Grid" />
+                <Border Grid.Column="3" Classes="Grid" BorderThickness="0 1 0 1" Width="160">
+                    <TextBlock Text="Cost (DKK)" Classes="Grid" HorizontalAlignment="Center"/>
                 </Border>
 
                 <Border Grid.Column="4" Classes="Grid" Width="220">
                     <TextBlock Text="Consumed Fuel (MWh(Fuel))" Classes="Grid" />
                 </Border>
+
+                <Border Grid.Column="5" Classes="Grid" Width="160">
+                    <TextBlock Text="CO2 Emissions (Kg)" Classes="Grid" />
+                </Border>
             </Grid>
-
+            
             <ScrollViewer Grid.Row="1">
-
-            
-
-            
-
-
-
 
 
                 <!-- ItemsControl for Result Data -->
@@ -66,25 +63,29 @@
 
                                         <ItemsControl.ItemTemplate >
                                             <DataTemplate>
-                                                    <Grid Grid.Row="0" ColumnDefinitions="100, 185, 90, 220"  HorizontalAlignment="Left"  >
+                                                    <Grid Grid.Row="0" ColumnDefinitions="100, 185, 160, 220, 160"  HorizontalAlignment="Left"  >
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition Height="*" />
                                                         </Grid.RowDefinitions>
                                                         
-                                                        <Border Grid.Column="0"   Classes="Grid" BorderThickness="1 1 0 1">
+                                                        <Border Grid.Column="0"   Classes="Grid" BorderThickness="1,1,0,1">
                                                             <TextBlock Text="{Binding UnitName}" />
                                                         </Border>
 
                                                         <Border Grid.Column="1" Classes="Grid" >
-                                                            <TextBlock Text="{Binding HeatProduced}" />
+                                                            <TextBlock Text="{Binding HeatProduced, StringFormat='{}{0:N3}'}}" />
                                                         </Border>
 
-                                                        <Border Grid.Column="2" Classes="Grid" BorderThickness="0 1 0 1" >
-                                                            <TextBlock Text="{Binding Cost}" />
+                                                        <Border Grid.Column="2" Classes="Grid" BorderThickness="0,1,1,1" >
+                                                            <TextBlock Text="{Binding Cost, StringFormat='{}{0:N3}'}}" />
                                                         </Border>
 
-                                                        <Border Grid.Column="3" Classes="Grid" BorderThickness="1,1,2,1" >
-                                                            <TextBlock Text="{Binding FuelConsumed}" />
+                                                        <Border Grid.Column="3" Classes="Grid" BorderThickness="0,1,0,1" >
+                                                            <TextBlock Text="{Binding FuelConsumed, StringFormat='{}{0:N3}'}}" />
+                                                        </Border>
+
+                                                        <Border Grid.Column="4" Classes="Grid" BorderThickness="1,1,2,1" >
+                                                            <TextBlock Text="{Binding CO2Emissions, StringFormat='{}{0:N3}'}}" />
                                                         </Border>
                                                     </Grid> 
                                             </DataTemplate>

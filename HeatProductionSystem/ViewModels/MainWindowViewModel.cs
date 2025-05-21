@@ -15,17 +15,18 @@ public partial class MainWindowViewModel : ViewModelBase
     private ViewModelBase optimizerView;
 
     private ViewModelBase ResultsView;
- 
+
     public MainWindowViewModel()
     {
-        
+
         dashboardView = new DashboardViewModel();
         optimizerView = new OptimizerViewModel();
         productionUnitsView = new ProductionUnitsViewModel();
         ResultsView = new ResultsViewModel();
-  
 
-        selectedView = dashboardView; 
+
+        // selectedView = dashboardView; 
+        selectedView = optimizerView;
     }
     
     [RelayCommand]

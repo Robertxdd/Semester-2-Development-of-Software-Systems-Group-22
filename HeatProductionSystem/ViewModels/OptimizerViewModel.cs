@@ -23,38 +23,10 @@ public partial class OptimizerViewModel : ViewModelBase
     // Event that informs Result Data Manager a new optimization has been completed and to update
     public static event Action OptimizationEvent;
 
-    [ObservableProperty]
-    public ISeries[] selectedSeries;
-
-    [ObservableProperty]
-    public Axis[] selectedXAxis;
-
-    [ObservableProperty]
-    public Axis[] selectedYAxis;
-
-    [ObservableProperty]
-    private string selectedChart;
-
-    [ObservableProperty]
-    public Axis[] selectedAxis;
-
-    [ObservableProperty]
-    private ISeries[] electricitySeries;
-
-    [ObservableProperty]
-    private Axis[] electricityPriceTimeXAxes;
 
     [ObservableProperty]
     private bool buttonExpanded = false;
 
-    [ObservableProperty]
-    private ISeries[] heatDemandSeries;
-
-    [ObservableProperty]
-    private Axis[] timeXAxis;
-
-    [ObservableProperty]
-    private Axis[] heatYAxis;
 
     // Setting ScenarioIsChecked to true in constructor instead allows On..Changed() method to immediately run, which is a placeholder for units
     [ObservableProperty] private bool scenarioIsChecked;
@@ -71,6 +43,10 @@ public partial class OptimizerViewModel : ViewModelBase
         SelectedLiveAction = "No";
 
         ScenarioIsChecked = true;
+
+        SelectedSeries = HeatDemandChart.Series;
+        SelectedXAxis = HeatDemandChart.XAxis;
+        SelectedYAxis = HeatDemandChart.YAxis;
 
     }
 
@@ -102,29 +78,51 @@ public partial class OptimizerViewModel : ViewModelBase
     [ObservableProperty]
     private bool textBoxVisibility = false;
 
-    public HeatScheduleChart HeatScheduleChart = new();
-    public ElectricityPriceChart ElectricityPriceChart = new();
 
     [ObservableProperty]
-    private Models.Chart activeChart;
+    public ISeries[] selectedSeries;
+
+    [ObservableProperty]
+    public Axis[] selectedXAxis;
+
+    [ObservableProperty]
+    public Axis[] selectedYAxis;
+
+    [ObservableProperty]
+    private string selectedChart;
+
+
+
+
+    public HeatDemandChart HeatDemandChart = new();
+    public HeatScheduleChart HeatScheduleChart = new();
+    public ElectricityPriceChart ElectricityPriceChart = new();
+    public CO2EmissionsChart CO2EmissionsChart = new();
+
+
+    public ISeries[] HeatDemandSeries => HeatDemandChart.Series;
+    public Axis[] HeatDemandXAxis => HeatDemandChart.XAxis;
+    public Axis[] HeatDemandYAxis => HeatDemandChart.YAxis;
 
     public ISeries[] HeatScheduleSeries => HeatScheduleChart.Series;
     public Axis[] HeatScheduleXAxis => HeatScheduleChart.XAxis;
-
     public Axis[] HeatScheduleYAxis => HeatScheduleChart.YAxis;
 
-    public CO2EmissionsChart CO2EmissionsChart = new();
-
     public ISeries[] CO2EmissionsSeries => CO2EmissionsChart.Series;
-    public Axis[] CO2XAxis => CO2EmissionsChart.XAxis;
-    public Axis[] CO2YAxis => CO2EmissionsChart.YAxis;
+    public Axis[] CO2EmissionsXAxis => CO2EmissionsChart.XAxis;
+    public Axis[] CO2EmissionsYAxis => CO2EmissionsChart.YAxis;
+
+    public ISeries[] ElectricitySeries => ElectricityPriceChart.Series;
+    public Axis[] ElectricityXAxis => ElectricityPriceChart.XAxis;
+    public Axis[] ElectricityYAxis => ElectricityPriceChart.YAxis;
 
 
 
     // A collection of units to show CurrentHeatOutput on the UI
     public ObservableCollection<UnitWithArrow> CurrentUnitsWithArrow { get; } = new();
 
-    public bool SimulationRunning = false;
+    [ObservableProperty]
+    public bool simulationRunning = false;
 
     public async Task OptimizerSimulation(double Delay_InSeconds)
     {
@@ -136,7 +134,6 @@ public partial class OptimizerViewModel : ViewModelBase
             var optimizedData = optimizer.Optimize(SelectedScenario, SelectedPeriod, SelectedPreference);
 
             int ChartCount = 0;
-            int elpricecounter = 0;
 
             foreach (var hour in optimizedData)
             {
@@ -148,7 +145,7 @@ public partial class OptimizerViewModel : ViewModelBase
                 foreach (var unit in hour)
                 {
                     // An ObservableCollection for showing CurrentHeatOutput in the UI
-                    var unitsWithUIElements = new UnitWithArrow
+                    var unitsWithUIElements = new UnitWithArrow(unit)
                     {
                         Unit = unit,
                         ArrowPosition = CalculateArrowPosition(unit),
@@ -169,13 +166,25 @@ public partial class OptimizerViewModel : ViewModelBase
                 // Add charts here so they can update dynamically throughout the simulation
 
 
+                HeatDemandChart.Update(hour, ChartCount);
+                HeatScheduleChart.Update(hour, ChartCount);
+                CO2EmissionsChart.Update(hour, ChartCount);
+                ElectricityPriceChart.Update(optimizer.electricityPrices, ChartCount);
 
-                HeatScheduleChart.Update(hour, ChartCount); ChartCount++;
-                CO2EmissionsChart.Update(hour, ChartCount); ChartCount++;
+                ChartCount++;
 
 
-                ElectricityPriceChart.Update(optimizer.electricityPrices[elpricecounter]);
-                elpricecounter++;
+                if (SelectedChart == "HeatSchedule")
+                {
+                    SelectedSeries = null;
+
+                    SelectedSeries = HeatScheduleChart.Series;
+                    SelectedXAxis = HeatScheduleChart.XAxis;
+                    SelectedYAxis = HeatScheduleChart.YAxis;
+                }
+
+
+
 
                 await Task.Yield();
                 await Task.Delay((int)(Delay_InSeconds * 1000));
@@ -200,14 +209,23 @@ public partial class OptimizerViewModel : ViewModelBase
     {
         if (double.TryParse(DelayInSeconds, out double delay) || SelectedLiveAction == "No")
         {
+            InvalidInput = false;
+
             if (SelectedLiveAction == "No")
                 delay = 0;
 
             SimulationRunning = true;
             TotalCost = TotalCO2Emissions = TotalFuelConsumption = 0;
 
-            //HeatScheduleChart.TotalHeatDemand.Clear();
-            //HeatScheduleChart.TimeLabels.Clear();
+            HeatScheduleChart.Clear();
+            HeatDemandChart.Clear();
+            CO2EmissionsChart.Clear();
+            ElectricityPriceChart.Clear();
+
+
+
+
+
 
 
 
@@ -224,8 +242,16 @@ public partial class OptimizerViewModel : ViewModelBase
         {
             Console.WriteLine("Invalid input");
 
+            InvalidInput = true;
+
             // Possibly make a popup that tells you the input is invalid
         }
+    }
+
+    [RelayCommand]
+    public async Task StopOptimize()
+    {
+        SimulationRunning = false;
     }
 
     private double CalculateArrowPosition(ProductionUnits unit)
@@ -247,20 +273,30 @@ public partial class OptimizerViewModel : ViewModelBase
 
         switch (newValue)
         {
-            case "ElectricityPrice":
-                ActiveChart = ElectricityPriceChart;
-                break;
             case "HeatSchedule":
-                ActiveChart = HeatScheduleChart;
                 SelectedSeries = HeatScheduleChart.Series;
                 SelectedXAxis = HeatScheduleChart.XAxis;
                 SelectedYAxis = HeatScheduleChart.YAxis;
                 break;
+
+            case "HeatDemand":
+                SelectedSeries = HeatDemandChart.Series;
+                SelectedXAxis = HeatDemandChart.XAxis;
+                SelectedYAxis = HeatDemandChart.YAxis;
+                break;
+
             case "CO2Emissions":
                 SelectedSeries = CO2EmissionsChart.Series;
                 SelectedXAxis = CO2EmissionsChart.XAxis;
                 SelectedYAxis = CO2EmissionsChart.YAxis;
                 break;
+
+            case "ElectricityPrice":
+                SelectedSeries = ElectricityPriceChart.Series;
+                SelectedXAxis = ElectricityPriceChart.XAxis;
+                SelectedYAxis = ElectricityPriceChart.YAxis;
+                break;
+
             default:
                 break;
 
@@ -324,84 +360,18 @@ public partial class OptimizerViewModel : ViewModelBase
         }
     }
 
-    // I don't think it's being used, but I'm not sure
-    // private void LoadScenario(string? scenario)
-    // {
-    //     if (scenario == "Scenario 1")
-    //     {
-    //         Series = new ISeries[]
-    //         {
-    //             new LineSeries<double>
-    //             {
-    //                 Values = new double[] { 2, 4, 6, 8 },
-    //                 Stroke = new SolidColorPaint(SKColors.Blue, 2)
-    //             },
-    //             new LineSeries<double>
-    //             {
-    //                 Values = new double[] { 1, 3, 5, 7 },
-    //                 Stroke = new SolidColorPaint(SKColors.Red, 2)
-    //             }
-    //         };
 
-    //         var HeatDataSeries = HeatFetcher.WinterData();
-    //         var ElectricityPriceSeries = HeatDataSeries.Select(x => x.ElPriceW).ToArray();
-    //         var ElectricityTimeSeries = HeatDataSeries.Select(x => x.TimeFromW).ToArray();
+    [ObservableProperty]
+    private bool chartListIsOpen;
 
-    //         electricitySeries = new ISeries[]
-    //         {
-    //             new ColumnSeries<double>
-    //             {
-    //                 Name = "DKK / Mwh(el)",
-    //                 Values = ElectricityPriceSeries,
-    //                 Stroke = new SolidColorPaint(SKColors.LightGreen, 2),
-    //             }
-    //         };
+    [RelayCommand]
+    public void ChartButtonPressed()
+    {
+        ChartListIsOpen = !ChartListIsOpen;
+    }
 
-    //         electricityPriceTimeXAxes = new Axis[]
-    //         {
-    //             new Axis
-    //             {
-    //                 Name = "Date",
-    //                 Labels = ElectricityTimeSeries,
-    //             }
-    //         };
 
-    //         var HeatDemandValues = new double[]
-    //         {
-    //             4.1, 4.1, 4.2, 4.1, 4.2, 4.6, 4.8, 5.2, 5.5, 5.3, 4.7, 4.5,
-    //             4.4, 4.4, 4.5, 4.5, 4.6, 4.7, 4.6, 4.5, 4.5, 4.6, 4.5, 4.7
-    //         };
+    [ObservableProperty]
+    private bool invalidInput;
 
-    //         heatDemandSeries = new ISeries[]
-    //         {
-    //             new LineSeries<double>
-    //             {
-    //                 Values = HeatDemandValues,
-    //                 Stroke = new SolidColorPaint(SKColors.OrangeRed, 2),
-    //                 Fill = null
-    //             }
-    //         };
-
-    //         timeXAxis = new Axis[]
-    //         {
-    //             new Axis
-    //             {
-    //                 Name = "Hour",
-    //                 Labels = Enumerable.Range(0, 24).Select(x => x.ToString("00")).ToArray()
-    //             }
-    //         };
-
-    //         heatYAxis = new Axis[]
-    //         {
-    //             new Axis
-    //             {
-    //                 Name = "MW"
-    //             }
-    //         };
-    //     }
-    //     else if (scenario == "Scenario 2")
-    //     {
-
-    //     }
-    // }
 }

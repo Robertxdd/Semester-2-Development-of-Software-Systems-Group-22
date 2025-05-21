@@ -22,7 +22,7 @@ public class Optimizer
     
     public List<List<ProductionUnits>> Optimize(string scenario, string period, string preference)
     {
-        Console.WriteLine("Optimization has begun..");
+        ResultDataManager.ClearResults();
 
         var optimizationResults = new List<List<ProductionUnits>>();
 
@@ -89,7 +89,7 @@ public class Optimizer
                     TotalCO2Emissions += unit.CurrentHeatOutput * unit.CO2Emissions;
 
 
-                    ResultDataManager.CreateResultData(heatDemandTimestamp, unit.Name, usedHeat, usedHeat * unit.NetProductionCost, unit.FuelConsumption * usedHeat);
+                    ResultDataManager.CreateResultData(heatDemandTimestamp, unit.Name, usedHeat, usedHeat * unit.NetProductionCost, unit.FuelConsumption * usedHeat, unit.CO2Emissions * unit.CurrentHeatOutput);
                     // Store the result data for unit
                     //resultDataManager.AddResult(unit.Name, usedHeat, usedHeat * unit.NetProductionCost, usedHeat * unit.FuelConsumption);
                     //usedUnits.Add(unit.Name);
