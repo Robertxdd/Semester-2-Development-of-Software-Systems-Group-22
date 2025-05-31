@@ -7,17 +7,17 @@ namespace HeatProductionSystem.Models;
 // UI Binding purpose (ResultView)
 public class TimestampGroup
 {
-    public string Timestamp { get; set; }
-    public ObservableCollection<UnitResults> Units { get; set; }
+    internal string Timestamp { get; set; }
+    internal ObservableCollection<UnitResults> Units { get; set; }
 }
 
 // UI Binding purpose (OptimizerView) -- NEDS REFACTORING
 public class UnitWithArrow
 {
-    public ProductionUnits Unit { get; set; }
-    public double ArrowPosition { get; set; }
-    public double BarHeight { get; set; }
-    public double HeatOutput { get; set; }
+    internal ProductionUnits Unit { get; set; }
+    internal double ArrowPosition { get; set; }
+    internal double BarHeight { get; set; }
+    internal double HeatOutput { get; set; }
 
     public UnitWithArrow(ProductionUnits unit)
     {

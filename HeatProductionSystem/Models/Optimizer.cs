@@ -11,13 +11,7 @@ namespace HeatProductionSystem;
 
 public class Optimizer
 {
-    public double TotalCost { get; private set; }
-    public double TotalFuelConsumption { get; private set; }
-    public double TotalCO2Emissions { get; private set; }
-    
-    public List<double> electricityPrices = new List<double>();
-
-
+    internal List<double> electricityPrices = new List<double>();
 
     
     public List<List<ProductionUnits>> Optimize(string scenario, string period, string preference)
@@ -26,17 +20,14 @@ public class Optimizer
 
         var optimizationResults = new List<List<ProductionUnits>>();
 
-
-
-
         var heatData = period == "Summer"
-            ? HeatFetcher.SummerData()
-            : HeatFetcher.WinterData();
+            ? SourceDataManager.SummerData
+            : SourceDataManager.WinterData;
 
 
         var baseProductionUnits = scenario == "Scenario 1"
-                ? ProductionUnitsData.Scenario1Units().ToList()
-                : ProductionUnitsData.Scenario2Units().ToList();
+                ? AssetDataManager.scenario1Units.ToList()
+                : AssetDataManager.scenario2Units.ToList();
 
 
         foreach (var heatDemand in heatData)
@@ -57,14 +48,19 @@ public class Optimizer
                 ? heatDemand.TimeFromS + " — " + heatDemand.TimeToS
                 : heatDemand.TimeFromW + " — " + heatDemand.TimeToW;
 
-            if (scenario == "Scenario 2")  // Calculate Net Production Cost for GasMotor and HeatPump
-            {
-                var GM1 = (GasMotor)productionUnits.First(unit => unit.Name == "GM1"); // GasMotor and HeatPump class has not yet been defined, which is why it doesnt work
-                GM1.NetProductionCost = GM1.ProductionCost - (heatDemandElPrice * (GM1.MaxElectricityOutput / GM1.MaxHeatOutput));
 
-                var HP1 = (HeatPump)productionUnits.First(unit => unit.Name == "HP1");
-                HP1.NetProductionCost = HP1.ProductionCost + (heatDemandElPrice * (GM1.MaxElectricityOutput / GM1.MaxHeatOutput));
+            if (productionUnits.Any(unit => unit.Name == "GM1"))  // Calculate Net Production Cost for GasMotor
+            {
+                var GM1 = (GasMotor)productionUnits.First(unit => unit.Name == "GM1"); 
+                GM1.NetProductionCost = GM1.ProductionCost - (heatDemandElPrice * (GM1.MaxElectricityOutput / GM1.MaxHeatOutput));
             }
+
+            if (productionUnits.Any(unit => unit.Name == "HP1")) // Calculate Net Production Cost for HeatPump
+            {
+                var HP1 = (HeatPump)productionUnits.First(unit => unit.Name == "HP1");
+                HP1.NetProductionCost = HP1.ProductionCost + Math.Abs(heatDemandElPrice * (HP1.MaxElectricityOutput / HP1.MaxHeatOutput));
+            }
+
 
             if (preference == "Price")
                 productionUnits = productionUnits.OrderBy(unit => unit.NetProductionCost).ToList();
@@ -72,42 +68,29 @@ public class Optimizer
             else
                 productionUnits = productionUnits.OrderBy(unit => unit.CO2Emissions).ToList();
 
+
             foreach (var unit in productionUnits)
             {
                 if (unit != null && heatNeeded > 0)
                 {
 
                     double usedHeat = Math.Min(unit.MaxHeatOutput, heatNeeded);
-
                     double heatPercentage = (usedHeat / unit.MaxHeatOutput) * 100;
                     unit.SetHeatOutput(heatPercentage);
 
+                    var electricityProduced = unit.CurrentHeatOutput * (unit.MaxElectricityOutput / unit.MaxHeatOutput);
+
                     heatNeeded -= usedHeat;
-
-                    TotalCost += unit.CurrentHeatOutput * unit.NetProductionCost;
-                    TotalFuelConsumption += unit.CurrentHeatOutput * unit.FuelConsumption;
-                    TotalCO2Emissions += unit.CurrentHeatOutput * unit.CO2Emissions;
-
-
-                    ResultDataManager.CreateResultData(heatDemandTimestamp, unit.Name, usedHeat, usedHeat * unit.NetProductionCost, unit.FuelConsumption * usedHeat, unit.CO2Emissions * unit.CurrentHeatOutput);
-                    // Store the result data for unit
-                    //resultDataManager.AddResult(unit.Name, usedHeat, usedHeat * unit.NetProductionCost, usedHeat * unit.FuelConsumption);
-                    //usedUnits.Add(unit.Name);
-
+                    
+                    ResultDataManager.CreateResultData(heatDemandTimestamp, unit.Name, usedHeat, usedHeat * unit.NetProductionCost, unit.FuelConsumption * usedHeat, unit.CO2Emissions * unit.CurrentHeatOutput, electricityProduced);
                 }
 
             }
 
             optimizationResults.Add(productionUnits);
-
-
-
-
         }
 
         ResultDataManager.SaveToCSV();
-
-
 
         Console.WriteLine("Optimization has finished..");
 

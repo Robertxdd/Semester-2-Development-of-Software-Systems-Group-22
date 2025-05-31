@@ -9,20 +9,21 @@ namespace HeatProductionSystem.Models;
 // Result Data objects class (properties shown on the UI)
 public class UnitResults
 {
-    public string UnitName { get; set; }
-    public double HeatProduced { get; set; }
-    public double Cost { get; set; }
-    public double FuelConsumed { get; set; }
-    public double CO2Emissions { get; set; }
+    internal string UnitName { get; set; }
+    internal double HeatProduced { get; set; }
+    internal double Cost { get; set; }
+    internal double FuelConsumed { get; set; }
+    internal double CO2Emissions { get; set; }
+    internal double ElectricityProduced { get; set; }
 }
 
 // Result Data Manager logic
 public class ResultDataManager
 {
-    public static readonly Dictionary<string, List<UnitResults>> resultDataByTime = new();
+    internal static readonly Dictionary<string, List<UnitResults>> resultDataByTime = new();
 
     // Creates the objects for the Result Data Manager and adds them to a list
-    public static void CreateResultData(string timestamp, string unitName, double heatProduced, double cost, double fuelConsumed, double co2Emissions)
+    public static void CreateResultData(string timestamp, string unitName, double heatProduced, double cost, double fuelConsumed, double co2Emissions, double electricityProduced)
     {
         if (!resultDataByTime.ContainsKey(timestamp))
         {
@@ -35,7 +36,8 @@ public class ResultDataManager
             HeatProduced = heatProduced,
             Cost = cost,
             FuelConsumed = fuelConsumed,
-            CO2Emissions = co2Emissions
+            CO2Emissions = co2Emissions,
+            ElectricityProduced = electricityProduced
         });
     }
 
@@ -46,13 +48,13 @@ public class ResultDataManager
 
         using var writer = new StreamWriter(filePath);
 
-        writer.WriteLine("Timestamp, UnitName, HeatProduced (MWh(th)), Cost (DKK), GasConsumption (MWh(Fuel)), CO2Emission (Kg)");
+        writer.WriteLine("Timestamp, UnitName, HeatProduced (MWh(th)), Cost (DKK), GasConsumption (MWh(Fuel)), CO2Emission (Kg), ElectricityProduced (MW)");
 
         foreach (var instance in resultDataByTime)
         {
             foreach (var unit in instance.Value)
             {
-                writer.WriteLine($"{instance.Key}, {unit.UnitName}, {unit.HeatProduced}, {unit.Cost}, {unit.FuelConsumed}, {unit.CO2Emissions}");
+                writer.WriteLine($"{instance.Key}, {unit.UnitName}, {unit.HeatProduced}, {unit.Cost}, {unit.FuelConsumed}, {unit.CO2Emissions}, {unit.ElectricityProduced}");
             }
             writer.WriteLine("");
         }

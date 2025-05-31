@@ -52,7 +52,7 @@ public class TimeSeriesHeatDemandChart
 
     public void CreateChart()
     {
-        var heatData = HeatFetcher.FetchHeatData();
+        var heatData = SourceDataManager.FetchHeatData();
 
         
 

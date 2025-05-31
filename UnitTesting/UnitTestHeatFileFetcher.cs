@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace HeatProductionSystem
 {
-    public class UnitTest_HeatFetcherTest
+    public class UnitTest_SourceDataManagerTest
     {
         [Fact]
         public void FetchHeatData_ReturnsFirstRowCorrectly()
@@ -26,7 +26,7 @@ namespace HeatProductionSystem
             };
 
             // Act
-            var actualData = HeatFetcher.FetchHeatData();
+            var actualData = SourceDataManager.FetchHeatData();
 
             // Assert
             Assert.NotNull(actualData);

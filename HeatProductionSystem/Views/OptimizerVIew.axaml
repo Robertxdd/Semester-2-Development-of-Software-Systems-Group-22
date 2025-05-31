@@ -13,7 +13,7 @@
     <Grid ColumnDefinitions="Auto, *, Auto">
         
         <!-- Optimization Settings Column -->
-        <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10">
+        <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10" Background="#F6F4F4">
             <StackPanel Grid.Column="0">
                 <TextBlock Text="Optimization Settings" Classes="Header"/>
 
@@ -151,7 +151,7 @@
 
 
 
-            <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10">
+            <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10" Background="#F6F4F4">
                 <Grid ColumnDefinitions="* , Auto" RowDefinitions="*">
                     
                     <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -216,7 +216,7 @@
 
 
             <!-- Unit CurrentHeatOutput Area -->
-            <Border  Grid.Row="1" IsVisible="{Binding TextBoxVisibility}" BorderBrush="Black" Height="300" BorderThickness="1" Padding="10" Margin="10" >
+            <Border  Grid.Row="1" IsVisible="{Binding TextBoxVisibility}" BorderBrush="Black" Height="300" BorderThickness="1" Padding="10" Margin="10" Background="#F6F4F4">
                 <Grid >
 
                     <ItemsControl ItemsSource="{Binding CurrentUnitsWithArrow}" >
@@ -297,7 +297,7 @@
         </Grid>
 
         <!-- Statistics Column -->
-        <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10">
+        <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1" Padding="10" Margin="10" Background="#F6F4F4">
             <StackPanel Grid.Column="2">
                 <TextBlock Text="Statistics" Classes="Header"/>
 

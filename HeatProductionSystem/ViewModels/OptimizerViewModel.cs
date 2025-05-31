@@ -51,8 +51,7 @@ public partial class OptimizerViewModel : ViewModelBase
     }
 
 
-    [ObservableProperty]
-    public string delayInSeconds;
+    [ObservableProperty] public string delayInSeconds;
 
     [ObservableProperty]
     public double totalFuelConsumption;
@@ -322,40 +321,31 @@ public partial class OptimizerViewModel : ViewModelBase
 
             if (value == true)
             {
-                foreach (var unit in new ProductionUnits[]
-                {
-                    new GasBoiler { Name = "GB1"} ,
-                    new GasBoiler { Name = "GB2"} ,
-                    new OilBoiler { Name = "OB1"} ,
-                })
+
+                foreach (var unit in AssetDataManager.scenario1Units)
                 {
                     var placeholder = new UnitWithArrow
-                    {
-                        Unit = unit,
-                        ArrowPosition = 164
-                    };
+                        {
+                            Unit = unit,
+                            ArrowPosition = 164
+                        };
 
-                    CurrentUnitsWithArrow.Add(placeholder);
+                        CurrentUnitsWithArrow.Add(placeholder);
                 }
             }
             else
             {
-                foreach (var unit in new ProductionUnits[]
-                {
-                    new GasBoiler { Name = "GB1"} ,
-                    new OilBoiler { Name = "OB1"} ,
-                    new GasMotor { Name = "GM1"} ,
-                    new HeatPump { Name = "HP1"} ,
-                })
+                foreach (var unit in AssetDataManager.scenario2Units)
                 {
                     var placeholder = new UnitWithArrow
-                    {
-                        Unit = unit,
-                        ArrowPosition = 164
-                    };
+                        {
+                            Unit = unit,
+                            ArrowPosition = 164
+                        };
 
-                    CurrentUnitsWithArrow.Add(placeholder);
+                        CurrentUnitsWithArrow.Add(placeholder);
                 }
+                
             }
         }
     }
@@ -375,3 +365,4 @@ public partial class OptimizerViewModel : ViewModelBase
     private bool invalidInput;
 
 }
+

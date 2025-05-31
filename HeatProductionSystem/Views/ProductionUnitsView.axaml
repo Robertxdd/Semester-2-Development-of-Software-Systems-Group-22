@@ -6,70 +6,126 @@
              x:DataType="vm:ProductionUnitsViewModel">
 
     
-    <Grid RowDefinitions="Auto, *">
+    <Grid RowDefinitions="80, Auto, *">
+        
+        <!-- Results Header (Put at top so Popup can appear above it ZIndex wise) -->
+        <Grid Grid.Row="1" ColumnDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto" HorizontalAlignment="Center" Background="#F6F4F4" ZIndex="0">
+            
+            <Border Grid.Column="0" Classes="Grid" Width="112">
+                <TextBlock Text="Image" Classes="Grid" />
+            </Border>
+
+            <Border Grid.Column="1" Classes="Grid" BorderThickness="0 1 0 1" Width="88">
+                <TextBlock Text="Boiler Type" Classes="Grid" />
+            </Border>
+
+            <Border Grid.Column="2" Classes="Grid" Width="96">
+                <TextBlock Text="Boiler Name" Classes="Grid" />
+            </Border>
+
+            <Border Grid.Column="3" Classes="Grid" BorderThickness="0 1 0 1" Width="116">
+                <TextBlock Text="Max Heat (MW)" Classes="Grid" />
+            </Border>
+
+            <Border Grid.Column="4" Classes="Grid" Width="155">
+                <TextBlock Text="Max Electricity (MW)" Classes="Grid" />
+            </Border>
+
+            <Border Grid.Column="5" Classes="Grid" BorderThickness="0 1 0 1" Width="227">
+                <TextBlock Text="Production Cost (DKK/MWh(th))" Classes="Grid" />
+            </Border>
+
+            <Border Grid.Column="6" Classes="Grid" Width="214">
+                <TextBlock Text="CO2 Emissions (kg/MWh(th))" Classes="Grid" />
+            </Border>
+
+            <Border Grid.Column="7" Classes="Grid" BorderThickness="0 1 1 1" Width="290">
+                <TextBlock Text="Fuel Consumption (MWh(fuel)/MWh(th))" Classes="Grid" />
+            </Border> 
+        </Grid>
+
+        
+        <!-- Choose Scenario section -->
         <StackPanel Grid.Row="0" >
 
             <TextBlock Text="Choose Scenario" HorizontalAlignment="Center" Classes="Header" Margin="0,10,0,0"/>
 
-            <!-- Radio Buttons for choosing Scenario -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
-                <RadioButton GroupName="ScenarioGroup"
-                            Content="Scenario 1"
-                            Tag="Scenario 1"
-                            IsChecked="{Binding ScenarioIsChecked}" 
-                            Checked="RadioButton_Checked"
-                            Classes="Design1"
-                            Margin="8,10"/>
+            <Grid ColumnDefinitions="*,Auto,*" ZIndex="1">
                 
-                <RadioButton GroupName="ScenarioGroup"
-                            Content="Scenario 2"
-                            Tag="Scenario 2"
-                            IsChecked="{Binding !ScenarioIsChecked}" 
-                            Checked="RadioButton_Checked"
-                            Classes="Design1"
-                            Margin="8,10"/>
-            </StackPanel>
-            
-                <!-- Header for Production Units -->
-                <Grid ColumnDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto" HorizontalAlignment="Center" Background="#F6F4F4">
+                <!-- Radio Buttons for choosing Scenario -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
+                    <RadioButton GroupName="ScenarioGroup"
+                                Content="Scenario 1"
+                                Tag="Scenario 1"
+                                IsChecked="{Binding ScenarioIsChecked}" 
+                                Checked="RadioButton_Checked"
+                                Classes="Design1"
+                                Margin="8,10"/>
                     
-                    <Border Grid.Column="0" Classes="Grid" Width="112">
-                        <TextBlock Text="Image" Classes="Grid" />
-                    </Border>
+                    <RadioButton GroupName="ScenarioGroup"
+                                Content="Scenario 2"
+                                Tag="Scenario 2"
+                                IsChecked="{Binding !ScenarioIsChecked}" 
+                                Checked="RadioButton_Checked"
+                                Classes="Design1"
+                                Margin="8,10"/>
+                </StackPanel>
 
-                    <Border Grid.Column="1" Classes="Grid" BorderThickness="0 1 0 1" Width="88">
-                        <TextBlock Text="Boiler Type" Classes="Grid" />
-                    </Border>
+                
+                <StackPanel Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,86,0" Orientation="Horizontal">
+                    
+                    <!-- Remove unit Button -->
+                    <StackPanel>
+                    
+                        <Button Content="Remove" Command="{Binding RemoveUnitPopupButtonPressed}" HorizontalAlignment="Right"/>
 
-                    <Border Grid.Column="2" Classes="Grid" Width="96">
-                        <TextBlock Text="Boiler Name" Classes="Grid" />
-                    </Border>
+                        <!-- Popup for "Remove Unit" -->
+                        <Border IsVisible="{Binding RemoveUnitPopupIsOpen}" BorderBrush="Black" BorderThickness="1" Padding="5" Background="Red" ZIndex="4">
+                            <StackPanel Orientation="Horizontal">
 
-                    <Border Grid.Column="3" Classes="Grid" BorderThickness="0 1 0 1" Width="116">
-                        <TextBlock Text="Max Heat (MW)" Classes="Grid" />
-                    </Border>
+                                <ComboBox ItemsSource="{Binding RemoveProductionUnitsList}" 
+                                        SelectedItem="{Binding SelectedRemoveProductionUnit, Mode=TwoWay}"
+                                        MaxDropDownHeight="100" />
 
-                    <Border Grid.Column="4" Classes="Grid" Width="155">
-                        <TextBlock Text="Max Electricity (MW)" Classes="Grid" />
-                    </Border>
 
-                    <Border Grid.Column="5" Classes="Grid" BorderThickness="0 1 0 1" Width="227">
-                        <TextBlock Text="Production Cost (DKK/MWh(th))" Classes="Grid" />
-                    </Border>
+                                <Button Content="Remove" Command="{Binding RemoveUnitButton}"/>
 
-                    <Border Grid.Column="6" Classes="Grid" Width="214">
-                        <TextBlock Text="CO2 Emissions (kg/MWh(th))" Classes="Grid" />
-                    </Border>
+                            </StackPanel>
 
-                    <Border Grid.Column="7" Classes="Grid" BorderThickness="0 1 1 1" Width="290">
-                        <TextBlock Text="Fuel Consumption (MWh(fuel)/MWh(th))" Classes="Grid" />
-                    </Border> 
-                </Grid>
+                        </Border>
+
+                    </StackPanel>
+
+                    <!-- Add unit Button -->
+                    <StackPanel HorizontalAlignment="Right">
+                        <Button Content="Add" Command="{Binding AddUnitPopupButtonPressed}" HorizontalAlignment="Right"/>
+                        
+                        <!-- Popup for "Add Unit" -->
+                        <Border IsVisible="{Binding AddUnitPopupIsOpen}" BorderBrush="Black" BorderThickness="1" Padding="5" Background="Red" ZIndex="4">
+                            <StackPanel Orientation="Horizontal">
+
+                                <ComboBox ItemsSource="{Binding AddProductionUnitsList}" 
+                                        SelectedItem="{Binding SelectedAddProductionUnit, Mode=TwoWay}"
+                                        MaxDropDownHeight="100" />
+
+
+                                <Button Content="Add" Command="{Binding AddUnitButton}"/>
+
+                            </StackPanel>
+
+                        </Border>
+                    </StackPanel>
+
+                    <Button Content="Edit" Command="{Binding EditButtonPressed}"/>
+                </StackPanel>
+
+            </Grid>
         </StackPanel>
 
+        
 
         <!-- ItemsControl for Production Units -->
-        <ItemsControl Grid.Row="1" ItemsSource="{Binding ProductionUnitList}" >
+        <ItemsControl Grid.Row="2" ItemsSource="{Binding ProductionUnitList}" >
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Grid ColumnDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto" HorizontalAlignment="Center" Background="#F6F4F4">
@@ -79,37 +135,86 @@
                         </Border>
 
                         <Border Grid.Column="1" Classes="Grid" BorderThickness="0 1 0 1" Width="88">
-                            <TextBlock Text="{Binding UnitType}" />
+                            <TextBlock Text="{Binding UnitType}" Margin="5,7,0,0" />
                         </Border>
 
                         <Border Grid.Column="2" Classes="Grid" Width="96">
-                            <TextBlock Text="{Binding Name}" />
+                            <TextBlock Text="{Binding Name}" Margin="8,7,0,0"/>
                         </Border>
 
                         <Border Grid.Column="3" Classes="Grid" BorderThickness="0 1 0 1" Width="116">
-                            <TextBlock Text="{Binding MaxHeatOutput}" />
+                           <Grid>
+                                <TextBlock Text="{Binding MaxHeatOutput}" IsVisible="{Binding !$parent[ItemsControl].((vm:ProductionUnitsViewModel)DataContext).EditIsVisible}" Margin="11,7,0,0"/>
+
+                                <TextBox Text="{Binding MaxHeatOutput, Mode=TwoWay}" 
+                                         IsVisible="{Binding $parent[ItemsControl].((vm:ProductionUnitsViewModel)DataContext).EditIsVisible}"
+                                         Height="30"
+                                         Width="80"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"/>
+                            </Grid>
                         </Border>
 
                         <Border Grid.Column="4" Classes="Grid" Width="155">
-                            <TextBlock Text="{Binding MaxElectricityOutput}" />
+                            <Grid>
+                                <TextBlock Text="{Binding MaxElectricityOutput}" IsVisible="{Binding !$parent[ItemsControl].((vm:ProductionUnitsViewModel)DataContext).EditIsVisible}" Margin="11,7,0,0"/>
+
+                                <TextBox Text="{Binding MaxElectricityOutput, Mode=TwoWay}" 
+                                         IsVisible="{Binding $parent[ItemsControl].((vm:ProductionUnitsViewModel)DataContext).EditIsVisible}"
+                                         Height="30"
+                                         Width="80"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"/>
+                            </Grid>
                         </Border>
 
                         <Border Grid.Column="5" Classes="Grid" BorderThickness="0 1 0 1" Width="227" >
-                            <TextBlock Text="{Binding ProductionCost}" />
+                            <Grid>
+                                <TextBlock Text="{Binding ProductionCost}" IsVisible="{Binding !$parent[ItemsControl].((vm:ProductionUnitsViewModel)DataContext).EditIsVisible}" Margin="11,7,0,0"/>
+
+                                <TextBox Text="{Binding ProductionCost, Mode=TwoWay}" 
+                                         IsVisible="{Binding $parent[ItemsControl].((vm:ProductionUnitsViewModel)DataContext).EditIsVisible}"
+                                         Height="30"
+                                         Width="80"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"/>
+                            </Grid>
                         </Border>
 
                         <Border Grid.Column="6" Classes="Grid" Width="214">
-                            <TextBlock Text="{Binding CO2Emissions}" />
+                             <Grid>
+                                <TextBlock Text="{Binding CO2Emissions}" IsVisible="{Binding !$parent[ItemsControl].((vm:ProductionUnitsViewModel)DataContext).EditIsVisible}" Margin="11,7,0,0"/>
+
+                                <TextBox Text="{Binding CO2Emissions, Mode=TwoWay}" 
+                                         IsVisible="{Binding $parent[ItemsControl].((vm:ProductionUnitsViewModel)DataContext).EditIsVisible}"
+                                         Height="30"
+                                         Width="80"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"/>
+                            </Grid>
                         </Border>
 
                         <Border Grid.Column="7" Classes="Grid" BorderThickness="0 1 1 1" Width="290">
-                            <TextBlock Text="{Binding FuelConsumption}" />
+                             <Grid>
+                                <TextBlock Text="{Binding FuelConsumption}" IsVisible="{Binding !$parent[ItemsControl].((vm:ProductionUnitsViewModel)DataContext).EditIsVisible}" Margin="11,7,0,0"/>
+
+                                <TextBox Text="{Binding FuelConsumption, Mode=TwoWay}" 
+                                         IsVisible="{Binding $parent[ItemsControl].((vm:ProductionUnitsViewModel)DataContext).EditIsVisible}"
+                                         Height="30"
+                                         Width="80"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"/>
+                            </Grid>
                         </Border> 
                     
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
+
     </Grid>
+
+
+    
 
 </UserControl>

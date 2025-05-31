@@ -139,7 +139,9 @@ public class HeatScheduleChart : Chart
                 {
                     Values = new ObservableCollection<double>(),
                     Name = unit.Name,
-                    Fill = new SolidColorPaint(color)
+                    Fill = new SolidColorPaint(color),
+
+
                 };
 
                 UnitMap[unit.Name] = newSeries;
@@ -343,113 +345,3 @@ public class CO2EmissionsChart : Chart
 }
 
 
-
-// public class HeatScheduleChart : Chart
-// {
-//     public ObservableCollection<double> TotalHeatDemand { get; } = new();
-
-//     private Dictionary<string, ObservableCollection<double>> unitHeatOutputs = new();
-//     private List<StackedAreaSeries<double>> stackedSeries = new();
-
-//     public HeatScheduleChart()
-//     {
-//         Series = new ISeries[]
-//         {
-//             new LineSeries<double>
-//             {
-//                 Values = TotalHeatDemand,
-//                 Name = "Heat Demand",
-//                 Stroke = new SolidColorPaint(SKColors.Black, 2),
-//                 GeometrySize = 0,
-//                 GeometryStroke = null
-
-//             }
-//         };
-
-//         XAxis = new Axis[]
-//         {
-//             new Axis
-//             {
-//                 Labels = TimeLabels,
-//                 LabelsRotation = 90,
-//                 LabelsDensity = 0,
-//                 NameTextSize = 10,
-//             }
-//         };
-
-//         YAxis = new Axis[]
-//         {
-//             new Axis
-//             {
-//                 Name = "Heat Output (MW)"
-//             }
-//         };
-//     }
-
-//     public void Update(List<ProductionUnits> unitList, int count)
-//     {
-//         TimeStamps(count);
-
-//         double totalHeatDemand = 0;
-
-//         foreach (var unit in unitList)
-//         {
-//             totalHeatDemand += unit.CurrentHeatOutput;
-
-//             if (!unitHeatOutputs.ContainsKey(unit.Name))
-//             {
-//                 unitHeatOutputs[unit.Name] = new ObservableCollection<double>();
-
-//                 var color = GetColorForUnit(unit.Name);
-
-//                 var newArea = new StackedAreaSeries<double>
-//                 {
-//                     Values = unitHeatOutputs[unit.Name],
-//                     Name = unit.Name,
-//                     Fill = new SolidColorPaint(color),
-//                     Stroke = null,
-//                     GeometrySize = 0
-//                 };
-
-//                 stackedSeries.Add(newArea);
-
-//                 // Rebuild all series: stacked first, then demand line
-//                 var allSeries = new List<ISeries>();
-//                 allSeries.AddRange(stackedSeries);
-//                 allSeries.Add(new LineSeries<double>
-//                 {
-//                     Values = TotalHeatDemand,
-//                     Name = "Heat Demand",
-//                     Stroke = new SolidColorPaint(SKColors.Black, 2),
-//                     GeometrySize = 0
-//                 });
-
-//                 Series = allSeries.ToArray();
-//             }
-
-//             unitHeatOutputs[unit.Name].Add(unit.CurrentHeatOutput);
-//         }
-
-//         TotalHeatDemand.Add(totalHeatDemand);
-
-//         // Pad missing data with 0 for consistency
-//         foreach (var unitName in unitHeatOutputs.Keys)
-//         {
-//             if (!unitList.Any(u => u.Name == unitName))
-//                 unitHeatOutputs[unitName].Add(0);
-//         }
-//     }
-
-//     private SKColor GetColorForUnit(string unitName)
-//     {
-//         return unitName switch
-//         {
-//             "GB1" => new SKColor(189, 138, 0),    // Mustard Yellow
-//             "GB2" => new SKColor(122, 62, 0),     // Dark Brown
-//             "OB1" => new SKColor(192, 192, 192),  // Gray
-//             "HP1" => new SKColor(0, 192, 192),
-//             "GM1" => new SKColor(0, 0, 192),
-//             _ => SKColors.LightGray
-//         };
-//     }
-// }

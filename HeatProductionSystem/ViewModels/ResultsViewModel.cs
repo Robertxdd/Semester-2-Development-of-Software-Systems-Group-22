@@ -58,7 +58,8 @@ public partial class ResultsViewModel : ViewModelBase
                     HeatProduced = Convert.ToDouble(parts[2]),
                     Cost = Convert.ToDouble(parts[3]),
                     FuelConsumed = Convert.ToDouble(parts[4]),
-                    CO2Emissions = Convert.ToDouble(parts[5])
+                    CO2Emissions = Convert.ToDouble(parts[5]),
+                    ElectricityProduced = Convert.ToDouble(parts[6])
                 };
                 
                 if (!groupedUnits.ContainsKey(unitTimestamp))
