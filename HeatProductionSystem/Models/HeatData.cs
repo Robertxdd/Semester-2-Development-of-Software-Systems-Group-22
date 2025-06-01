@@ -4,13 +4,13 @@ using System.Collections.ObjectModel;
 namespace HeatProductionSystem;
 public class HeatData 
 {
-internal string TimeFromW { get; set; }
-internal string TimeToW { get; set; }
-internal double HeatDemandW { get; set; }
-internal double ElPriceW { get; set; }
-internal string TimeFromS { get; set; }
-internal string TimeToS { get; set; }
-internal double HeatDemandS { get; set; }
-internal double ElPriceS { get; set; }
+public string TimeFromW { get; set; }
+public string TimeToW { get; set; }
+public double HeatDemandW { get; set; }
+public double ElPriceW { get; set; }
+public string TimeFromS { get; set; }
+public string TimeToS { get; set; }
+public double HeatDemandS { get; set; }
+public double ElPriceS { get; set; }
 
 }

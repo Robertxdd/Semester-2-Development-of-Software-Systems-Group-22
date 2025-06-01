@@ -3,7 +3,6 @@ using HeatProductionSystem.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections.ObjectModel;
-using HeatProductionSystem.Models;
 using HeatProductionSystem.ViewModels;
 using HeatProductionSystem.Views;
 
@@ -11,9 +10,8 @@ namespace HeatProductionSystem;
 
 public class Optimizer
 {
-    internal List<double> electricityPrices = new List<double>();
+    public List<double> electricityPrices = new List<double>();
 
-    
     public List<List<ProductionUnits>> Optimize(string scenario, string period, string preference)
     {
         ResultDataManager.ClearResults();
@@ -24,14 +22,14 @@ public class Optimizer
             ? SourceDataManager.SummerData
             : SourceDataManager.WinterData;
 
-
+        // Clone the base units list to avoid modifying static collections during optimization
         var baseProductionUnits = scenario == "Scenario 1"
-                ? AssetDataManager.scenario1Units.ToList()
-                : AssetDataManager.scenario2Units.ToList();
+            ? AssetDataManager.scenario1Units.Select(u => u.Clone()).ToList()
+            : AssetDataManager.scenario2Units.Select(u => u.Clone()).ToList();
 
-
-        foreach (var heatDemand in heatData)
+        foreach (var heatDemand in heatData.ToList())
         {
+            // Clone again for each heat demand to avoid mutation across iterations
             var productionUnits = baseProductionUnits.Select(unit => unit.Clone()).ToList();
 
             double heatNeeded = period == "Summer"
@@ -48,10 +46,9 @@ public class Optimizer
                 ? heatDemand.TimeFromS + " — " + heatDemand.TimeToS
                 : heatDemand.TimeFromW + " — " + heatDemand.TimeToW;
 
-
             if (productionUnits.Any(unit => unit.Name == "GM1"))  // Calculate Net Production Cost for GasMotor
             {
-                var GM1 = (GasMotor)productionUnits.First(unit => unit.Name == "GM1"); 
+                var GM1 = (GasMotor)productionUnits.First(unit => unit.Name == "GM1");
                 GM1.NetProductionCost = GM1.ProductionCost - (heatDemandElPrice * (GM1.MaxElectricityOutput / GM1.MaxHeatOutput));
             }
 
@@ -61,19 +58,15 @@ public class Optimizer
                 HP1.NetProductionCost = HP1.ProductionCost + Math.Abs(heatDemandElPrice * (HP1.MaxElectricityOutput / HP1.MaxHeatOutput));
             }
 
-
             if (preference == "Price")
                 productionUnits = productionUnits.OrderBy(unit => unit.NetProductionCost).ToList();
-
             else
                 productionUnits = productionUnits.OrderBy(unit => unit.CO2Emissions).ToList();
-
 
             foreach (var unit in productionUnits)
             {
                 if (unit != null && heatNeeded > 0)
                 {
-
                     double usedHeat = Math.Min(unit.MaxHeatOutput, heatNeeded);
                     double heatPercentage = (usedHeat / unit.MaxHeatOutput) * 100;
                     unit.SetHeatOutput(heatPercentage);
@@ -81,10 +74,16 @@ public class Optimizer
                     var electricityProduced = unit.CurrentHeatOutput * (unit.MaxElectricityOutput / unit.MaxHeatOutput);
 
                     heatNeeded -= usedHeat;
-                    
-                    ResultDataManager.CreateResultData(heatDemandTimestamp, unit.Name, usedHeat, usedHeat * unit.NetProductionCost, unit.FuelConsumption * usedHeat, unit.CO2Emissions * unit.CurrentHeatOutput, electricityProduced);
-                }
 
+                    ResultDataManager.CreateResultData(
+                        heatDemandTimestamp,
+                        unit.Name,
+                        usedHeat,
+                        usedHeat * unit.NetProductionCost,
+                        unit.FuelConsumption * usedHeat,
+                        unit.CO2Emissions * unit.CurrentHeatOutput,
+                        electricityProduced);
+                }
             }
 
             optimizationResults.Add(productionUnits);
@@ -97,4 +96,3 @@ public class Optimizer
         return optimizationResults;
     }
 }
-

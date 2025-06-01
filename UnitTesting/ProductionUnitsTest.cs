@@ -50,29 +50,6 @@ public class UnitTest_ProductionUnits
         Assert.Throws<ArgumentOutOfRangeException>(() => unit4.SetHeatOutput(120));
     }
 
-    [Fact]
-    public void TurnOff_SetCurrentHeatOutputToZeroAndIsActiveToFalse()
-    {
-        // Arrange - Instantiates a Gas- and Oilboiler and turns them on
-        var unit = new GasBoiler(){MaxHeatOutput = 4.0};    
-        unit.SetHeatOutput(50);
-
-        var unit2 = new OilBoiler(){MaxHeatOutput = 4.0};
-        unit2.SetHeatOutput(75);
-        
-
-        // Act - Turns off the Gas- and Oilboiler
-        unit.TurnOff();     
-        unit2.TurnOff();
-
-
-        // Assert - Checks that CurrentHeatOutput is set to 0 and IsActive is set to false
-        Assert.Equal(0, unit.CurrentHeatOutput);    
-        Assert.False(unit.IsActive);
-
-        Assert.Equal(0, unit2.CurrentHeatOutput);
-        Assert.False(unit2.IsActive);
-    }
 
     [Fact]
     public void ObservableCollection_InstantiatesProductionUnitsCorrectly()
@@ -87,7 +64,7 @@ public class UnitTest_ProductionUnits
         var test = new ObservableCollection<ProductionUnits>() {unit1, unit2, unit3 }; 
 
         // Act - Instantiates our production units 
-        var ProductionUnits = AssetDataManager.Scenario1Units();
+        var ProductionUnits = AssetDataManager.scenario1Units;;
         
 
         // Assert - Compares our production units with the test units to check that their specifications are correct

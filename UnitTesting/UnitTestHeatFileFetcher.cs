@@ -1,11 +1,8 @@
 using Xunit;
 using HeatProductionSystem;
-using System;
-using System.IO;
-using System.Collections.Generic;
 using System.Linq;
 
-namespace HeatProductionSystem
+namespace HeatProductionSystem.Tests
 {
     public class UnitTest_SourceDataManagerTest
     {
@@ -13,12 +10,16 @@ namespace HeatProductionSystem
         public void FetchHeatData_ReturnsFirstRowCorrectly()
         {
             // Arrange
-            var expectedFirstRow = new HeatData
+            var expectedWinter = new HeatData
             {
                 TimeFromW = "3/1/2024 0:00",
                 TimeToW = "3/1/2024 1:00",
-                HeatDemandW = 6.62, 
-                ElPriceW = 1190.9400000000001,
+                HeatDemandW = 6.62,
+                ElPriceW = 1190.9400000000001
+            };
+
+            var expectedSummer = new HeatData
+            {
                 TimeFromS = "8/11/2024 0:00",
                 TimeToS = "8/11/2024 1:00",
                 HeatDemandS = 1.79,
@@ -26,22 +27,24 @@ namespace HeatProductionSystem
             };
 
             // Act
-            var actualData = SourceDataManager.FetchHeatData();
+            SourceDataManager.FetchHeatData();
 
             // Assert
-            Assert.NotNull(actualData);
-            Assert.True(actualData.Count > 0, "The fetched data should contain at least one row.");
+            Assert.True(SourceDataManager.WinterData.Count > 0, "WinterData should contain at least one row.");
+            Assert.True(SourceDataManager.SummerData.Count > 0, "SummerData should contain at least one row.");
 
-            var firstRow = actualData.First(); // Get the first element
+            var firstWinter = SourceDataManager.WinterData.First();
+            var firstSummer = SourceDataManager.SummerData.First();
 
-            Assert.Equal(expectedFirstRow.TimeFromW, firstRow.TimeFromW);
-            Assert.Equal(expectedFirstRow.TimeToW, firstRow.TimeToW);
-            Assert.Equal(expectedFirstRow.HeatDemandW, firstRow.HeatDemandW);
-            Assert.Equal(expectedFirstRow.ElPriceW, firstRow.ElPriceW);
-            Assert.Equal(expectedFirstRow.TimeFromS, firstRow.TimeFromS);
-            Assert.Equal(expectedFirstRow.TimeToS, firstRow.TimeToS);
-            Assert.Equal(expectedFirstRow.HeatDemandS, firstRow.HeatDemandS);
-            Assert.Equal(expectedFirstRow.ElPriceS, firstRow.ElPriceS);
+            Assert.Equal(expectedWinter.TimeFromW, firstWinter.TimeFromW);
+            Assert.Equal(expectedWinter.TimeToW, firstWinter.TimeToW);
+            Assert.Equal(expectedWinter.HeatDemandW, firstWinter.HeatDemandW);
+            Assert.Equal(expectedWinter.ElPriceW, firstWinter.ElPriceW);
+
+            Assert.Equal(expectedSummer.TimeFromS, firstSummer.TimeFromS);
+            Assert.Equal(expectedSummer.TimeToS, firstSummer.TimeToS);
+            Assert.Equal(expectedSummer.HeatDemandS, firstSummer.HeatDemandS);
+            Assert.Equal(expectedSummer.ElPriceS, firstSummer.ElPriceS);
         }
     }
 }

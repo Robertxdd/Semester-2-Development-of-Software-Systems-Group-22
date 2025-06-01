@@ -1,5 +1,6 @@
 using Xunit;
 using HeatProductionSystem;
+using System.Linq;
 
 public class OptimizerTests
 {
@@ -12,17 +13,19 @@ public class OptimizerTests
         string period = "Summer";
         string preference = "Price";
 
-
         // Act
         var results = optimizer.Optimize(scenario, period, preference);
 
-        // Assert
-        //The data is not real needs to be changed with real one
-        Assert.Equal(284242.4000000001, optimizer.TotalCost);
-        Assert.Equal(12298.950000000006, optimizer.TotalFuelConsumption);
-        Assert.Equal(2391462.5 , optimizer.TotalCO2Emissions);
-        Assert.Equal(336, results.Count);
+        // Calculate totals from results
+        double totalCost = results.Sum(unitList => unitList.Sum(unit => unit.CurrentHeatOutput * unit.NetProductionCost));
+        double totalFuelConsumption = results.Sum(unitList => unitList.Sum(unit => unit.FuelConsumption * unit.CurrentHeatOutput));
+        double totalCO2Emissions = results.Sum(unitList => unitList.Sum(unit => unit.CO2Emissions * unit.CurrentHeatOutput));
 
+        // Assert - replace optimizer.Total* with calculated totals
+        Assert.Equal(568484.80000000005, totalCost, 4);
+        Assert.Equal(983.91600000000005, totalFuelConsumption, 4);
+        Assert.Equal(191317, totalCO2Emissions, 4);
+        Assert.Equal(672, results.Count);
     }
 
     [Fact]
@@ -37,11 +40,15 @@ public class OptimizerTests
         // Act
         var results = optimizer.Optimize(scenario, period, preference);
 
+        // Calculate totals from results
+        double totalCost = results.Sum(unitList => unitList.Sum(unit => unit.CurrentHeatOutput * unit.NetProductionCost));
+        double totalFuelConsumption = results.Sum(unitList => unitList.Sum(unit => unit.FuelConsumption * unit.CurrentHeatOutput));
+        double totalCO2Emissions = results.Sum(unitList => unitList.Sum(unit => unit.CO2Emissions * unit.CurrentHeatOutput));
+
         // Assert
-        //The data is not real needs to be changed with real one
-        Assert.Equal(1584677.3942857152, optimizer.TotalCost);
-        Assert.Equal(6309.000000000002, optimizer.TotalFuelConsumption);
-        Assert.Equal(1226750, optimizer.TotalCO2Emissions);
-        Assert.Equal(336, results.Count);
+        Assert.Equal(4081753.6000000001, totalCost, 4);
+        Assert.Equal(504.72000000000003, totalFuelConsumption, 4);
+        Assert.Equal(98140, totalCO2Emissions, 4);
+        Assert.Equal(672, results.Count);
     }
 }
