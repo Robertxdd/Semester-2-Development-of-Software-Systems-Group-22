@@ -145,16 +145,13 @@
 
 
      <Style Selector="RadioButton.Chart:checked">
-        <Setter Property="Background" Value="#EEEEEE" />
+        <Setter Property="Background" Value="#DFDFDF" />
     </Style>
     <Style Selector="RadioButton.Chart:pointerover">
         <Setter Property="FontWeight" Value="Medium" />
     </Style>
 
    
-
-
-
     <!-- Production Units View -->
 
     <Style Selector="Border.Grid">
@@ -169,5 +166,15 @@
         <Setter Property="HorizontalAlignment" Value="Center" />
     
     </Style>
-    
+
+    <Style Selector="TextBox.Values">
+        <Setter Property="Height" Value="30" />
+        <Setter Property="Width" Value="80" />
+
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+
+    </Style>    
+
+
 </Styles>

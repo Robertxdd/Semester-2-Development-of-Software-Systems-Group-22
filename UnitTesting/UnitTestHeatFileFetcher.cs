@@ -27,14 +27,14 @@ namespace HeatProductionSystem.Tests
             };
 
             // Act
-            SourceDataManager.FetchHeatData();
-
-            // Assert
-            Assert.True(SourceDataManager.WinterData.Count > 0, "WinterData should contain at least one row.");
-            Assert.True(SourceDataManager.SummerData.Count > 0, "SummerData should contain at least one row.");
-
+        
             var firstWinter = SourceDataManager.WinterData.First();
             var firstSummer = SourceDataManager.SummerData.First();
+           
+
+            // Assert
+            Assert.True(SourceDataManager.WinterData.Count == 336, "WinterData should contain at least one row.");
+            Assert.True(SourceDataManager.SummerData.Count == 336, "SummerData should contain at least one row.");
 
             Assert.Equal(expectedWinter.TimeFromW, firstWinter.TimeFromW);
             Assert.Equal(expectedWinter.TimeToW, firstWinter.TimeToW);

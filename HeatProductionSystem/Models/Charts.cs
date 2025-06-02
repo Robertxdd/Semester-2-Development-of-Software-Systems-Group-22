@@ -108,7 +108,7 @@ public class HeatScheduleChart : Chart
 {
 
     public List<double> TotalHeatDemand { get; set; } = new();
-    public Dictionary<string, StackedColumnSeries<double>> UnitMap { get; set; } = new();
+    public Dictionary<string, StackedAreaSeries<double>> UnitMap { get; set; } = new();
 
 
     public void Update(List<ProductionUnits> unitList, int count)
@@ -135,7 +135,7 @@ public class HeatScheduleChart : Chart
 
             if (!UnitMap.ContainsKey(unit.Name))
             {
-                var newSeries = new StackedColumnSeries<double>
+                var newSeries = new StackedAreaSeries<double>
                 {
                     Values = new ObservableCollection<double>(),
                     Name = unit.Name,

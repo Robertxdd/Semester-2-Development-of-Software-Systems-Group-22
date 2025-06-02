@@ -15,8 +15,8 @@ public partial class ProductionUnitsView : ContentControl
     private void RadioButton_Checked(object? sender, RoutedEventArgs e)
     {
         if (sender is RadioButton radioButton && radioButton.Tag is string value && DataContext is ProductionUnitsViewModel vm)
-        {  
-            vm.SelectedScenario = value;    
+        {
+            vm.SelectedScenario = value;
         }
     }
 }

@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:HeatProductionSystem.Models;assembly=HeatProductionSystem"
              x:Class="HeatProductionSystem.Views.ProductionUnitsView"
              x:DataType="vm:ProductionUnitsViewModel">
+    
 
     
     <Grid RowDefinitions="80, Auto, *">
@@ -72,15 +73,21 @@
                 </StackPanel>
 
                 
-                <StackPanel Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,86,0" Orientation="Horizontal">
-                    
-                    <!-- Remove unit Button -->
-                    <StackPanel>
-                    
-                        <Button Content="Remove" Command="{Binding RemoveUnitPopupButtonPressed}" HorizontalAlignment="Right"/>
+                
+                <Grid Grid.Column="2"  HorizontalAlignment="Right" Margin="0,0,86,0"  RowDefinitions="Auto,Auto">
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
 
-                        <!-- Popup for "Remove Unit" -->
-                        <Border IsVisible="{Binding RemoveUnitPopupIsOpen}" BorderBrush="Black" BorderThickness="1" Padding="5" Background="Red" ZIndex="4">
+                         <Button Content="Remove" Command="{Binding RemoveUnitPopupButtonPressed}" HorizontalAlignment="Right"/>
+
+                         <Button Content="Add" Command="{Binding AddUnitPopupButtonPressed}" HorizontalAlignment="Right" Margin="5,0,0,0"/>
+
+                          <Button Content="Edit" Command="{Binding EditButtonPressed}" Margin="5,0,0,0"/>
+
+                    </StackPanel>
+
+                    <Grid Grid.Row="1" ColumnDefinitions="Auto,Auto">
+
+                        <Border Grid.Column="0" IsVisible="{Binding RemoveUnitPopupIsOpen}" BorderBrush="Black" BorderThickness="1" Padding="5" Background="White" ZIndex="4">
                             <StackPanel Orientation="Horizontal">
 
                                 <ComboBox ItemsSource="{Binding RemoveProductionUnitsList}" 
@@ -88,20 +95,13 @@
                                         MaxDropDownHeight="100" />
 
 
-                                <Button Content="Remove" Command="{Binding RemoveUnitButton}"/>
+                                <Button Content="Remove" Command="{Binding RemoveUnitButton}" Margin="5,0,0,0"/>
 
                             </StackPanel>
 
                         </Border>
 
-                    </StackPanel>
-
-                    <!-- Add unit Button -->
-                    <StackPanel HorizontalAlignment="Right">
-                        <Button Content="Add" Command="{Binding AddUnitPopupButtonPressed}" HorizontalAlignment="Right"/>
-                        
-                        <!-- Popup for "Add Unit" -->
-                        <Border IsVisible="{Binding AddUnitPopupIsOpen}" BorderBrush="Black" BorderThickness="1" Padding="5" Background="Red" ZIndex="4">
+                        <Border Grid.Column="1" IsVisible="{Binding AddUnitPopupIsOpen}" BorderBrush="Black" BorderThickness="1" Padding="5" Background="White" ZIndex="4">
                             <StackPanel Orientation="Horizontal">
 
                                 <ComboBox ItemsSource="{Binding AddProductionUnitsList}" 
@@ -109,16 +109,13 @@
                                         MaxDropDownHeight="100" />
 
 
-                                <Button Content="Add" Command="{Binding AddUnitButton}"/>
+                                <Button Content="Add" Command="{Binding AddUnitButton}" Margin="5,0,0,0"/>
 
                             </StackPanel>
 
                         </Border>
-                    </StackPanel>
-
-                    <Button Content="Edit" Command="{Binding EditButtonPressed}"/>
-                </StackPanel>
-
+                    </Grid>
+                </Grid>
             </Grid>
         </StackPanel>
 
@@ -148,10 +145,7 @@
 
                                 <TextBox Text="{Binding MaxHeatOutput, Mode=TwoWay}" 
                                          IsVisible="{Binding $parent[ItemsControl].((vm:ProductionUnitsViewModel)DataContext).EditIsVisible}"
-                                         Height="30"
-                                         Width="80"
-                                         HorizontalAlignment="Left"
-                                         VerticalAlignment="Top"/>
+                                         Classes="Values"/>
                             </Grid>
                         </Border>
 
@@ -161,10 +155,7 @@
 
                                 <TextBox Text="{Binding MaxElectricityOutput, Mode=TwoWay}" 
                                          IsVisible="{Binding $parent[ItemsControl].((vm:ProductionUnitsViewModel)DataContext).EditIsVisible}"
-                                         Height="30"
-                                         Width="80"
-                                         HorizontalAlignment="Left"
-                                         VerticalAlignment="Top"/>
+                                         Classes="Values"/>
                             </Grid>
                         </Border>
 
@@ -174,10 +165,7 @@
 
                                 <TextBox Text="{Binding ProductionCost, Mode=TwoWay}" 
                                          IsVisible="{Binding $parent[ItemsControl].((vm:ProductionUnitsViewModel)DataContext).EditIsVisible}"
-                                         Height="30"
-                                         Width="80"
-                                         HorizontalAlignment="Left"
-                                         VerticalAlignment="Top"/>
+                                        Classes="Values"/>
                             </Grid>
                         </Border>
 
@@ -187,10 +175,7 @@
 
                                 <TextBox Text="{Binding CO2Emissions, Mode=TwoWay}" 
                                          IsVisible="{Binding $parent[ItemsControl].((vm:ProductionUnitsViewModel)DataContext).EditIsVisible}"
-                                         Height="30"
-                                         Width="80"
-                                         HorizontalAlignment="Left"
-                                         VerticalAlignment="Top"/>
+                                        Classes="Values"/>
                             </Grid>
                         </Border>
 
@@ -200,10 +185,7 @@
 
                                 <TextBox Text="{Binding FuelConsumption, Mode=TwoWay}" 
                                          IsVisible="{Binding $parent[ItemsControl].((vm:ProductionUnitsViewModel)DataContext).EditIsVisible}"
-                                         Height="30"
-                                         Width="80"
-                                         HorizontalAlignment="Left"
-                                         VerticalAlignment="Top"/>
+                                         Classes="Values"/>
                             </Grid>
                         </Border> 
                     

@@ -117,7 +117,7 @@
 
 
 
-    public class AssetDataManager
+    public class AssetManager
     {
 
         public static ObservableCollection<ProductionUnits> baseScenario1Units { get; private set; } = new();
@@ -128,7 +128,7 @@
 
 
 
-        static AssetDataManager()
+        static AssetManager()
         {
             LoadProductionUnits(scenario1Units, "GB1", "GB2", "OB1");
             LoadProductionUnits(scenario2Units, "GB1", "OB1", "GM1", "HP1");

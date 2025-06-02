@@ -24,10 +24,10 @@ public class Optimizer
 
         // Clone the base units list to avoid modifying static collections during optimization
         var baseProductionUnits = scenario == "Scenario 1"
-            ? AssetDataManager.scenario1Units.Select(u => u.Clone()).ToList()
-            : AssetDataManager.scenario2Units.Select(u => u.Clone()).ToList();
+            ? AssetManager.scenario1Units.Select(u => u.Clone()).ToList()
+            : AssetManager.scenario2Units.Select(u => u.Clone()).ToList();
 
-        foreach (var heatDemand in heatData.ToList())
+        foreach (var heatDemand in heatData)
         {
             // Clone again for each heat demand to avoid mutation across iterations
             var productionUnits = baseProductionUnits.Select(unit => unit.Clone()).ToList();

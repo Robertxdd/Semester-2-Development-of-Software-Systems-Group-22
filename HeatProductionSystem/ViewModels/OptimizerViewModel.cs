@@ -322,7 +322,7 @@ public partial class OptimizerViewModel : ViewModelBase
             if (value == true)
             {
 
-                foreach (var unit in AssetDataManager.scenario1Units)
+                foreach (var unit in AssetManager.scenario1Units)
                 {
                     var placeholder = new UnitWithArrow
                         {
@@ -335,7 +335,7 @@ public partial class OptimizerViewModel : ViewModelBase
             }
             else
             {
-                foreach (var unit in AssetDataManager.scenario2Units)
+                foreach (var unit in AssetManager.scenario2Units)
                 {
                     var placeholder = new UnitWithArrow
                         {

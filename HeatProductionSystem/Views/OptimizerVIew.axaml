@@ -301,12 +301,12 @@
             <StackPanel Grid.Column="2">
                 <TextBlock Text="Statistics" Classes="Header"/>
 
-                <StackPanel Orientation="Horizontal" >
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,10">
                     <TextBlock Text="Cost: " />
                     <TextBlock Text="{Binding TotalCost, StringFormat='{}{0:N2}'}}: " />
                 </StackPanel>
 
-                <StackPanel Orientation="Horizontal" >
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                     <TextBlock Text="CO2: " />
                     <TextBlock Text="{Binding TotalCO2Emissions, StringFormat='{}{0:N2}'}}: " />
                 </StackPanel>

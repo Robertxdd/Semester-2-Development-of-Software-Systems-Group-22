@@ -28,13 +28,13 @@ public partial class ProductionUnitsViewModel : ViewModelBase
     {
         if (value == "Scenario 1")
         {
-            ProductionUnitList = AssetDataManager.scenario1Units;
+            ProductionUnitList = AssetManager.scenario1Units;
             UpdateAddUnitList(SelectedScenario);
         }
 
         else if (value == "Scenario 2")
         {
-            ProductionUnitList = AssetDataManager.scenario2Units;
+            ProductionUnitList = AssetManager.scenario2Units;
             UpdateAddUnitList(SelectedScenario);
         }
 
@@ -93,12 +93,12 @@ public partial class ProductionUnitsViewModel : ViewModelBase
     {
         if (SelectedScenario == "Scenario 1")
         {
-            AssetDataManager.LoadProductionUnits(AssetDataManager.scenario1Units, SelectedAddProductionUnit);
+            AssetManager.LoadProductionUnits(AssetManager.scenario1Units, SelectedAddProductionUnit);
         }
 
         else if (SelectedScenario == "Scenario 2")
         {
-            AssetDataManager.LoadProductionUnits(AssetDataManager.scenario2Units, SelectedAddProductionUnit);
+            AssetManager.LoadProductionUnits(AssetManager.scenario2Units, SelectedAddProductionUnit);
         }
 
         UpdateAddUnitList(SelectedScenario);
@@ -111,17 +111,17 @@ public partial class ProductionUnitsViewModel : ViewModelBase
 
         if (SelectedScenario == "Scenario 1")
         {
-            var unitToRemove = AssetDataManager.scenario1Units.FirstOrDefault(unit => unit.Name == SelectedRemoveProductionUnit);
+            var unitToRemove = AssetManager.scenario1Units.FirstOrDefault(unit => unit.Name == SelectedRemoveProductionUnit);
 
-            AssetDataManager.scenario1Units.Remove(unitToRemove);
+            AssetManager.scenario1Units.Remove(unitToRemove);
 
         }
 
         else if (SelectedScenario == "Scenario 2")
         {
-            var unitToRemove = AssetDataManager.scenario2Units.FirstOrDefault(unit => unit.Name == SelectedRemoveProductionUnit);
+            var unitToRemove = AssetManager.scenario2Units.FirstOrDefault(unit => unit.Name == SelectedRemoveProductionUnit);
 
-            AssetDataManager.scenario2Units.Remove(unitToRemove);
+            AssetManager.scenario2Units.Remove(unitToRemove);
         }
 
         UpdateAddUnitList(SelectedScenario);
@@ -140,13 +140,13 @@ public partial class ProductionUnitsViewModel : ViewModelBase
             case "Scenario 1":
                 foreach (string name in allUnitNames)
                 {
-                    if (!AssetDataManager.scenario1Units.Any(unit => unit.Name == name))
+                    if (!AssetManager.scenario1Units.Any(unit => unit.Name == name))
                     {
                         AddProductionUnitsList.Add(name);
                     }
                 }
 
-                foreach (var unit in AssetDataManager.scenario1Units)
+                foreach (var unit in AssetManager.scenario1Units)
                     RemoveProductionUnitsList.Add(unit.Name);
 
                 break;
@@ -154,13 +154,13 @@ public partial class ProductionUnitsViewModel : ViewModelBase
             case "Scenario 2":
                 foreach (string name in allUnitNames)
                 {
-                    if (!AssetDataManager.scenario2Units.Any(unit => unit.Name == name))
+                    if (!AssetManager.scenario2Units.Any(unit => unit.Name == name))
                     {
                         AddProductionUnitsList.Add(name);
                     }
                 }
 
-                foreach (var unit in AssetDataManager.scenario2Units)
+                foreach (var unit in AssetManager.scenario2Units)
                     RemoveProductionUnitsList.Add(unit.Name);
 
                 break;
@@ -179,8 +179,22 @@ public partial class ProductionUnitsViewModel : ViewModelBase
     public void EditButtonPressed()
     {
         EditIsVisible = !EditIsVisible;
+
+        // This is a rather bad way of making sure the edited values are still shown on the UI when exiting the "Edit" feature immediately. 
+        if (SelectedScenario == "Scenario 1")
+        {
+            SelectedScenario = "Scenario 2";
+            SelectedScenario = "Scenario 1";
+
+            OnPropertyChanged(nameof(SelectedScenario));
+        }
+        else
+        {
+            SelectedScenario = "Scenario 1";
+            SelectedScenario = "Scenario 2";
+        }
+
     }
-    
     
     
 }

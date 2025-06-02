@@ -52,7 +52,7 @@ public class UnitTest_ProductionUnits
 
 
     [Fact]
-    public void ObservableCollection_InstantiatesProductionUnitsCorrectly()
+    public void ObservableCollection_InstantiatesScenario1ProductionUnitsCorrectly()
     {
         AppEnvironment.IsTestMode = true; // Ensures the Bitmap Image does not load (it does not work in unit testing)
         
@@ -61,18 +61,19 @@ public class UnitTest_ProductionUnits
         var unit2 = new GasBoiler { Name = "GB2", MaxHeatOutput = 3.0, ProductionCost = 560, CO2Emissions = 130, FuelConsumption = 0.7 };
         var unit3 = new OilBoiler { Name = "OB1", MaxHeatOutput = 4.0, ProductionCost = 670, CO2Emissions = 330, FuelConsumption = 1.5 };
 
-        var test = new ObservableCollection<ProductionUnits>() {unit1, unit2, unit3 }; 
+        var test = new ObservableCollection<ProductionUnits>() {unit1, unit2, unit3 };
 
         // Act - Instantiates our production units 
-        var ProductionUnits = AssetDataManager.scenario1Units;;
         
+        // The production units are added already since they are static
 
         // Assert - Compares our production units with the test units to check that their specifications are correct
-        Assert.Equal(test.Select(x => x.Name), ProductionUnits.Select(x => x.Name));                       
-        Assert.Equal(test.Select(x => x.MaxHeatOutput), ProductionUnits.Select(x => x.MaxHeatOutput));   
-        Assert.Equal(test.Select(x => x.ProductionCost), ProductionUnits.Select(x => x.ProductionCost));
-        Assert.Equal(test.Select(x => x.CO2Emissions), ProductionUnits.Select(x => x.CO2Emissions)); 
-        Assert.Equal(test.Select(x => x.FuelConsumption), ProductionUnits.Select(x => x.FuelConsumption)); 
+        Assert.Equal(test.Select(x => x.Name), AssetManager.scenario1Units.Select(x => x.Name));                       
+        Assert.Equal(test.Select(x => x.MaxHeatOutput), AssetManager.scenario1Units.Select(x => x.MaxHeatOutput));   
+        Assert.Equal(test.Select(x => x.ProductionCost), AssetManager.scenario1Units.Select(x => x.ProductionCost));
+        Assert.Equal(test.Select(x => x.CO2Emissions), AssetManager.scenario1Units.Select(x => x.CO2Emissions)); 
+        Assert.Equal(test.Select(x => x.FuelConsumption), AssetManager.scenario1Units.Select(x => x.FuelConsumption)); 
 
     }
+
 }
